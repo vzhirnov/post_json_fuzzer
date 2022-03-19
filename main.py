@@ -118,14 +118,14 @@ d_base = {
     # "dict_field": ({"point": ["path", 0], "type": "absent"}, 'STAR'),
     # "validated": (True, False),
 
-    # ("action", "another_action",):
+    ("action", "another_action"): 1
     #     [
     #         {("point", '*'): ["header", "HOST"], "type": ("iequal", "equal", "absent"), "value": ("test.com", '*')},
     #         {"point": ["path", 0], "type": "absent"},
     #         {"point": ["action_name"], "type": "equal", "value": ""},
     #         {"point": ["action_ext"], "type": "absent"}
     #     ],
-    "token": "1b64c60e7d3e5cdabd63ba61f6e997ee",
+    # "token": "1b64c60e7d3e5cdabd63ba61f6e997ee",
 }
 
 d = str(d_base)
@@ -138,7 +138,7 @@ for index, item in enumerate(res):
     matched_index = f"'in_processing_{str(index)}'"
     d = d.replace(item, matched_index)
     matched_index = matched_index.replace('\'', '')
-    matched_items[matched_index] = item  # .strip("()")
+    matched_items[matched_index] = item
 
 for key, value in matched_items.items():
     matched_items[key] = generate_strategy(value)
@@ -150,20 +150,19 @@ print("matched_items:\n", matched_items)
 keys, values = zip(*matched_items.items())  # TODO: assert if no ()s with strategy, just plain dict values
 experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
 print(len(experiments))
-# print(experiments)
+print(experiments)
 # ====================
 
-d = ast.literal_eval(d)
-print("d after ast:\n", d)
+# d = ast.literal_eval(d)
+# print("d after ast:\n", d)
 
 result_jsons = []
 for dict_item in experiments:
     tmp_dict = dict()
-    for key, value in d.items():
-        if value not in dict_item.keys():
-            tmp_dict[key] = value
-        else:
-            tmp_dict[key] = dict_item[value]
+    tmp_d = d
+    for key, value in dict_item.items():
+        tmp_d = tmp_d.replace(key, str(value))
+    tmp_dict = ast.literal_eval(tmp_d)
     result_jsons.append(tmp_dict)
 
 print("result_jsons:\n", result_jsons)
