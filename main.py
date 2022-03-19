@@ -34,6 +34,7 @@ STRATEGY_1 = [0, 1, 2, 3, 4]
 STRATEGY_2 = [5, 6, 7, 8, 9]
 STAR = [11, 22, 33, 44, 55]
 
+
 def parser_view(text):
     # TODO: are \[| with \]| really need?
     numbers = r"""(?x)(
@@ -65,12 +66,24 @@ def unlist_current_items(items_list):
     return items_list
 
 
+def restore_data_type(littered_data):
+    l = []
+    for littered_item in littered_data:
+        try:
+            c = ast.literal_eval(littered_item)
+            l.append(c)
+        except Exception as e:
+            l.append(littered_item)
+    return l
+
+
 def generate_strategy(strategy_info):
     # TODO: migrate assert upper where it is really required
-    assert isinstance(strategy_info, str)  # and all(x not in strategy_info for x in ['(', ')'])
+    # assert isinstance(strategy_info, str)  # and all(x not in strategy_info for x in ['(', ')'])
     # TODO: add asserts:
     # TODO: num of opened [s is equal to ]s
-    strategy = parser_view(strategy_info)
+    strategy = parser_view(str(strategy_info))
+    strategy = restore_data_type(strategy)
     stack = Stack()
     result_strategy = []
     for item in strategy:
@@ -94,7 +107,7 @@ def generate_strategy(strategy_info):
             result_strategy = []
         elif item == '^':
             elem = stack.pop()
-            if elem == '[]':
+            if isinstance(elem, list):
                 result_strategy = stack.pop()
                 result_strategy = list_current_items(result_strategy)
                 stack.push(result_strategy)
@@ -110,6 +123,10 @@ def generate_strategy(strategy_info):
     return unlist_current_items(stack.pop_all())
 
 
+def make_ast_literal_eval(item):
+    return [ast.literal_eval(x) for x in item]
+
+
 d_base = {
     # "clientid": (132, 'STRATEGY_1'),
     # "type": ("disable_attack_type", 'STRATEGY_2'),
@@ -118,26 +135,25 @@ d_base = {
     # "dict_field": ({"point": ["path", 0], "type": "absent"}, 'STAR'),
     # "validated": (True, False),
 
-    ("action", "another_action"): 1
-    #     [
-    #         {("point", '*'): ["header", "HOST"], "type": ("iequal", "equal", "absent"), "value": ("test.com", '*')},
-    #         {"point": ["path", 0], "type": "absent"},
-    #         {"point": ["action_name"], "type": "equal", "value": ""},
-    #         {"point": ["action_ext"], "type": "absent"}
-    #     ],
+    ("action", "another_action"):  # (0, 1, True)
+        [
+            {("point", '*'): ["header", "HOST"], "type": ("iequal", "equal", "absent"), "value": ("testcom", '*')},
+            {"point": ["path", 0], "type": "absent"},
+            {"point": ["action_name"], "type": "equal", "value": ""},
+            {"point": ["action_ext"], "type": "absent"}
+        ],
     # "token": "1b64c60e7d3e5cdabd63ba61f6e997ee",
 }
 
 d = str(d_base)
 
-res = re.findall(r'\(.*?\)', d)
+res = make_ast_literal_eval(re.findall(r'\(.*?\)', d))
 
 matched_items = dict()
 
 for index, item in enumerate(res):
-    matched_index = f"'in_processing_{str(index)}'"
-    d = d.replace(item, matched_index)
-    matched_index = matched_index.replace('\'', '')
+    matched_index = id(item)
+    d = d.replace(str(item), str(matched_index))
     matched_items[matched_index] = item
 
 for key, value in matched_items.items():
@@ -150,18 +166,15 @@ print("matched_items:\n", matched_items)
 keys, values = zip(*matched_items.items())  # TODO: assert if no ()s with strategy, just plain dict values
 experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
 print(len(experiments))
-print(experiments)
+# print(experiments)
 # ====================
-
-# d = ast.literal_eval(d)
-# print("d after ast:\n", d)
 
 result_jsons = []
 for dict_item in experiments:
     tmp_dict = dict()
     tmp_d = d
     for key, value in dict_item.items():
-        tmp_d = tmp_d.replace(key, str(value))
+        tmp_d = tmp_d.replace(str(key), "'" + str(value) + "'" if isinstance(value, str) else str(value))
     tmp_dict = ast.literal_eval(tmp_d)
     result_jsons.append(tmp_dict)
 
