@@ -1,6 +1,7 @@
 import ast
 import re
 import itertools
+import requests
 
 
 # TODO: add null in stratgies
@@ -30,7 +31,7 @@ class Stack:
         return len(self.items)
 
 
-STRATEGY_1 = [0, 1, 2, 3, 4]
+STRATEGY_1 = [0, 1, 2, 3, 4, None, 123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123]  # TODO: null
 STRATEGY_2 = [5, 6, 7, 8, 9]
 STAR = [11, 22, 33, 44, 55]
 
@@ -127,22 +128,50 @@ def make_ast_literal_eval(item):
     return [ast.literal_eval(x) for x in item]
 
 
-d_base = {
-    # "clientid": (132, 'STRATEGY_1'),
-    # "type": ("disable_attack_type", 'STRATEGY_2'),
-    # "attack_type": (["xss"], 'STAR'),
-    # "point": ("action_ext_1", 'STRATEGY_1', "[]^[]^", "action_ext_2", 'STRATEGY_2', "[]^", "action_ext_star", 'STAR', '++'),
-    # "dict_field": ({"point": ["path", 0], "type": "absent"}, 'STAR'),
-    # "validated": (True, False),
+# d_base = {
+#     # "clientid": (132, 'STRATEGY_1'),
+#     # "type": ("disable_attack_type", 'STRATEGY_2'),
+#     # "attack_type": (["xss"], 'STAR'),
+#     # "point": ("action_ext_1", 'STRATEGY_1', "[]^[]^", "action_ext_2", 'STRATEGY_2', "[]^", "action_ext_star", 'STAR', '++'),
+#     # "dict_field": ({"point": ["path", 0], "type": "absent"}, 'STAR'),
+#     # "validated": (True, False),
+#
+#     ("action", "another_action"):  # (0, 1, True)
+#         [
+#             {("point", '*'): ["header", "HOST"], "type": ("iequal", "equal", "absent"), "value": ("testcom", '*')},
+#             {"point": ["path", 0], "type": "absent"},
+#             {"point": ["action_name"], "type": "equal", "value": ""},
+#             {"point": ["action_ext"], "type": "absent"}
+#         ],
+#     # "token": "1b64c60e7d3e5cdabd63ba61f6e997ee",
+# }
 
-    ("action", "another_action"):  # (0, 1, True)
+
+d_base = {
+    "clientid":(132, 'STRATEGY_1'),
+    "type":"disable_attack_type",
+    "attack_type":"sqli",
+    "point":[["action_ext"]],
+    "validated":False,
+    "action":
         [
-            {("point", '*'): ["header", "HOST"], "type": ("iequal", "equal", "absent"), "value": ("testcom", '*')},
-            {"point": ["path", 0], "type": "absent"},
-            {"point": ["action_name"], "type": "equal", "value": ""},
-            {"point": ["action_ext"], "type": "absent"}
+            {"point":["header","HOST"],"type":"iequal","value":"test.com"},
+            {"point":["path",0],"type":("equal", None, 1, "1"),"value":"1"},
+            {"point":["path",1],"type":"equal","value":"2"},
+            {"point":["path",2],"type":"equal","value":"3"},
+            {"point":["path",3],"type":"absent"},
+            {"point":["action_name"],"type":"equal","value":"index"},
+            {"point":["action_ext"],"type":"equal","value":"php"}
         ],
-    # "token": "1b64c60e7d3e5cdabd63ba61f6e997ee",
+    "group_uuid":"26797500-9733-40c4-b4fe-6c47d56c647d",
+    "group_action":"create",
+    "token":"8417d67f4737a93970c40dc3e6251d65",
+
+}
+
+headers = {
+    "X-WallarmAPI-UUID":"a5ed3d6a-aeba-43ad-8f9c-431bf558dbb9",
+    "X-WallarmAPI-Secret":"65a31fd20b35bba95a4a1e1ba92d0dba73eddf5d46e3792a6ac965a1f28f3282"
 }
 
 d = str(d_base)
@@ -179,3 +208,13 @@ for dict_item in experiments:
     result_jsons.append(tmp_dict)
 
 print("result_jsons:\n", result_jsons)
+
+for params in result_jsons:
+    r = requests.post(
+        url='https://api.vzhirnov2180.dev.wallarm.tools/v1/objects/hint/create',
+        json=params,
+        verify=False,
+        headers=headers
+    )
+    if r.status_code == 500:
+        print(f"500 detected on request with params {params}")
