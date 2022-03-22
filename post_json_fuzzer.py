@@ -1,4 +1,5 @@
 import argparse
+import pickle
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 
@@ -108,6 +109,8 @@ d_base = {
 # }
 
 if __name__ == '__main__':
+    with open(file, 'rb') as handle:
+        d_base = eval(handle.read())  # TODO need to check if file is correct dict
     d_base.update(headers)
     print(get_jsons_for_fuzzing(d_base))
 
