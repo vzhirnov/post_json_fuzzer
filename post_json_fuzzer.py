@@ -1,5 +1,6 @@
 import argparse
-import pickle
+import aiohttp
+import asyncio
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 
@@ -108,12 +109,21 @@ d_base = {
 #     "X-WallarmAPI-Secret": "65a31fd20b35bba95a4a1e1ba92d0dba73eddf5d46e3792a6ac965a1f28f3282"
 # }
 
+async def post(url_aim, json_params, hdrs):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url_aim, data=json_params, headers=hdrs, ssl=False) as response:
+            return response
+
 if __name__ == '__main__':
     with open(file, 'rb') as handle:
         d_base = eval(handle.read())  # TODO need to check if file is correct dict
-    d_base.update(headers)
-    print(get_jsons_for_fuzzing(d_base))
 
+    result_jsons = get_jsons_for_fuzzing(d_base)
+
+    loop = asyncio.get_event_loop()
+    coroutines = [post(url, json_params, headers) for json_params in result_jsons]
+    results = loop.run_until_complete(asyncio.gather(*coroutines))
+    print("Results: %s" % results)
 
 # for params in result_jsons:
 #     r = requests.post(
