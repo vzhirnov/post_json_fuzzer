@@ -12,39 +12,53 @@ from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 # additional headers, if required
 
 url = str()
-headers = []
-json_path = str()
+headers = dict()
+file = str()
+
+
+class ParseKwargs(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, dict())
+        for value in values:
+            key, value = value.split('=')
+            getattr(namespace, self.dest)[key] = value
+
 
 parser = argparse.ArgumentParser(
     description="Make POST json fuzzing easy.",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument(
-    "--url",
-    default='127.0.0.1',
-    action="store_true",
+    "-url",
+    type=str,
+    dest="url",
+    required=True,
     help="URL to which requests will be made.",
+    default='127.0.0.1'
+)
+parser.add_argument(
+    '-file',
+    type=str,
+    dest='file',
+    required=True,
+    help="Path to file with pseudo-JSON metainfo.",
 )
 parser.add_argument(
     "--headers",
-    default=tuple(),
-    action="store_true",
+    '-H',
+    nargs='*',
+    default=dict(),
     help="Additional headers.",
-)
-parser.add_argument(
-    "--meta-file-path",
-    default=str(),
-    action="store_true",
-    help="Path to file with pseudo-JSON metainfo.",
+    action=ParseKwargs
 )
 args = parser.parse_args()
 
 if args.headers:
     headers = args.headers
 if args.url:
-    headers = args.url
-if args.pseudo_json_file_path:
-    headers = args.pseudo_json_file_path
+    url = args.url
+if args.file:
+    file = args.file
 
 
 d_base = {
@@ -88,13 +102,13 @@ d_base = {
 #
 # }
 
-headers = {
-    "X-WallarmAPI-UUID":"a5ed3d6a-aeba-43ad-8f9c-431bf558dbb9",
-    "X-WallarmAPI-Secret":"65a31fd20b35bba95a4a1e1ba92d0dba73eddf5d46e3792a6ac965a1f28f3282"
-}
-
+# headers = {
+#     "X-WallarmAPI-UUID": "a5ed3d6a-aeba-43ad-8f9c-431bf558dbb9",
+#     "X-WallarmAPI-Secret": "65a31fd20b35bba95a4a1e1ba92d0dba73eddf5d46e3792a6ac965a1f28f3282"
+# }
 
 if __name__ == '__main__':
+    d_base.update(headers)
     print(get_jsons_for_fuzzing(d_base))
 
 
