@@ -1,6 +1,7 @@
 import argparse
 import aiohttp
 import asyncio
+import requests
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 
@@ -111,8 +112,8 @@ d_base = {
 
 async def post(url_aim, json_params, hdrs):
     async with aiohttp.ClientSession() as session:
-        async with session.post(url_aim, data=json_params, headers=hdrs, ssl=False) as response:
-            return response
+        async with session.post(url_aim, json=json_params, headers=hdrs, ssl=False) as response:
+            return response, json_params
 
 if __name__ == '__main__':
     with open(file, 'rb') as handle:
@@ -121,19 +122,35 @@ if __name__ == '__main__':
     result_jsons = get_jsons_for_fuzzing(d_base)
 
     loop = asyncio.get_event_loop()
+
     coroutines = [post(url, json_params, headers) for json_params in result_jsons]
+    print(f'start sending {len(coroutines)}')
     results = loop.run_until_complete(asyncio.gather(*coroutines))
-    print("Results: %s" % results)
+
+    for result in results:
+        if result[0].status == 500:
+            print(f"The request with \n{result[1]} \nparameters returned with status 500\n\n")
+
+
+print("hello")
+
+
 
 # for params in result_jsons:
 #     r = requests.post(
-#         url='https://api.vzhirnov2180.dev.wallarm.tools/v1/objects/hint/create',
+#         url=url,
 #         json=params,
 #         verify=False,
 #         headers=headers
 #     )
 #     if r.status_code == 500:
-#         print(f"500 detected on request with params {params}")
+#         print(f"500 detected on request with params \n{params}")
 
-
-
+# TODO known issues:
+# test.com is splitted into ['test', 'com']
+# wrong handle of -1 - numbers with minus
+# wrong handle of "validated":("", 'STRATEGY_1'), - empty field
+# wrong handle of "validated":(111, 222, 'STRATEGY_1') - several items plus strategy
+# cannot make case with lack of current parameter AND doubled string
+# "value":("test.com") - one value handles incorrectly
+# if basic json has no any ()s, -> error
