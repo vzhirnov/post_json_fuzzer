@@ -4,6 +4,20 @@ from src.data_structures.datastructures import Stack
 from src.strategies.strategies import STRATEGY_1, STRATEGY_2, STAR
 
 
+def sum_elems(elem1, elem2):
+    if isinstance(elem1, list) and isinstance(elem2, list):
+        return elem1 + elem2
+    if isinstance(elem1, list):
+        elem1.append(elem2)
+        return elem1
+    elif isinstance(elem2, list):
+        elem2.append(elem1)
+        return elem2
+    else:
+        res = [elem1, elem2]
+        return res
+
+
 def generate_strategy(strategy_info):
     # TODO: migrate assert upper where it is really required
     # assert isinstance(strategy_info, str)  # and all(x not in strategy_info for x in ['(', ')'])
@@ -15,20 +29,14 @@ def generate_strategy(strategy_info):
     result_strategy = []
     for item in strategy:
         if item == 'STRATEGY_1':
-            elem = stack.pop()
-            result_strategy.insert(0, elem)
             result_strategy += STRATEGY_1
             stack.push(result_strategy)
             result_strategy = []
         elif item == 'STRATEGY_2':
-            elem = stack.pop()
-            result_strategy.insert(0, elem)
             result_strategy += STRATEGY_2
             stack.push(result_strategy)
             result_strategy = []
         elif item == 'STAR':
-            elem = stack.pop()
-            result_strategy.insert(0, elem)
             result_strategy += STAR
             stack.push(result_strategy)
             result_strategy = []
@@ -42,7 +50,7 @@ def generate_strategy(strategy_info):
         elif item == '+':
             elem1 = stack.pop()
             elem2 = stack.pop()
-            result_strategy = elem1 + elem2
+            result_strategy = sum_elems(elem1, elem2)
             stack.push(result_strategy)
             result_strategy = []
         else:

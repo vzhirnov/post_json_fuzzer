@@ -120,19 +120,20 @@ if __name__ == '__main__':
         d_base = eval(handle.read())  # TODO need to check if file is correct dict
 
     result_jsons = get_jsons_for_fuzzing(d_base)
+    print(result_jsons)
 
-    loop = asyncio.get_event_loop()
-
-    coroutines = [post(url, json_params, headers) for json_params in result_jsons]
-    print(f'start sending {len(coroutines)}')
-    results = loop.run_until_complete(asyncio.gather(*coroutines))
-
-    for result in results:
-        if result[0].status == 500:
-            print(f"The request with \n{result[1]} \nparameters returned with status 500\n\n")
-
-
-print("hello")
+#     loop = asyncio.get_event_loop()
+#
+#     coroutines = [post(url, json_params, headers) for json_params in result_jsons]
+#     print(f'start sending {len(coroutines)}')
+#     results = loop.run_until_complete(asyncio.gather(*coroutines))
+#
+#     for result in results:
+#         if result[0].status == 500:
+#             print(f"The request with \n{result[1]} \nparameters returned with status 500\n\n")
+#
+#
+# print("hello")
 
 
 
