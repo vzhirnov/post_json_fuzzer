@@ -150,8 +150,8 @@ if __name__ == '__main__':
 # TODO known issues:
 # test.com is splitted into ['test', 'com']
 # wrong handle of -1 - numbers with minus
-# wrong handle of "validated":("", 'STRATEGY_1'), - empty field
-# wrong handle of "validated":(111, 222, 'STRATEGY_1') - several items plus strategy
+# wrong handle of "validated":("", 'STRATEGY_1'), - empty field - DESICION - use '\0' - DONE???
+# wrong handle of "validated":(111, 222, 'STRATEGY_1') - several items plus strategy - DONE
 # cannot make case with lack of current parameter AND doubled string
 # "value":("test.com") - one value handles incorrectly
 # if basic json has no any ()s, -> error

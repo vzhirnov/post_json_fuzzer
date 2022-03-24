@@ -4,7 +4,7 @@ from src.data_structures.datastructures import Stack
 from src.strategies.strategies import STRATEGY_1, STRATEGY_2, STAR
 
 
-def sum_elems(elem1, elem2):
+def sum_elems_of_different_types(elem1, elem2):
     if isinstance(elem1, list) and isinstance(elem2, list):
         return elem1 + elem2
     if isinstance(elem1, list):
@@ -50,7 +50,7 @@ def generate_strategy(strategy_info):
         elif item == '+':
             elem1 = stack.pop()
             elem2 = stack.pop()
-            result_strategy = sum_elems(elem1, elem2)
+            result_strategy = sum_elems_of_different_types(elem1, elem2)
             stack.push(result_strategy)
             result_strategy = []
         else:
