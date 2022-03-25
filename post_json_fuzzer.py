@@ -1,7 +1,11 @@
 import argparse
 import aiohttp
 import asyncio
-import requests
+import csv
+import os
+import pathlib
+
+from datetime import datetime
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 
@@ -129,24 +133,22 @@ if __name__ == '__main__':
     for result in results:
         print(f'current request with {result[1]} parameters results {result[0].status}')
 
-#     for result in results:
-#         if result[0].status == 500:
-#             print(f"The request with \n{result[1]} \nparameters returned with status 500\n\n")
-#
-#
-# print("hello")
+    curr_path = os.path.dirname(os.path.abspath(__file__))
+    results_dir = '/results/'  # TODO make parameter with name
+    curr_path += results_dir
+    pathlib.Path(curr_path).mkdir(parents=True, exist_ok=True)
+    curr_date_time = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
+    path_to_file = curr_path + f'{curr_date_time}_results.csv'
 
-
-
-# for params in result_jsons:
-#     r = requests.post(
-#         url=url,
-#         json=params,
-#         verify=False,
-#         headers=headers
-#     )
-#     if r.status_code == 500:
-#         print(f"500 detected on request with params \n{params}")
+    with open(path_to_file, mode='w') as results_file:
+        employee_writer = csv.writer(results_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        title_list = list(result[1].keys())
+        title_list.append('result')
+        employee_writer.writerow(title_list)
+        for result in results:
+            l = list(result[1].values())
+            l.append(result[0].status)
+            employee_writer.writerow(l)
 
 # TODO known issues:
 # test.com is splitted into ['test', 'com'] - DONE
