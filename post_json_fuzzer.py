@@ -110,24 +110,25 @@ d_base = {
 #     "X-WallarmAPI-Secret": "65a31fd20b35bba95a4a1e1ba92d0dba73eddf5d46e3792a6ac965a1f28f3282"
 # }
 
-async def post(url_aim, json_params, hdrs):
+async def post(url_aim, json_params, hdrs, request_metainfo):
     async with aiohttp.ClientSession() as session:
         async with session.post(url_aim, json=json_params, headers=hdrs, ssl=False) as response:
-            return response, json_params
+            return response, request_metainfo
 
 if __name__ == '__main__':
     with open(file, 'rb') as handle:
         d_base = eval(handle.read())  # TODO need to check if file is correct dict
 
     result_jsons = get_jsons_for_fuzzing(d_base)
-    print(result_jsons)
 
-#     loop = asyncio.get_event_loop()
-#
-#     coroutines = [post(url, json_params, headers) for json_params in result_jsons]
-#     print(f'start sending {len(coroutines)}')
-#     results = loop.run_until_complete(asyncio.gather(*coroutines))
-#
+    loop = asyncio.get_event_loop()
+
+    coroutines = [post(url, json_params[0], headers, json_params[1]) for json_params in result_jsons]
+    print(f'start sending {len(coroutines)} requests')
+    results = loop.run_until_complete(asyncio.gather(*coroutines))
+    for result in results:
+        print(f'current request with {result[1]} parameters results {result[0].status}')
+
 #     for result in results:
 #         if result[0].status == 500:
 #             print(f"The request with \n{result[1]} \nparameters returned with status 500\n\n")
@@ -148,8 +149,8 @@ if __name__ == '__main__':
 #         print(f"500 detected on request with params \n{params}")
 
 # TODO known issues:
-# test.com is splitted into ['test', 'com']
-# wrong handle of -1 - numbers with minus
+# test.com is splitted into ['test', 'com'] - DONE
+# wrong handle of -1 - numbers with minus - DONE
 # wrong handle of "validated":("", 'STRATEGY_1'), - empty field - DESICION - use '\0' - DONE???
 # wrong handle of "validated":(111, 222, 'STRATEGY_1') - several items plus strategy - DONE
 # cannot make case with lack of current parameter AND doubled string
