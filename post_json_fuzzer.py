@@ -106,4 +106,4 @@ if __name__ == '__main__':
 # wrong handle of "validated":("", 'STRATEGY_1'), - empty field - DESICION - use '\0' - DONE???
 # cannot make case with lack of current parameter AND doubled string
 # "value":("test.com") - one value handles incorrectly
-# if basic json has no any ()s, -> error
+# if basic json has no any ()s, -> error - DONE

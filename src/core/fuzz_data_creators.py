@@ -17,6 +17,8 @@ def get_jsons_for_fuzzing(d_base):
 def get_interesting_data(d_base):
     d = str(d_base)
     res = make_ast_literal_eval(re.findall(r'\(.*?\)', d))
+    if not res:
+        raise Exception("Error: no metadata to make a fuzzing decision")
     matched_items = dict()
 
     for index, item in enumerate(res):
