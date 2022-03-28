@@ -1,7 +1,9 @@
+import ast
+
 from src.utils.strategy.modifiers import restore_data_type, list_current_items, unlist_current_items
 from src.utils.parser.view import parser_view
 from src.data_structures.datastructures import Stack
-from src.strategies.strategies import STRATEGY_1, STRATEGY_2, STAR
+from src.strategies.strategies import ready_strategies, strategy_methods
 
 
 def sum_elems_of_different_types(elem1, elem2):
@@ -18,6 +20,18 @@ def sum_elems_of_different_types(elem1, elem2):
         return res
 
 
+def get_last_part_after_pattern(base_line, pattern):
+    return base_line.split(pattern, 1)[1]
+
+
+def get_func_name_and_args_num(base_line, func, args):
+    s1 = base_line.split(func, 1)[1]
+    index = s1.find(args)
+    func_name = s1[:index - 1]
+    args_num = s1.split(args, 1)[1]
+    return func_name, args_num
+
+
 def generate_strategy(strategy_info):
     # TODO: migrate assert upper where it is really required
     # assert isinstance(strategy_info, str)  # and all(x not in strategy_info for x in ['(', ')'])
@@ -28,31 +42,37 @@ def generate_strategy(strategy_info):
     stack = Stack()
     result_strategy = []
     for item in strategy:
-        if item == 'STRATEGY_1':
-            result_strategy += STRATEGY_1
-            stack.push(result_strategy)
-            result_strategy = []
-        elif item == 'STRATEGY_2':
-            result_strategy += STRATEGY_2
-            stack.push(result_strategy)
-            result_strategy = []
-        elif item == 'STAR':
-            result_strategy += STAR
-            stack.push(result_strategy)
-            result_strategy = []
-        elif item == '^':
-            elem = stack.pop()
-            if isinstance(elem, list):
-                result_strategy = stack.pop()
-                result_strategy = list_current_items(result_strategy)
+        if isinstance(item, str):
+            if item.startswith('ADD_STRATEGY_'):
+                strategy = get_last_part_after_pattern(item, 'ADD_STRATEGY_')
+                result_strategy += ready_strategies[strategy]
                 stack.push(result_strategy)
                 result_strategy = []
-        elif item == '+':
-            elem1 = stack.pop()
-            elem2 = stack.pop()
-            result_strategy = sum_elems_of_different_types(elem1, elem2)
-            stack.push(result_strategy)
-            result_strategy = []
+            elif item.startswith('FUNC_'):
+                func_name, args_num = get_func_name_and_args_num(item, 'FUNC_', 'ARGS_NUM_')
+                lst = []
+                for _ in range(0, ast.literal_eval(args_num)):
+                    elem = stack.pop()
+                    lst.append(elem)
+                lst = lst[::-1]
+                result_strategy = strategy_methods[func_name](*lst)
+                stack.push(result_strategy)
+                result_strategy = []
+            elif item == '^':
+                elem = stack.pop()
+                if isinstance(elem, list):
+                    result_strategy = stack.pop()
+                    result_strategy = list_current_items(result_strategy)
+                    stack.push(result_strategy)
+                    result_strategy = []
+            elif item == '+':
+                elem1 = stack.pop()
+                elem2 = stack.pop()
+                result_strategy = sum_elems_of_different_types(elem1, elem2)
+                stack.push(result_strategy)
+                result_strategy = []
+            else:
+                stack.push(item)
         else:
             stack.push(item)
     return unlist_current_items(stack.pop_all())

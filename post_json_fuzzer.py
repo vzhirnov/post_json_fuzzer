@@ -8,6 +8,7 @@ import pathlib
 from datetime import datetime
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
+from src.strategies.strategies import strategy_methods
 
 # TODO: add EMPTY or EXCESS in stratgies, ANOMALIES
 # TODO: make interactive work with 500 responses:
@@ -69,8 +70,10 @@ async def post(url_aim, json_params, hdrs, request_metainfo):
             return response, request_metainfo
 
 if __name__ == '__main__':
+    funcs_to_register = strategy_methods
     with open(file, 'rb') as handle:
-        d_base = eval(handle.read())  # TODO need to check if file is correct dict
+        native_file_contetns = handle.read()
+        d_base = eval(native_file_contetns)  # TODO need to check if file is correct dict
 
     result_jsons = get_jsons_for_fuzzing(d_base)
 
@@ -91,7 +94,7 @@ if __name__ == '__main__':
 
     with open(path_to_file, mode='w') as results_file:
         employee_writer = csv.writer(results_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        title_list = list(result[1].keys())
+        title_list = list(result[1].keys())  # TODO : result?
         title_list.append('result')
         employee_writer.writerow(title_list)
         for result in results:
