@@ -1,6 +1,6 @@
 import ast
 
-from src.utils.strategy.modifiers import restore_data_type, list_current_items, unlist_current_items
+from src.utils.strategy.modifiers import restore_data_type, list_current_items, unlist_current_items, mutate
 from src.utils.parser.view import parser_view
 from src.data_structures.datastructures import Stack
 from src.strategies.strategies import ready_strategies, strategy_methods
@@ -57,6 +57,11 @@ def generate_strategy(strategy_info):
                     lst.append(elem)
                 lst = lst[::-1]
                 result_strategy = strategy_methods[func_name](*lst)
+                stack.push(result_strategy)
+                result_strategy = []
+            elif item == 'MUTATE':
+                elem = stack.pop()
+                result_strategy = mutate(elem)
                 stack.push(result_strategy)
                 result_strategy = []
             elif item == '^':
