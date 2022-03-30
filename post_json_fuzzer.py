@@ -103,7 +103,4 @@ if __name__ == '__main__':
             employee_writer.writerow(l)
 
 # TODO known issues:
-# wrong handle of "validated":("", 'STRATEGY_1'), - empty field - DESICION - use '\0' - DONE???
 # cannot make case with lack of current parameter AND doubled string
-# "value":("test.com") - one value handles incorrectly - DONE
-# if basic json has no any ()s, -> error - DONE
