@@ -1,8 +1,10 @@
 import ast
 
 
-def list_current_items(items_list):
-    return [[i] for i in items_list]
+def list_current_items(item):
+    if isinstance(item, list):
+        return [[i] for i in item]
+    return [item]
 
 
 def unlist_current_items(items_list):

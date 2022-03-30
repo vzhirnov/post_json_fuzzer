@@ -1,4 +1,5 @@
 import ast
+import copy
 import itertools
 import re
 import uuid
@@ -38,22 +39,40 @@ def get_all_combinations(matched_items):
     return experiments
 
 
+def find_word_and_add_quotes(str_line: str, interesting_word):
+    def insert_quote(string, index_num):
+        return string[:index_num] + '\'' + string[index_num:]
+
+    start_index = str_line.find(interesting_word)
+    end_index = str_line.find(interesting_word) + len(interesting_word)
+    res = insert_quote(str_line, start_index)
+    res = insert_quote(res, end_index + 1)
+    return res
+
+
 def get_final_data(experiments, d_base):
     result_jsons = []
     fuzz_item = dict()
+    exp_keys = list(experiments[0].keys())
+
+    tmp_d_base = d_base
+    for key in exp_keys:
+        tmp_d_base = find_word_and_add_quotes(tmp_d_base, key)
+
+    tmp_d_base = eval(tmp_d_base)
     for dict_items in experiments:
-        tmp_d = d_base
+        tmp_d = copy.deepcopy(tmp_d_base)
         for key, value in dict_items.items():
-            if d_base[d_base.find(key) + len(key)] == ',':
-                a = d_base[:d_base.find(key)].split('\'')[1::2][0]
-                fuzz_item.update({a: value})
-            elif d_base[d_base.find(key) + len(key)] == ':':
-                b = d_base[(d_base.find(key) + len(key)):].split('\'')[1]
-                fuzz_item.update({value: b})
+            if key in tmp_d:  # key os found
+                tmp_d[value] = tmp_d.pop(key)
+                fuzz_item.update({value: tmp_d_base[key]})
+            elif list(tmp_d.keys())[list(tmp_d.values()).index(key)]:
+                need_key = list(tmp_d.keys())[list(tmp_d.values()).index(key)]
+                tmp_d[need_key] = value
+                fuzz_item.update({need_key: value})
             else:
-                raise Exception("This should never happen!")
-            tmp_d = tmp_d.replace(str(key), "'" + str(value) + "'" if isinstance(value, str) else str(value))
-        res_dict = ast.literal_eval(tmp_d)
+                raise Exception("This should never happen")
+        res_dict = tmp_d
         result_jsons.append((res_dict, fuzz_item))
         fuzz_item = {}
     return result_jsons

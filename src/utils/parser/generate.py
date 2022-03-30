@@ -8,7 +8,8 @@ from src.strategies.strategies import ready_strategies, strategy_methods
 
 def sum_elems_of_different_types(elem1, elem2):
     if isinstance(elem1, list) and isinstance(elem2, list):
-        return elem1 + elem2
+        elem1.append(elem2)
+        return elem1
     if isinstance(elem1, list):
         elem1.append(elem2)
         return elem1
@@ -69,6 +70,12 @@ def generate_strategy(strategy_info):
                 elem1 = stack.pop()
                 elem2 = stack.pop()
                 result_strategy = sum_elems_of_different_types(elem1, elem2)
+                stack.push(result_strategy)
+                result_strategy = []
+            elif item == '|':
+                elem1 = stack.pop()
+                elem2 = stack.pop()
+                result_strategy = elem1 + elem2
                 stack.push(result_strategy)
                 result_strategy = []
             else:
