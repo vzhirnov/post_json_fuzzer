@@ -83,7 +83,7 @@ if __name__ == '__main__':
     print(f'start sending {len(coroutines)} requests')
     results = loop.run_until_complete(asyncio.gather(*coroutines))
     for result in results:
-        print(f'current request with {result[1]} parameters results {result[0].status}')
+        print(f'current request with {result[1]} parameters results {result[0].status}: {result[0].reason}')
 
     curr_path = os.path.dirname(os.path.abspath(__file__))
     results_dir = '/results/'  # TODO make parameter with name
