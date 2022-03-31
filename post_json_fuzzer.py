@@ -8,7 +8,6 @@ import pathlib
 from datetime import datetime
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
-from src.strategies.strategies import strategy_methods
 
 # TODO: add EMPTY or EXCESS in stratgies, ANOMALIES
 # TODO: make interactive work with 500 responses:
@@ -70,7 +69,6 @@ async def post(url_aim, json_params, hdrs, request_metainfo):
             return response, request_metainfo
 
 if __name__ == '__main__':
-    funcs_to_register = strategy_methods
     with open(file, 'rb') as handle:
         native_file_contetns = handle.read()
         d_base = eval(native_file_contetns)  # TODO need to check if file is correct dict

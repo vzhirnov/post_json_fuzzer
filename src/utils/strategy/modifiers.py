@@ -60,9 +60,11 @@ def get_random_unicode(length):
 
 def mutate_any_type(item):
     if isinstance(item, str):
-        rand_index = random.randrange(len(item)) if len(item) else 0
+        if not item:
+            return get_random_unicode(100)
+        rand_index = random.randrange(0, len(item)) if len(item) > 2 else 0
         var1 = item[:rand_index] + "\x00" + str(secrets.token_hex(5)) + "\x00" + str(item[rand_index:])
-        var2 = get_random_unicode(random.randrange(len(item)))
+        var2 = get_random_unicode(random.randrange(100))
         return random.choice([var1, var2])
     elif isinstance(item, int):
         return random.randrange(-10000000, 10000000)
