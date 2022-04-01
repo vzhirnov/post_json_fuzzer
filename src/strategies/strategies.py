@@ -19,6 +19,7 @@ basic_cases = [
     "#",
     "\n",
     "\0"
+    # add something like "\n rm -rf / ;"
 ]
 
 STRATEGY_2 = [101, 102, 103, 104, 105]

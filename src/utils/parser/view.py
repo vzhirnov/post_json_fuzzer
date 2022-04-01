@@ -4,10 +4,13 @@ import re
 def parser_view(text):
     # TODO: are \[| with \]| really need?
     numbers = r"""(?x)(
+    [-+]?\d*\.\d+|
     \-?\d+|
     (?:www\.|ww2\.)?(?:[\w-]+\.){1,}\w+|
     \w+|
     \+|
+    \*|
+    \-|
     \^|
     \||
     \{.*?\}| 
