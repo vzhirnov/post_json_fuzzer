@@ -67,17 +67,28 @@ from src.utils.parser.view import parser_view
     ("('test1', 'TEST2')", ['test1', 'TEST2']),
 
     ("('a + b')", ['a', '+', 'b']),
+    ("('ab+')", ['ab', '+']),
+    ("('a', 'b+')", ['a', 'b', '+']),
+    ("('a', 'b', '+')", ['a', 'b', '+']),
     ("('a - b')", ['a', '-', 'b']),  # TODO think what to do with minus
 
     ('Check_1', ['Check_1']),
     ('["1"]', ['["1"]']),
     ('["One"]', ['["One"]']),
     ('["One_1"]', ['["One_1"]']),
+    ('[1]', ['[1]']),
 
     ("[132, 1]", ["[132, 1]"]),
     ("['132', 1]", ["['132', 1]"]),
 
-    # ('[["1"]]', ['[["1"]]']), # TODO losin square bracket as in cases below \|/
+    (
+            "('100', 1, None, True, False, -0.1, 0.1, [], [1], '+', '|)",
+            ['100', '1', 'None', 'True', 'False', '-0.1', '0.1', '[]', '[1]', '+', '|']
+    ),
+
+    ('[["1"]]', ['[["1"]]']),  # TODO losing square bracket as in cases below \|/
+    ('[[]]', ['[[]]']),
+    ('[["test"]]', ['[["test"]]']),
 
     ('["1", "2"]', ['["1", "2"]']),
     ('["1", "A"]', ['["1", "A"]']),
@@ -86,10 +97,18 @@ from src.utils.parser.view import parser_view
     ('{"a": 1}', ['{"a": 1}']),
     ('{"a": []}', ['{"a": []}']),
 
-    # ('{"a": [True, 1]}', ['{"a": [True, 1}']),
-    # ('{"a": [True, 1, "a", {1: 1}]}', ['{"a": [True, 1, "a", {1: 1}]}']),
+    ('{"a": [True, 1]}', ['{"a": [True, 1]}']),
+    ('{"a": [True, 1, "a", {1: 1}]}', ['{"a": [True, 1, "a", {1: 1}]}']),
+    ('{"a": [1, {1: 1}, {1: 1}]}', ['{"a": [1, {1: 1}, {1: 1}]}']),
 
-    ("('1','ADD_STRATEGY_basic_cases', '+', 'MUTATE')", ['1', 'ADD_STRATEGY_basic_cases', '+', 'MUTATE']),
+    (
+            "('1','ADD_STRATEGY_basic_cases', '+', 'MUTATE')",
+            ['1', 'ADD_STRATEGY_basic_cases', '+', 'MUTATE']
+    ),
+    (
+            "('action_ext', '[]^[]^', 'ADD_STRATEGY_basic_cases', '+', 'action_ext_2', 'ADD_STRATEGY_basic_cases', '[]^', '+|')",
+            ['action_ext', '[]', '^', '[]', '^', 'ADD_STRATEGY_basic_cases', '+', 'action_ext_2', 'ADD_STRATEGY_basic_cases', '[]', '^', '+', '|']
+    ),
 
 ])
 def test_check_parser_view(pattern, expected_result):
