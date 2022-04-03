@@ -13,9 +13,13 @@ from src.utils.parser.view import parser_view
     ('|||', ['|', '|', '|']),
 
     ('Îäíàæäû', ['Îäíàæäû']),
-    # ('#', ['#']),
-    # (';', [';']),
-    #('\n', ['\n']),
+    ('Ǽ1', ['Ǽ1']),
+
+    # must not detect
+    ('_', ['_']),  # TODO what to do with this case?
+    ('#', []),
+    (';', []),
+    ('\n', []),
 
     ('None', ['None']),
 
@@ -50,6 +54,9 @@ from src.utils.parser.view import parser_view
 
     ('0.1', ['0.1']),
     ('-0.1', ['-0.1']),
+
+    ('1, 2', ['1', '2']),
+    ('1, -2', ['1', '-2']),
 
     ('(1, 2)', ['1', '2']),
     ('(1, 2, 3)', ['1', '2', '3']),
@@ -107,7 +114,8 @@ from src.utils.parser.view import parser_view
     ),
     (
             "('action_ext', '[]^[]^', 'ADD_STRATEGY_basic_cases', '+', 'action_ext_2', 'ADD_STRATEGY_basic_cases', '[]^', '+|')",
-            ['action_ext', '[]', '^', '[]', '^', 'ADD_STRATEGY_basic_cases', '+', 'action_ext_2', 'ADD_STRATEGY_basic_cases', '[]', '^', '+', '|']
+            ['action_ext', '[]', '^', '[]', '^', 'ADD_STRATEGY_basic_cases', '+', 'action_ext_2',
+             'ADD_STRATEGY_basic_cases', '[]', '^', '+', '|']
     ),
 
 ])
