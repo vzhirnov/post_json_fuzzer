@@ -11,18 +11,17 @@
 6. [Tests](#Tests)
 7. [CLI Interface](#CLI-Interface)
 
-
 ## Description
-POST JSON Fuzzer is a lightweight WEB fuzzer for API validation. If you want to find unexpected answers of the application being checked - take it and use it.
-POST JSON Fuzzer tests the API for performance, and you can define test scripts yourself in a clear and concise way, using a short Domain-specific language. The DSL code will be embedded directly into the JSON body of the request. Each test suite will thus be concise and declarative. It will be obvious which parameters are being tested, and how. Write your own data generators, mutators, datasets - it won't be hard!
+POST JSON Fuzzer is a lightweight WEB fuzzer for API validation. If you want to find unexpected responses from the application being checked - take it and use it.
+POST JSON Fuzzer makes API check for critical bugs, and you can define test scripts yourself in a clear and concise way, using a short Domain-specific language. The DSL code will be embedded directly into the JSON body of the request. Each test suite will thus be concise and declarative. It will be obvious which parameters are being tested, and how. Write your own data generators, mutators, datasets - it won't be hard!
 
 ## Who is this fuzzer for
-POST JSON Fuzzer is suitable for everyday work:
-* a developer who needs API checks for the slightest changes in the code (for example, 2K checks in ~ 2 minutes). Unit tests have already been written, but additional system or integration testing is needed
-* QA engineer or test engineer to automate those API checks that are done by hand. At the same time, solutions like Postman or Burp Suite are not suitable, or they don’t like it (with all due respect to these wonderful products), or their functionality is redundant for urgent tasks. At the same time, I would like to see a declarative description of the test suite in a concise form
-* if you have your own opinion on how to test the API, and do not want to use phasers, which are more complicated and may not find the right problem. You want to write your own scripts (strategies) for each JSON parameter (sets, mutations, random data in the right places, etc.)
+POST JSON Fuzzer is suitable in everyday work:
+* for a developer who needs API checks for the slightest changes in the code (for example, 2K checks in ~ 2 minutes). Unit tests have already been written, but additional system or integration testing is needed
+* for a QA engineer or a test engineer to automate those API checks that are done by hand. At the same time, solutions like Postman or Burp Suite are not suitable, or they don’t like it (with all due respect to these wonderful products), or their functionality is redundant for urgent tasks. At the same time, I would like to see a declarative description of the test suite in a concise form
+* if you have your own opinion on how to test the API, and do not want to use fuzzers, which are more complicated and may not find the right issue. You want to write your own scripts (strategies) for each JSON parameter (sets, mutations, random data in the right places, etc.)
 * if you need somke tests in the pipeline
-* if you need an additional phaser that is easier to adjust for spot checks
+* if you need an additional fuzzer that is easier to adjust for spot checks
 
 ## What this fuzzer is not
 POST JSON Fuzzer does not look for vulnerabilities, but tries to break the service and show under what conditions it turned out to be possible.
