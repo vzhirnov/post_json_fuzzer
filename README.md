@@ -12,8 +12,9 @@
 7. [CLI Interface](#CLI-Interface)
 
 ## Description
-<p align="left">
-  <img src="pics/500.jpg" width = 280 height =280>
+POST JSON Fuzzer: "Your API could have been in his place"
+<p align="center">
+  <img src="pics/500.jpg" width = 480 height =220>
 </p>
 POST JSON Fuzzer is a lightweight WEB fuzzer for API validation. If you want to find unexpected responses from the application being checked - take it and use it.
 POST JSON Fuzzer makes API check for critical bugs, and you can define test scripts yourself in a clear and concise way, using a short Domain-specific language. The DSL code will be embedded directly into the JSON body of the request. Each test suite will thus be concise and declarative. It will be obvious which parameters are being tested, and how. Write your own data generators, mutators, datasets - it won't be hard!
