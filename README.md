@@ -10,6 +10,7 @@
 5. [Building and Running in Docker](#Building-and-Running-in-Docker)
 6. [Tests](#Tests)
 7. [CLI Interface](#CLI-Interface)
+8. [Restrictions](#Restrictions)
 
 ## Description
 POST JSON Fuzzer: "Your API could have been in his place"
@@ -53,3 +54,5 @@ pytest .
 usage: post_json_fuzzer.py [-h] -url URL -file FILE
                            [--headers [HEADERS [HEADERS ...]]]
 ```
+## Restrictions
+Works with secret token only, there is no other authentication scenarios yet
