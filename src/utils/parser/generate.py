@@ -77,7 +77,7 @@ def generate_strategy(strategy_info):
                 elif method_name == 'LIST_IT':
                     elem = stack.pop()
                     nm = methods[args[0]]
-                    result_strategy = nm(elem)
+                    result_strategy = nm(elem, *args[1:])
                     stack.push(result_strategy)
                     result_strategy = []
             elif item == '+':
@@ -96,5 +96,10 @@ def generate_strategy(strategy_info):
                 stack.push(item)
         else:
             stack.push(item)
-    return stack.pop_all()
+    if stack.size() == 1:
+        if isinstance(stack.items[0], list) and len(stack.items[0]) == 1:
+            return stack.items
+        else:
+            return stack.pop()
+    return stack.items
 

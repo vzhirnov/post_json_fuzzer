@@ -1,8 +1,6 @@
 import ast
 import secrets
 import random
-import string
-import copy
 
 
 def list_once(items):
@@ -12,6 +10,10 @@ def list_once(items):
 
 
 def list_several_times(items, n):
+    if not n.isdigit():
+        return items
+    else:
+        n = ast.literal_eval(n)
     lst = items
     for _ in range(n):
         lst = list_once(lst)

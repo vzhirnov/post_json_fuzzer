@@ -102,3 +102,8 @@ if __name__ == '__main__':
 
 # TODO known issues:
 # cannot make case with lack of current parameter AND doubled string
+
+# TODO improvements
+# ssdeep hash for quick reply investigation
+# add json_code filename to output file with results like antibot_YYMMDD.csv
+# replace list with set for not getting duplicates items
