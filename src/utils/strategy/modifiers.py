@@ -5,16 +5,17 @@ import string
 import copy
 
 
-def list_current_items(item):
-    if isinstance(item, list):
-        return [[i] for i in item]
-    return [item]
+def list_once(items):
+    if isinstance(items, list):
+        return [[i] for i in items]
+    return [items]
 
 
-def unlist_current_items(items_list):
-    if isinstance(items_list, list) and isinstance(items_list[0], list):
-        return items_list.pop()
-    return items_list
+def list_several_times(items, n):
+    lst = items
+    for _ in range(n):
+        lst = list_once(lst)
+    return lst
 
 
 def restore_data_type(littered_data):
@@ -24,6 +25,9 @@ def restore_data_type(littered_data):
             c = ast.literal_eval(littered_item)
             l.append(c)
         except Exception as e:
+            if littered_item.endswith("^s"):
+                index = littered_item.rfind("^")
+                littered_item = littered_item[:index]
             l.append(littered_item)
     return l
 

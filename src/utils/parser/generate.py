@@ -1,9 +1,7 @@
-import ast
-
-from src.utils.strategy.modifiers import restore_data_type, list_current_items, unlist_current_items, mutate
+from src.utils.strategy.modifiers import restore_data_type
 from src.utils.parser.view import parser_view
 from src.data_structures.datastructures import Stack
-from src.strategies.strategies import ready_strategies, strategy_methods
+from src.strategies.strategies import strategies, methods
 
 
 def sum_elems_of_different_types(elem1, elem2):
@@ -25,50 +23,61 @@ def get_last_part_after_pattern(base_line, pattern):
     return base_line.split(pattern, 1)[1]
 
 
-def get_func_name_and_args_num(base_line, func, args):
-    s1 = base_line.split(func, 1)[1]
-    index = s1.find(args)
-    func_name = s1[:index - 1]
-    args_num = s1.split(args, 1)[1]
-    return func_name, args_num
+def extract_method_info(base_line, pattern, term_sym='$'):
+    index = base_line.find(pattern) + len(pattern)
+    return base_line[index::]
+
+
+def get_seq_by_pattern_and_terminate_symb(base_line, pattern, term_sym='$'):
+    term_index = base_line.find(term_sym)
+    seq_start = base_line.find(pattern) + len(pattern)
+    return base_line[seq_start:term_index]
+
+
+def get_func_name_and_args(base_line, term_sym='$'):
+    term_index = base_line.find(term_sym)
+    res = base_line[:term_index].split('#')
+    return res[0], res[1:]
+
+
+def save_type_info(tup):
+    l = []
+    for item in tup:
+        if isinstance(item, str) and item.isdigit():
+            l.append(item + '^s')
+        else:
+            l.append(item)
+    return tuple(l)
 
 
 def generate_strategy(strategy_info):
-    # TODO: migrate assert upper where it is really required
-    # assert isinstance(strategy_info, str)  # and all(x not in strategy_info for x in ['(', ')'])
-    # TODO: add asserts:
-    # TODO: num of opened [s is equal to ]s
-    strategy = parser_view(str(strategy_info))
+    assert \
+        all(x.endswith('$') for x in strategy_info if isinstance(x, str) and x.startswith('#')),\
+        'Invalid syntax. Have you installed all the # characters and the terminator symbol $?'
+    strategy = parser_view(str(save_type_info(strategy_info)))
     strategy = restore_data_type(strategy)
     stack = Stack()
     result_strategy = []
     for item in strategy:
         if isinstance(item, str):
-            if item.startswith('ADD_STRATEGY_'):
-                strategy = get_last_part_after_pattern(item, 'ADD_STRATEGY_')
-                result_strategy += ready_strategies[strategy]
+            if item.startswith('#STRATEGY#'):
+                strategy = get_seq_by_pattern_and_terminate_symb(item, '#STRATEGY#')
+                result_strategy += strategies[strategy]
                 stack.push(result_strategy)
                 result_strategy = []
-            elif item.startswith('FUNC_'):
-                func_name, args_num = get_func_name_and_args_num(item, 'FUNC_', 'ARGS_NUM_')
-                lst = []
-                for _ in range(0, ast.literal_eval(args_num)):
+            elif item.startswith('#FUNC#'):
+                method_info = extract_method_info(item, '#FUNC#')
+                method_name, args = get_func_name_and_args(method_info)
+                if method_name == 'MUTATE_IT':
                     elem = stack.pop()
-                    lst.append(elem)
-                lst = lst[::-1]
-                result_strategy = strategy_methods[func_name](*lst)
-                stack.push(result_strategy)
-                result_strategy = []
-            elif item == 'MUTATE':
-                elem = stack.pop()
-                result_strategy = mutate(elem)
-                stack.push(result_strategy)
-                result_strategy = []
-            elif item == '^':
-                elem = stack.pop()
-                if isinstance(elem, list):
-                    result_strategy = stack.pop()
-                    result_strategy = list_current_items(result_strategy)
+                    nm = methods[args[0]]
+                    result_strategy = nm(elem)
+                    stack.push(result_strategy)
+                    result_strategy = []
+                elif method_name == 'LIST_IT':
+                    elem = stack.pop()
+                    nm = methods[args[0]]
+                    result_strategy = nm(elem)
                     stack.push(result_strategy)
                     result_strategy = []
             elif item == '+':
@@ -87,5 +96,5 @@ def generate_strategy(strategy_info):
                 stack.push(item)
         else:
             stack.push(item)
-    return unlist_current_items(stack.pop_all())
+    return stack.pop_all()
 

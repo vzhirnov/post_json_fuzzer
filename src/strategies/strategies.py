@@ -1,4 +1,7 @@
-basic_cases = [
+from src.utils.strategy.modifiers import mutate
+
+
+default = [
     "Îäíàæäû",
     -1623761273615273651762351726357162357162357162357162537165237162537615237615273651726351726176235716357162357162,
     -0.1,
@@ -22,22 +25,27 @@ basic_cases = [
     # add something like "\n rm -rf / ;"
 ]
 
-STRATEGY_2 = [101, 102, 103, 104, 105]
-STAR = [777, 888, 999, 101010, 111111]
-
 
 def fun():
     return 1
 
 
-ready_strategies = {
-    'basic_cases': basic_cases,
-    'STAR': STAR,
-    'STRATEGY_2': STRATEGY_2
+strategies = {
+    'default': default,
 }
 
-strategy_methods = {
+methods = {
+    'mutate': mutate,
     'increment_every_item':
         lambda item, val: [x + val for x in item if isinstance(x, int)] if isinstance(item, list) else item,
     'fun': fun
 }
+
+
+def register_strategy(name, data) -> None:  # TODO make types for all functions
+    strategies.update({name: data})
+
+
+def register_method(name, data) -> None:  # TODO make types for all functions
+    methods.update({name: data})
+
