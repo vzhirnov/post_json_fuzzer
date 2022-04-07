@@ -22,12 +22,13 @@ def list_several_times(items, n):
 
 def restore_data_type(littered_data):
     l = []
+    type_add_info = ["^s", "^b"]
     for littered_item in littered_data:
         try:
             c = ast.literal_eval(littered_item)
             l.append(c)
         except Exception as e:
-            if littered_item.endswith("^s"):
+            if littered_item.endswith(tuple(type_add_info)):
                 index = littered_item.rfind("^")
                 littered_item = littered_item[:index]
             l.append(littered_item)

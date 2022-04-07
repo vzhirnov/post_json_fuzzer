@@ -26,7 +26,9 @@ register_method('list_several_times', list_several_times)
 @pytest.mark.parametrize(
     "pattern, expected_result",
     [
+        (('#STRATEGY#digits$',), digits),  # TODO get rid of ','
         ((1, '#STRATEGY#digits$', '+'), [1, 2, 3, 0.01, 1]),
+
         (("1", '#STRATEGY#strings$', '+'), ['4', '5', '6', '1']),
         ((0, '#STRATEGY#bls$', '+'), [True, False, 0]),
 
@@ -44,6 +46,13 @@ register_method('list_several_times', list_several_times)
         (([1], [2], [3]), [[1], [2], [3]]),
         (('1', '2', '3'), ['1', '2', '3']),
         ((True, False), [True, False]),
+        ([True, False], [True, False]),
+
+        ((1, 2, '+'), [2, 1]),
+        ((True, "False", '+'), ["False", True]),
+
+        (([1], [2], '|'), [2, 1]),
+        (([True], [2], '|'), [2, True]),
     ]
 )
 def test_generate_strategy(pattern, expected_result):

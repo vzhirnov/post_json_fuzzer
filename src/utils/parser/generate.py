@@ -43,8 +43,13 @@ def get_func_name_and_args(base_line, term_sym='$'):
 def save_type_info(tup):
     l = []
     for item in tup:
-        if isinstance(item, str) and item.isdigit():
-            l.append(item + '^s')
+        if isinstance(item, str):
+            if item.isdigit():
+                l.append(item + '^s')
+            elif item in ('True', 'False'):
+                l.append(str(item) + '^b')
+            else:
+                l.append(item)
         else:
             l.append(item)
     return tuple(l)
