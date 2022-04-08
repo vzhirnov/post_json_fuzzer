@@ -1,4 +1,3 @@
-import ast
 import copy
 import itertools
 import re
@@ -8,14 +7,14 @@ from src.utils.parser.generate import generate_strategy
 from src.utils.strategy.modifiers import make_ast_literal_eval
 
 
-def get_jsons_for_fuzzing(d_base):
+def get_jsons_for_fuzzing(d_base: dict):
     matched_items, d = get_interesting_data(d_base)
     experiments = get_all_combinations(matched_items)
     jsons = get_final_data(experiments, d)
     return jsons
 
 
-def get_interesting_data(d_base):
+def get_interesting_data(d_base: dict):
     d = str(d_base)
     res = make_ast_literal_eval(re.findall(r'\(.*?\)', d))
     if not res:
@@ -33,13 +32,13 @@ def get_interesting_data(d_base):
     return matched_items, d
 
 
-def get_all_combinations(matched_items):
+def get_all_combinations(matched_items: dict):
     keys, values = zip(*matched_items.items())  # TODO: assert if no ()s with strategy, just plain dict values
     experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
     return experiments
 
 
-def find_word_and_add_quotes(str_line: str, interesting_word):
+def find_word_and_add_quotes(str_line: str, interesting_word: str):
     def insert_quote(string, index_num):
         return string[:index_num] + '\'' + string[index_num:]
 
@@ -50,7 +49,7 @@ def find_word_and_add_quotes(str_line: str, interesting_word):
     return res
 
 
-def get_final_data(experiments, d_base):
+def get_final_data(experiments: list, d_base: str):
     result_jsons = []
     fuzz_item = dict()
     exp_keys = list(experiments[0].keys())
@@ -63,7 +62,7 @@ def get_final_data(experiments, d_base):
     for dict_items in experiments:
         tmp_d = copy.deepcopy(tmp_d_base)
         for key, value in dict_items.items():
-            if key in tmp_d:  # key os found
+            if key in tmp_d:
                 tmp_d[value] = tmp_d.pop(key)
                 fuzz_item.update({value: tmp_d_base[key]})
             elif list(tmp_d.keys())[list(tmp_d.values()).index(key)]:

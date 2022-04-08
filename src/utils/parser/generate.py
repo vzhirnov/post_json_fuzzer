@@ -19,6 +19,10 @@ def sum_elems_of_different_types(elem1, elem2):
         return res
 
 
+def unlist_current_item(item) -> tuple:
+    pass
+
+
 def get_last_part_after_pattern(base_line, pattern):
     return base_line.split(pattern, 1)[1]
 
@@ -40,7 +44,7 @@ def get_func_name_and_args(base_line, term_sym='$'):
     return res[0], res[1:]
 
 
-def save_type_info(tup):
+def save_type_info(tup: tuple):
     l = []
     for item in tup:
         if isinstance(item, str):
@@ -55,7 +59,7 @@ def save_type_info(tup):
     return tuple(l)
 
 
-def generate_strategy(strategy_info):
+def generate_strategy(strategy_info: tuple):
     assert \
         all(x.endswith('$') for x in strategy_info if isinstance(x, str) and x.startswith('#')),\
         'Invalid syntax. Have you installed all the # characters and the terminator symbol $?'
@@ -91,20 +95,11 @@ def generate_strategy(strategy_info):
                 result_strategy = sum_elems_of_different_types(elem1, elem2)
                 stack.push(result_strategy)
                 result_strategy = []
-            elif item == '|':
-                elem1 = stack.pop()
-                elem2 = stack.pop()
-                result_strategy = elem1 + elem2
-                stack.push(result_strategy)
-                result_strategy = []
+            elif item == '@':
+                return stack.pop()
             else:
                 stack.push(item)
         else:
             stack.push(item)
-    if stack.size() == 1:
-        if isinstance(stack.items[0], list) and len(stack.items[0]) == 1:
-            return stack.items
-        else:
-            return stack.pop()
     return stack.items
 

@@ -20,7 +20,7 @@ def list_several_times(items, n):
     return lst
 
 
-def restore_data_type(littered_data):
+def restore_data_type(littered_data: list):
     l = []
     type_add_info = ["^s", "^b"]
     for littered_item in littered_data:

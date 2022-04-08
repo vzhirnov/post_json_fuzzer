@@ -22,7 +22,6 @@ default = [
     "#",
     "\n",
     "\0"
-    # add something like "\n rm -rf / ;"
 ]
 
 

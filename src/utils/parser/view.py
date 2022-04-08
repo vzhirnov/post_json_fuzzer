@@ -1,8 +1,8 @@
 import re
 
 
-def parser_view(text):
-    numbers = r"""(?x)(
+def parser_view(text: str) -> list:
+    interesting_data = r"""(?x)(
     \#.*?\$|
     \d+\^s|
     \w+\^b|
@@ -11,7 +11,7 @@ def parser_view(text):
     (?:www\.|ww2\.)?(?:[\w-]+\.){1,}\w+|
     \w+|
     \+|
-    \*|
+    \@|
     \-|
     \||
     \{.*?\}.*|
@@ -19,6 +19,6 @@ def parser_view(text):
     \b
     )
     """
-    a = re.findall(numbers, text)
+    a = re.findall(interesting_data, text)
     res = [x for x in a if x != '']  # TODO fix it, get rid of excess quotes in res list
     return res

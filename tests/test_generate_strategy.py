@@ -26,33 +26,48 @@ register_method('list_several_times', list_several_times)
 @pytest.mark.parametrize(
     "pattern, expected_result",
     [
-        (('#STRATEGY#digits$',), digits),  # TODO get rid of ','
-        ((1, '#STRATEGY#digits$', '+'), [1, 2, 3, 0.01, 1]),
+        ((1,), [1]),
+        (("1",), ["1"]),
+        ((True,), [True]),
+        ((None,), [None]),
+        (([1],), [[1]]),
+        ((["test"],), [["test"]]),
+        (([["test"]],), [[["test"]]]),
+        (([True],), [[True]]),
 
-        (("1", '#STRATEGY#strings$', '+'), ['4', '5', '6', '1']),
-        ((0, '#STRATEGY#bls$', '+'), [True, False, 0]),
+        (([1, 2],), [[1, 2]]),
+
+        (([1], 2), [[1], 2]),
+        (("1", 2), ["1", 2]),
+        ((["1"], 2), [["1"], 2]),
+        ((True, False), [True, False]),
+        (([True, False],), [[True, False]]),
+
+
+        ((1, 2, 3), [1, 2, 3]),
+        ((1, 2, [3]), [1, 2, [3]]),
+        (([1], [2], [3]), [[1], [2], [3]]),
+        (('1', '2', '3'), ['1', '2', '3']),
+
+
+        ((1, 2, '+'), [[2, 1]]),
+        (([1], 2, '+',), [[1, 2]]),
+        (("1", 2, '+'), [[2, "1"]]),
+        ((True, "False", '+'), [["False", True]]),
+
+        (([1], [2], '+'), [[2, [1]]]),
+
+        (('#STRATEGY#digits$', '@'), digits),
+        ((1, '#STRATEGY#digits$', '+', '@'), [1, 2, 3, 0.01, 1]),
+
+        (("1", '#STRATEGY#strings$', '+', '@'), ['4', '5', '6', '1']),
+        ((0, '#STRATEGY#bls$', '+', '@'), [True, False, 0]),
 
 
         ((1, '#FUNC#LIST_IT#list_once$'), [[1]]),
         ((1, '#FUNC#LIST_IT#list_several_times#2$'), [[[1]]]),
-        (('#STRATEGY#strings$', '#FUNC#MUTATE_IT#nullify_all_elements$'), [0, 0, 0]),
+        (('#STRATEGY#strings$', '#FUNC#MUTATE_IT#nullify_all_elements$', '@'), [0, 0, 0]),
 
-        ((1, 2, 3), [1, 2, 3]),
-        (([1],), [[1]]),  # TODO: bug: works only with , check regexes
-        ((["test"],), [["test"]]),
-
-        (([1], 2), [[1], 2]),
-        ((1, 2, [3]), [1, 2, [3]]),
-        (([1], [2], [3]), [[1], [2], [3]]),
-        (('1', '2', '3'), ['1', '2', '3']),
-        ((True, False), [True, False]),
-        ([True, False], [True, False]),
-
-        ((1, 2, '+'), [2, 1]),
-        ((True, "False", '+'), ["False", True]),
-
-        (([1], [2], '|'), [2, 1]),
-        (([True], [2], '|'), [2, True]),
     ]
 )
 def test_generate_strategy(pattern, expected_result):
