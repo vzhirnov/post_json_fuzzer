@@ -81,8 +81,8 @@ An example of a structure from a similar set:
 	"image": "https://anyadressyouwant.com/img/UL640_QL65_.jpg"
 }
 ```
-After that, the fuzzer will start sending all created combinations inside the POST request to the URL that you specify in the fuzzer launch parameters (see below, there is also information in the authentication keys).
-The results are printed to the console and saved to a csv file.
+After that, the fuzzer will start sending all created json bodies one by one(asynchronously) via POST request to the URL that you specify in the fuzzer launch parameters (see below, there is also information about authentication tokens).
+The results are printed to the console and also saved to a csv file.
 An example of console output:
 ```
 current request with {'id': -1, 'title':'Buy', 'price': 109.95} parameters results 500: Server Error
