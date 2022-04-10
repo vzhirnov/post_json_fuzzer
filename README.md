@@ -5,12 +5,17 @@
 0. [Description](#Description)
 1. [Who is this fuzzer for](#Who-is-this-fuzzer-for)
 2. [What this fuzzer is not](#What-this-fuzzer-is-not)
-3. [POST JSON fuzzer workflow](#POST-JSON-fuzzer-workflow)
-4. [Requirements](#Requirements)
-5. [Building and Running in Docker](#Building-and-Running-in-Docker)
-6. [Tests](#Tests)
-7. [CLI Interface](#CLI-Interface)
-8. [Restrictions](#Restrictions)
+3. [POST JSON fuzzer basic cases](#POST-JSON-fuzzer-basic-cases)
+4. [More complex cases using DSL](#More-complex-cases-using-DSL)
+	1. [Reverse Polish notation](#Reverse-Polish-notation)
+	2. [DSL](#DSL)
+	3. [Make it all together](#Make-it-all-together)
+5. [Tips and tricks](#Tips-and-tricks)
+5. [Requirements](#Requirements)
+6. [Building and Running in Docker](#Building-and-Running-in-Docker)
+7. [Tests](#Tests)
+8. [CLI Interface](#CLI-Interface)
+9. [Restrictions](#Restrictions)
 
 ## Description
 POST JSON Fuzzer: "Your API could have been in his place"
@@ -49,8 +54,8 @@ But what if you want to do basic checks on the most frequent cases? Change the i
 This phaser suggests using a special small DSL that will generate as many variants of JSON bodies for your POST request as you need, based on your own work cases. At the same time, our goal is to get as many unexpected responses from the service as possible (500, 400, 404, etc.)
 
 Let's check the above id, price and title fields, for example:
-- let id change in the range 1-100K (as indicated above),
-- we will make the price zero, in the value of two cents, a negative number, and very large. We will also add some garbage data.
+- let id change in the range 1-100K (as indicated above)
+- we will make the price zero, in the value of two cents, a negative number, and very large. We will also add some garbage data
 - just try to change the title to a number, make it longer, shorter, and an empty string
 
 Create a test_api.py file with the following content:
@@ -85,8 +90,66 @@ After that, the fuzzer will start sending all created json bodies one by one(asy
 The results are printed to the console and also saved to a csv file.
 An example of console output:
 ```
-current request with {'id': -1, 'title':'Buy', 'price': 109.95} parameters results 500: Server Error
+current request with {'id': -1, 'title':'Buy', 'price': 109.95, ... } parameters results 500: Server Error
 ```
+## More-complex-cases-using-DSL
+Well, we are good fellows, and we checked the most basic options. But these are all very simple cases. How about making something more difficult?
+We have a small DSL in our arsenal. Here are its capabilities:
+* Create your own data generators (random, mutated, deterministic). Each element created by the generator can take any value of any type
+* A combination of your data options (described in order in a tuple) along with those created by the generator
+* The ability to mutate the value of any parameter using third-party mutators (for example, [Radamsa](https://pypi.org/project/pyradamsa/)) or mutators written by you
+
+Everything you need to know to successfully use this DSL:
+1) be able to use [reverse Polish notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation)
+2) several syntactic constructions
+#### Reverse Polish notation
+The simplest example from wikipedia is `3 4 +`. Here we push the numbers 3 and 4 onto the stack. As soon as we meet the sign of the operation (in this case, addition), we pop two values from the stack, and apply the addition operation to them, after which we again put the result on the stack.
+
+We will do the same with our parameters in a tuple:
+An entry of the form `"id": (-1, 2, '+')` will mean - put the number -1 on the stack, then put the number 2. Then take both numbers from the stack, Apply the '+' operation to them, and then put the result on the stack. Important - the stack is organized as a python list.
+
+#### DSL
+The main task of the DSL is to create a set of options with different values for each parameter of interest in our json document in the form of a python list.
+For example, having the entry `"id": (31, -1, 0, 1, 1000, 100000, 100001)` the final list will be `[100001, 100000, 1000, 1, 0, -1, 31]`.
+
+After all the lists have been created for each required parameter, the json post fuzzer will form all possible combinations from them, and create the final list of json structures that will be sent to your service.
+
+For example, if in our document we will check only two parameters -
+`"id": (31, -1),
+"title": (1, "Buy"),`
+then the fuzzer will create two lists `[-1, 31]` and `["Buy", 1]` and then four combinations based on them. And finally, the fuzzer will create a list of four final json structures, each of which will contain both mutable parameters (for example, `"id"`), and those that have not changed (for example, the "image" field).
+
+To create more complex sets of parameters and their combinations, the DSL uses several operators:
+- **'@'** - operation of removing a leaf from the stack (`stack.pop()`). This operation should be used in cases where you have formed the resulting leaf lying on the top of the stack, and now you need to get it.<br />
+Example:
+`("1", [4, 5, 6], '+', '@')`. Since this will be adding `"1"` to the already existing sheet, the stack will end up with the sheet `[['4', '5', '6', '1']]`, and the `@` operation will help get it - `['4', '5', '6', '1']`.
+
+- **'#'** - separator used by the STRATEGY and FUNC statements. It is always needed when you want to apply a function, before that you have specified its name and a set of parameters.<br />
+Example:
+`(1, '#FUNC#LIST_IT#list_several_times#2$')`. The FUNC operator of the `LIST_IT` category of the list_several_times function, which takes the number of operations as input, will be applied to element 1.
+
+- **'$'** - termination character. Used for `STRATEGY` and `FUNC`, each must end with this character.<br />
+Examples:
+`('#STRATEGY#digits$', '@')`, `(1, '#FUNC#LIST_IT#list_once$')`
+
+- **STRATEGY** - adding a sheet with a strategy to the stack. A strategy is a ready-made list of elements that will be substituted into your json parameter. The built-in basic strategy will add contains different numbers, strings, characters, boolean values and the `None`(`null` in json) command. <br />
+- Example: if we have a strategy `bls = [True, False]`, then `((0, '#STRATEGY#bls$', '+', '@')` will give us the option `[True, False, 0]`.
+
+- **FUNC** is an operator to apply some action to the top element on the stack. (Write about registering functions and lambdas)<br />
+Example: `(1, '#FUNC#LIST_IT#list_once$')` will result in `[[1]]`. Another example: `(1, '#FUNC#LIST_IT#list_several_times#2$')` would give `[[[1]]]`
+
+- **MUTATE_IT** - mutate the top element on the stack. If a result list is at the top of the stack, all of its elements will be mutated. Otherwise, one element will be mutated. For example, if there is `([1, 2, 3], '#FUNC#MUTATE_IT#nullify_all_elements$', '@')`, then the result will be `[0, 0, 0]`.
+
+That's all, nothing complicated. More examples of the use of various options can be found in the [tests](https://github.com/vzhirnov/post_json_fuzzer/tree/master/tests).
+
+#### Make it all together
+WIP<br />
+Let's now get significantly more options for testing our API than in the first example.
+
+## Tips and tricks
+WIP<br />
+Missing parameter value<br />
+Duplicate parameter value
 
 ## Requirements
 * aiohttp~=3.8.1
