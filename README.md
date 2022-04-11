@@ -16,6 +16,7 @@
 7. [Tests](#Tests)
 8. [CLI Interface](#CLI-Interface)
 9. [Restrictions](#Restrictions)
+10. [TODO](#TODO)
 
 ## Description
 POST JSON Fuzzer: "Your API could have been in his place"
@@ -54,14 +55,14 @@ But what if you want to do basic checks on the most frequent cases? Change the i
 This phaser suggests using a special small DSL that will generate as many variants of JSON bodies for your POST request as you need, based on your own work cases. At the same time, our goal is to get as many unexpected responses from the service as possible (500, 400, 404, etc.)
 
 Let's check the above id, price and title fields, for example:
-- let id change in the range 1-100K (as indicated above)
+- let id change in the range -1 to 100K (as indicated above). We also try to set another name, e.g. "client_id" 
 - we will make the price zero, in the value of two cents, a negative number, and very large. We will also add some garbage data
 - just try to change the title to a number, make it longer, shorter, and an empty string
 
 Create a test_api.py file with the following content:
 ```
 {
-	"id": (31, -1, 0, 1, 1000, 100000, 100001),
+	("id", "client_id"): (31, -1, 0, 1, 1000, 100000, 100001),
 	"title": (1, "Buy some stuff", "Buy", ""),
 	"price": (109.95, 0, -1, 0.01, 127387126928357098597264823687398345093485893278573648572683746187641876, "Îäíàæäû"),
 	"category": "gadgets",
@@ -143,8 +144,26 @@ Example: `(1, '#FUNC#LIST_IT#list_once$')` will result in `[[1]]`. Another examp
 That's all, nothing complicated. More examples of the use of various options can be found in the [tests](https://github.com/vzhirnov/post_json_fuzzer/tree/master/tests).
 
 #### Make it all together
-WIP<br />
 Let's now get significantly more options for testing our API than in the first example.
+Take a look at this:
+```
+{
+	("id", "id", '#FUNC#MUTATE_IT#mutate_element_by_radamsa$', '+', '@'): (31, '#STRATEGY#basic$', '+', '@'),
+	"title": ("Buy some stuff", "'\xf3"),
+	"price": (109.95, '#STRATEGY#basic$', '+', '#STRATEGY#basic$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '+', '@'),
+	"category": "gadgets",
+	"description": "Cool watches",
+	"image": "https://anyadressyouwant.com/img/UL640_QL65_.jpg"
+}
+```
+Here is what we get as a result:
+1. Keyname `"id"` will get two variants - the `"id"` itself, and muteted one, say `"id\x00"`. It's value will be a list like `\["some str", "another str", ... , 31\]`
+2. "title" will have only two values. Obvious.
+3. "price" - \[_list items from basic strategy_, 109.95\, _muteted list items from basic strategy_]
+All other fields will remain unchanged. 
+
+That's all. In any difficult situation, look at [tests](https://github.com/vzhirnov/post_json_fuzzer/blob/master/tests/test_generate_strategy.py), they have enough options for any of your fantasies (if not, please send me an MP with additions).
+
 
 ## Tips and tricks
 WIP<br />
@@ -173,3 +192,6 @@ usage: post_json_fuzzer.py [-h] -url URL -file FILE
 ```
 ## Restrictions
 Works with secret token only, there is no other authentication scenarios yet
+
+## TODO
+WIP</br>
