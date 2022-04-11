@@ -1,4 +1,9 @@
+import random
+import ast
 import pytest
+import pyradamsa
+
+from collections.abc import Iterable
 
 from src.utils.parser.generate import generate_strategy
 from src.strategies.strategies import register_strategy, register_method
@@ -6,10 +11,12 @@ from src.utils.strategy.modifiers import list_once, list_several_times
 
 digits = [1, 2, 3, 0.01]
 strings = ['4', '5', '6']
+different = [1, '2', 3.03, (4, ), {5: 5}, [6], False, None, range(7)]
 bls = [True, False]
 
 register_strategy('digits', digits)
 register_strategy('strings', strings)
+register_strategy('different', different)
 register_strategy('bls', bls)
 
 
@@ -17,7 +24,42 @@ def nullify_all_elements(items):
     return [0] * len(items)
 
 
+def mutate_by_radamsa(item):
+    rad = pyradamsa.Radamsa()
+    if isinstance(item, str):
+        item = bytearray(item, 'utf-8')
+    elif item is None:
+        item = bytearray('None', 'utf-8')
+    elif isinstance(item, float):
+        item = bytearray(str(item), 'utf-8')
+    fuzzed_item = rad.fuzz(bytearray(item), seed=random.randrange(2000))
+    try:
+        decoded_item = fuzzed_item.decode()
+        return decoded_item
+    except Exception:
+        return fuzzed_item
+
+
+def mutate_all_elements_by_radamsa(items):
+    # save all types of all items
+    # radamsa every item in items
+    # try to restore item by type
+    res = []
+    if isinstance(items, Iterable):
+        items_types = [type(x) for x in items]
+        mutated_items = [mutate_by_radamsa(x) for x in items]
+        for i, item in enumerate(mutated_items):
+            try:
+                elem = items_types[i](item)
+                res.append(elem)
+            except Exception:
+                res.append(item)
+        return res
+    return mutate_by_radamsa(items)
+
+
 register_method('nullify_all_elements', nullify_all_elements)
+register_method('mutate_all_elements_by_radamsa', mutate_all_elements_by_radamsa)
 
 register_method('list_once', list_once)
 register_method('list_several_times', list_several_times)
@@ -28,6 +70,7 @@ register_method('list_several_times', list_several_times)
     [
         ((1,), [1]),
         (("1",), ["1"]),
+        (("www.test.com",), ["www.test.com"]),
         ((True,), [True]),
         ((None,), [None]),
         (([1],), [[1]]),
@@ -60,6 +103,7 @@ register_method('list_several_times', list_several_times)
         (('#STRATEGY#digits$', '@'), digits),
         ((1, '#STRATEGY#digits$', '+', '@'), [1, 2, 3, 0.01, 1]),
 
+        (("1", [4, 5, 6], '+', '@'), [4, 5, 6, '1']),
         (("1", '#STRATEGY#strings$', '+', '@'), ['4', '5', '6', '1']),
         ((0, '#STRATEGY#bls$', '+', '@'), [True, False, 0]),
 
@@ -67,8 +111,17 @@ register_method('list_several_times', list_several_times)
         ((1, '#FUNC#LIST_IT#list_once$'), [[1]]),
         ((1, '#FUNC#LIST_IT#list_several_times#2$'), [[[1]]]),
         (('#STRATEGY#strings$', '#FUNC#MUTATE_IT#nullify_all_elements$', '@'), [0, 0, 0]),
-
     ]
 )
 def test_generate_strategy(pattern, expected_result):
+    assert generate_strategy(pattern) == expected_result
+
+
+@pytest.mark.parametrize(
+    "pattern, expected_result",
+    [
+        (('#STRATEGY#different$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), strings),
+    ]
+)
+def test_mutators(pattern, expected_result):
     assert generate_strategy(pattern) == expected_result

@@ -107,3 +107,4 @@ if __name__ == '__main__':
 # ssdeep hash for quick reply investigation
 # add json_code filename to output file with results like antibot_YYMMDD.csv
 # replace list with set for not getting duplicates items
+# add (for Docker) dir with custom generators/mutators ot both dirs. First, post_json_fuzzrt will try to find and registrate those generators in those folders

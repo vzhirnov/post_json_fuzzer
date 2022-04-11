@@ -27,7 +27,7 @@ def restore_data_type(littered_data: list):
         try:
             c = ast.literal_eval(littered_item)
             l.append(c)
-        except Exception as e:
+        except Exception:
             if littered_item.endswith(tuple(type_add_info)):
                 index = littered_item.rfind("^")
                 littered_item = littered_item[:index]
