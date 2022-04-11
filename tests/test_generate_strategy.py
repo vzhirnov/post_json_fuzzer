@@ -12,6 +12,8 @@ from src.utils.strategy.modifiers import list_once, list_several_times
 digits = [1, 2, 3, 0.01]
 strings = ['4', '5', '6']
 different = [1, '2', 3.03, (4, ), {5: 5}, [6], False, None, range(7)]
+
+
 bls = [True, False]
 
 register_strategy('digits', digits)
@@ -26,13 +28,7 @@ def nullify_all_elements(items):
 
 def mutate_by_radamsa(item):
     rad = pyradamsa.Radamsa()
-    if isinstance(item, str):
-        item = bytearray(item, 'utf-8')
-    elif item is None:
-        item = bytearray('None', 'utf-8')
-    elif isinstance(item, float):
-        item = bytearray(str(item), 'utf-8')
-    fuzzed_item = rad.fuzz(bytearray(item), seed=random.randrange(2000))
+    fuzzed_item = rad.fuzz(bytes(str(item), 'utf-8'), seed=random.randrange(2000))
     try:
         decoded_item = fuzzed_item.decode()
         return decoded_item
@@ -41,9 +37,6 @@ def mutate_by_radamsa(item):
 
 
 def mutate_all_elements_by_radamsa(items):
-    # save all types of all items
-    # radamsa every item in items
-    # try to restore item by type
     res = []
     if isinstance(items, Iterable):
         items_types = [type(x) for x in items]
@@ -110,7 +103,7 @@ register_method('list_several_times', list_several_times)
 
         ((1, '#FUNC#LIST_IT#list_once$'), [[1]]),
         ((1, '#FUNC#LIST_IT#list_several_times#2$'), [[[1]]]),
-        (('#STRATEGY#strings$', '#FUNC#MUTATE_IT#nullify_all_elements$', '@'), [0, 0, 0]),
+        (('#STRATEGY#strings$', '#FUNC#MUTATE_IT#nullify_all_elements$', '@'), []),
     ]
 )
 def test_generate_strategy(pattern, expected_result):
@@ -124,4 +117,4 @@ def test_generate_strategy(pattern, expected_result):
     ]
 )
 def test_mutators(pattern, expected_result):
-    assert generate_strategy(pattern) == expected_result
+    assert generate_strategy(pattern) != expected_result

@@ -108,3 +108,5 @@ if __name__ == '__main__':
 # add json_code filename to output file with results like antibot_YYMMDD.csv
 # replace list with set for not getting duplicates items
 # add (for Docker) dir with custom generators/mutators ot both dirs. First, post_json_fuzzrt will try to find and registrate those generators in those folders
+# USE both structed mutations(my own or try to find a good project) AND random(radamsa)
+# add system time mutator (time bombs) - libfaketime
