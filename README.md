@@ -171,6 +171,7 @@ Duplicate parameter value
 * aiohttp~=3.8.1
 * asyncio~=3.4.3
 * pytest~=7.1.1
+* pyradamsa~=0.1.1
 
 ## Building and Running in Docker
 ```bash
