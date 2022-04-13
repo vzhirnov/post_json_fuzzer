@@ -9,14 +9,6 @@ from datetime import datetime
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 
-# TODO: add EMPTY or EXCESS in stratgies, ANOMALIES
-# TODO: make interactive work with 500 responses:
-#  repeat 500th requests until all random 500th answers turn into 200th answers
-
-url = str()
-headers = dict()
-file = str()
-
 
 class ParseKwargs(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -25,6 +17,10 @@ class ParseKwargs(argparse.Action):
             key, value = value.split('=')
             getattr(namespace, self.dest)[key] = value
 
+
+url = str()
+headers = dict()
+file = str()
 
 parser = argparse.ArgumentParser(
     description="Make POST json fuzzing easy.",
@@ -110,3 +106,14 @@ if __name__ == '__main__':
 # add (for Docker) dir with custom generators/mutators ot both dirs. First, post_json_fuzzrt will try to find and registrate those generators in those folders
 # USE both structed mutations(my own or try to find a good project) AND random(radamsa)
 # add system time mutator (time bombs) - libfaketime
+# add lazy generator(lazy?): "id": (132, '#FUNC#random_every_time$'), "test": (1, 2, 3) means that for every permutation
+# id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc. make it
+# universal: #FUNC#LAZY#random_every_time$'
+
+# add parameters from other hints and services (to HintsdB from APIGW)
+# merge parameters from other hints and services, other variant /|\
+# add id field to csv(-DATASET!!!) as first field
+
+# TODO results analys:
+# long execution check
+# ssdeep suspicious (99% 404 ... but 1% is .........)

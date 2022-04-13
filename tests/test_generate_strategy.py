@@ -11,14 +11,14 @@ from src.utils.strategy.modifiers import list_once, list_several_times
 
 digits = [1, 2, 3, 0.01]
 strings = ['4', '5', '6']
-different = [1, '2', 3.03, (4, ), {5: 5}, [6], False, None, range(7)]
+different_elems = [1, '2', 3.03, (4, ), {5: 5}, [6], False, None, range(7)]
 
 
 bls = [True, False]
 
 register_strategy('digits', digits)
 register_strategy('strings', strings)
-register_strategy('different', different)
+register_strategy('different_elems', different_elems)
 register_strategy('bls', bls)
 
 
@@ -113,7 +113,7 @@ def test_generate_strategy(pattern, expected_result):
 @pytest.mark.parametrize(
     "pattern, expected_result",
     [
-        (('#STRATEGY#different$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), strings),
+        (('#STRATEGY#different_elems$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), strings),
     ]
 )
 def test_mutators(pattern, expected_result):
