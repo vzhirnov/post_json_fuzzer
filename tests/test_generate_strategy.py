@@ -1,5 +1,4 @@
 import random
-import ast
 import pytest
 import pyradamsa
 
@@ -12,8 +11,6 @@ from src.utils.strategy.modifiers import list_once, list_several_times
 digits = [1, 2, 3, 0.01]
 strings = ['4', '5', '6']
 different_elems = [1, '2', 3.03, (4, ), {5: 5}, [6], False, None, range(7)]
-
-
 bls = [True, False]
 
 register_strategy('digits', digits)
@@ -92,9 +89,23 @@ register_method('list_several_times', list_several_times)
         ((True, "False", '+'), [["False", True]]),
 
         (([1], [2], '+'), [[2, [1]]]),
+    ]
+)
+def test_generate_strategy(pattern, expected_result) -> None:
+    """
+    This test checks if adding simple object to stack handles by DSL as expected
+    :param pattern: string with simple DSL code
+    :param expected_result: result list of elements after DSL has made its work
+    :return: None
+    """
+    assert generate_strategy(pattern) == expected_result
 
 
+@pytest.mark.parametrize(
+    "pattern, expected_result",
+    [
         (('#ADD_DATASET#GET#digits$', '@'), digits),
+
         (('#ADD_DATASET #GET#digits$', '@'), digits),
         (('#ADD_DATASET#GET #digits$', '@'), digits),
         (('#ADD_DATASET #GET #digits$', '@'), digits),  # TODO make it possible as '#ADD_DATASET #GET #digits$'
@@ -107,6 +118,7 @@ register_method('list_several_times', list_several_times)
 
 
         ((1, '#APPLY#LIST_IT#list_once$'), [[1]]),
+
         ((1, '#APPLY #LIST_IT#list_once$'), [[1]]),
         ((1, '#APPLY#LIST_IT #list_once$'), [[1]]),
         ((1, '#APPLY #LIST_IT #list_once$'), [[1]]),
@@ -115,14 +127,20 @@ register_method('list_several_times', list_several_times)
         (('#ADD_DATASET#GET#strings$', '#APPLY#MUTATE_IT#nullify_all_elements$', '@'), [0, 0, 0]),
     ]
 )
-def test_generate_strategy(pattern, expected_result):
+def test_generate_strategy(pattern, expected_result) -> None:
+    """
+    This test checks if complex DSL code generates the correct result lists
+    :param pattern: string with complex DSL code
+    :param expected_result: result list of elements after DSL has made its work
+    :return: None
+    """
     assert generate_strategy(pattern) == expected_result
 
 
 @pytest.mark.parametrize(
     "pattern, expected_result",
     [
-        (('#ADD_DATASET#GET#different_elems$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), strings),
+        (('#ADD_DATASET#GET#different_elems$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), []),
     ]
 )
 def test_mutators(pattern, expected_result):
