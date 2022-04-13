@@ -63,19 +63,21 @@ def generate_strategy(strategy_info: tuple):
     assert \
         all(x.endswith('$') for x in strategy_info if isinstance(x, str) and x.startswith('#')),\
         'Invalid syntax. Have you installed all the # characters and the terminator symbol $?'
-    strategy = parser_view(str(save_type_info(strategy_info)))
+    strategy = parser_view(str(save_type_info(strategy_info)))  # TODO replace word strategy if there is an another meaning
     strategy = restore_data_type(strategy)
     stack = Stack()
     result_strategy = []
     for item in strategy:
         if isinstance(item, str):
-            if item.startswith('#STRATEGY#'):
-                strategy = get_seq_by_pattern_and_terminate_symb(item, '#STRATEGY#')
+            if item.startswith('#ADD_DATASET#'):
+                strategy = get_seq_by_pattern_and_terminate_symb(item, '#ADD_DATASET#')
+                if strategy.startswith('GET#'):
+                    strategy = get_last_part_after_pattern(strategy, 'GET#')
                 result_strategy += strategies[strategy]
                 stack.push(result_strategy)
                 result_strategy = []
-            elif item.startswith('#FUNC#'):
-                method_info = extract_method_info(item, '#FUNC#')
+            elif item.startswith('#APPLY#'):
+                method_info = extract_method_info(item, '#APPLY#')
                 method_name, args = get_func_name_and_args(method_info)
                 if method_name == 'MUTATE_IT':
                     elem = stack.pop()

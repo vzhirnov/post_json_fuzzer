@@ -93,17 +93,17 @@ register_method('list_several_times', list_several_times)
 
         (([1], [2], '+'), [[2, [1]]]),
 
-        (('#STRATEGY#digits$', '@'), digits),
-        ((1, '#STRATEGY#digits$', '+', '@'), [1, 2, 3, 0.01, 1]),
+        (('#ADD_DATASET#GET#digits$', '@'), digits),  # TODO make it possible as '#ADD_DATASET #GET #digits$'
+        ((1, '#ADD_DATASET#GET#digits$', '+', '@'), [1, 2, 3, 0.01, 1]),
 
         (("1", [4, 5, 6], '+', '@'), [4, 5, 6, '1']),
-        (("1", '#STRATEGY#strings$', '+', '@'), ['4', '5', '6', '1']),
-        ((0, '#STRATEGY#bls$', '+', '@'), [True, False, 0]),
+        (("1", '#ADD_DATASET#GET#strings$', '+', '@'), ['4', '5', '6', '1']),
+        ((0, '#ADD_DATASET#GET#bls$', '+', '@'), [True, False, 0]),
 
 
-        ((1, '#FUNC#LIST_IT#list_once$'), [[1]]),
-        ((1, '#FUNC#LIST_IT#list_several_times#2$'), [[[1]]]),
-        (('#STRATEGY#strings$', '#FUNC#MUTATE_IT#nullify_all_elements$', '@'), []),
+        ((1, '#APPLY#LIST_IT#list_once$'), [[1]]),
+        ((1, '#APPLY#LIST_IT#list_several_times#2$'), [[[1]]]),
+        (('#ADD_DATASET#GET#strings$', '#APPLY#MUTATE_IT#nullify_all_elements$', '@'), [0, 0, 0]),
     ]
 )
 def test_generate_strategy(pattern, expected_result):
@@ -113,7 +113,7 @@ def test_generate_strategy(pattern, expected_result):
 @pytest.mark.parametrize(
     "pattern, expected_result",
     [
-        (('#STRATEGY#different_elems$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), strings),
+        (('#ADD_DATASET#GET#different_elems$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), strings),
     ]
 )
 def test_mutators(pattern, expected_result):
