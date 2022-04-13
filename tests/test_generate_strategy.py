@@ -93,7 +93,12 @@ register_method('list_several_times', list_several_times)
 
         (([1], [2], '+'), [[2, [1]]]),
 
-        (('#ADD_DATASET#GET#digits$', '@'), digits),  # TODO make it possible as '#ADD_DATASET #GET #digits$'
+
+        (('#ADD_DATASET#GET#digits$', '@'), digits),
+        (('#ADD_DATASET #GET#digits$', '@'), digits),
+        (('#ADD_DATASET#GET #digits$', '@'), digits),
+        (('#ADD_DATASET #GET #digits$', '@'), digits),  # TODO make it possible as '#ADD_DATASET #GET #digits$'
+
         ((1, '#ADD_DATASET#GET#digits$', '+', '@'), [1, 2, 3, 0.01, 1]),
 
         (("1", [4, 5, 6], '+', '@'), [4, 5, 6, '1']),
@@ -102,6 +107,10 @@ register_method('list_several_times', list_several_times)
 
 
         ((1, '#APPLY#LIST_IT#list_once$'), [[1]]),
+        ((1, '#APPLY #LIST_IT#list_once$'), [[1]]),
+        ((1, '#APPLY#LIST_IT #list_once$'), [[1]]),
+        ((1, '#APPLY #LIST_IT #list_once$'), [[1]]),
+
         ((1, '#APPLY#LIST_IT#list_several_times#2$'), [[[1]]]),
         (('#ADD_DATASET#GET#strings$', '#APPLY#MUTATE_IT#nullify_all_elements$', '@'), [0, 0, 0]),
     ]

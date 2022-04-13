@@ -1,3 +1,5 @@
+import re
+
 from src.utils.strategy.modifiers import restore_data_type
 from src.utils.parser.view import parser_view
 from src.data_structures.datastructures import Stack
@@ -24,10 +26,12 @@ def unlist_current_item(item) -> tuple:
 
 
 def get_last_part_after_pattern(base_line, pattern):
-    return base_line.split(pattern, 1)[1]
+    index = base_line.find(pattern) + len(pattern)
+    index += base_line[index:].find('#')
+    return base_line[(index + 1):]
 
 
-def extract_method_info(base_line, pattern, term_sym='$'):
+def extract_method_info(base_line, pattern):
     index = base_line.find(pattern) + len(pattern)
     return base_line[index::]
 
@@ -40,7 +44,8 @@ def get_seq_by_pattern_and_terminate_symb(base_line, pattern, term_sym='$'):
 
 def get_func_name_and_args(base_line, term_sym='$'):
     term_index = base_line.find(term_sym)
-    res = base_line[:term_index].split('#')
+    res = re.split(r'[# ]+', base_line[:term_index])
+    res = [x for x in res if x != '']
     return res[0], res[1:]
 
 
@@ -69,15 +74,15 @@ def generate_strategy(strategy_info: tuple):
     result_strategy = []
     for item in strategy:
         if isinstance(item, str):
-            if item.startswith('#ADD_DATASET#'):
-                strategy = get_seq_by_pattern_and_terminate_symb(item, '#ADD_DATASET#')
-                if strategy.startswith('GET#'):
-                    strategy = get_last_part_after_pattern(strategy, 'GET#')
+            if item.startswith('#ADD_DATASET'):
+                strategy = get_seq_by_pattern_and_terminate_symb(item, '#ADD_DATASET')
+                if '#GET' in strategy:
+                    strategy = get_last_part_after_pattern(strategy, '#GET')
                 result_strategy += strategies[strategy]
                 stack.push(result_strategy)
                 result_strategy = []
-            elif item.startswith('#APPLY#'):
-                method_info = extract_method_info(item, '#APPLY#')
+            elif item.startswith('#APPLY'):
+                method_info = extract_method_info(item, '#APPLY')
                 method_name, args = get_func_name_and_args(method_info)
                 if method_name == 'MUTATE_IT':
                     elem = stack.pop()
