@@ -3,8 +3,8 @@ import re
 from src.strategies.methods import restore_data_type
 from src.core.parser.view import parser_view
 from src.data_structures.stack import Stack
-from src.strategies.metadata_aggregator import data_sets, methods
-
+from src.strategies.metadata_aggregator import data_sets, methods, generators
+from src.utils.types_handler import restore_type
 
 def sum_elems_of_different_types(elem1, elem2):
     if isinstance(elem1, list) and isinstance(elem2, list):
@@ -78,9 +78,16 @@ def generate_strategy(strategy_info: tuple):
                 strategy = get_seq_by_pattern_and_terminate_symb(item, '#ADD_DATASET')
                 if '#GET' in strategy:
                     strategy = get_last_part_after_pattern(strategy, '#GET')
-                result_strategy += data_sets[strategy]
-                stack.push(result_strategy)
-                result_strategy = []
+                    result_strategy += data_sets[strategy]
+                    stack.push(result_strategy)
+                    result_strategy = []
+                elif '#GENERATE' in strategy:
+                    method_info = extract_method_info(item, '#GENERATE')
+                    method_name, args = get_func_name_and_args(method_info)
+                    method_name = generators[method_name]
+                    result_strategy = method_name(*(restore_type(args)))
+                    stack.push(result_strategy)
+                    result_strategy = []
             elif item.startswith('#APPLY'):
                 method_info = extract_method_info(item, '#APPLY')
                 method_name, args = get_func_name_and_args(method_info)

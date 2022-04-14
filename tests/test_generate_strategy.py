@@ -1,8 +1,9 @@
 import pytest
 
 from src.core.parser.generate import generate_strategy
-from src.strategies.registrars import register_strategy, register_method
+from src.strategies.registrars import register_strategy, register_method, register_generator
 from src.strategies.methods import list_once, list_several_times, mutate_all_elements_by_radamsa
+from  src.strategies.generators import rand_nums_in_range
 
 digits = [1, 2, 3, 0.01]
 strings = ['4', '5', '6']
@@ -24,6 +25,8 @@ register_method('mutate_all_elements_by_radamsa', mutate_all_elements_by_radamsa
 
 register_method('list_once', list_once)
 register_method('list_several_times', list_several_times)
+
+register_generator('rand_nums_in_range', rand_nums_in_range)
 
 
 @pytest.mark.parametrize(
@@ -114,5 +117,27 @@ def test_generate_strategy(pattern, expected_result) -> None:
         (('#ADD_DATASET#GET#different_elems$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '@'), []),
     ]
 )
-def test_mutators(pattern, expected_result):
+def test_mutators(pattern, expected_result) -> None:
+    """
+    This test check results lists made by mutators
+    :param pattern: string with complex DSL code
+    :param expected_result: result list of elements after DSL has made its work
+    :return: None
+    """
     assert generate_strategy(pattern) != expected_result
+
+
+@pytest.mark.parametrize(
+    "pattern, expected_result",
+    [
+        (('#ADD_DATASET#GENERATE#rand_nums_in_range#0#10$', '@'), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
+    ]
+)
+def test_generators(pattern, expected_result) -> None:
+    """
+    This test check results lists made by generators
+    :param pattern: string with complex DSL code
+    :param expected_result: result list of elements after DSL has made its work
+    :return: None
+    """
+    assert generate_strategy(pattern) == expected_result
