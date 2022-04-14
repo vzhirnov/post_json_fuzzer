@@ -8,6 +8,7 @@ import pathlib
 from datetime import datetime
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
+from src.utils.files_handler import get_filename
 
 
 class ParseKwargs(argparse.Action):
@@ -86,7 +87,8 @@ if __name__ == '__main__':
     curr_path += results_dir
     pathlib.Path(curr_path).mkdir(parents=True, exist_ok=True)
     curr_date_time = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
-    path_to_file = curr_path + f'{curr_date_time}_results.csv'
+    filename = get_filename(file)
+    path_to_file = curr_path + f'{curr_date_time}_{filename}_results.csv'
 
     with open(path_to_file, mode='w') as results_file:
         employee_writer = csv.writer(
