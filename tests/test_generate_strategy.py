@@ -2,8 +2,9 @@ import pytest
 
 from src.core.parser.generate import generate_strategy
 from src.strategies.registrars import register_strategy, register_method, register_generator
-from src.strategies.methods import list_once, list_several_times, mutate_all_elements_by_radamsa
-from  src.strategies.generators import rand_nums_in_range
+from src.strategies.methods import mutate_all_elements_by_radamsa, add_border_cases
+from src.strategies.generators import rand_nums_in_range
+from src.utils.types_handler import list_once, list_several_times
 
 digits = [1, 2, 3, 0.01]
 strings = ['4', '5', '6']
@@ -25,6 +26,7 @@ register_method('mutate_all_elements_by_radamsa', mutate_all_elements_by_radamsa
 
 register_method('list_once', list_once)
 register_method('list_several_times', list_several_times)
+register_method('ADD_BORDER_CASES', add_border_cases)
 
 register_generator('rand_nums_in_range', rand_nums_in_range)
 
@@ -98,6 +100,9 @@ def test_generate_strategy(pattern, expected_result) -> None:
         ((1, '#APPLY #LIST_IT #list_once$'), [[1]]),
 
         ((1, '#APPLY#LIST_IT#list_several_times#2$'), [[[1]]]),
+
+        ((1, '#APPLY#ADD_BORDER_CASES#0#10$', '+', '@'), [-1, 0, 2, 10, 11, 1]),
+
         (('#ADD_DATASET#GET#strings$', '#APPLY#MUTATE_IT#nullify_all_elements$', '@'), [0, 0, 0]),
     ]
 )

@@ -103,6 +103,11 @@ def generate_strategy(strategy_info: tuple):
                     result_strategy = nm(elem, *args[1:])
                     stack.push(result_strategy)
                     result_strategy = []
+                elif method_name == 'ADD_BORDER_CASES':
+                    nm = methods[method_name]
+                    result_strategy = nm(*(restore_type(args)))
+                    stack.push(result_strategy)
+                    result_strategy = []
             elif item == '+':
                 elem1 = stack.pop()
                 elem2 = stack.pop()

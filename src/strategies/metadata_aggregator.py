@@ -1,6 +1,7 @@
 from src.strategies.data_sets import default
 from src.strategies.generators import rand_nums_in_range
 
+
 def fun():
     return 1
 
