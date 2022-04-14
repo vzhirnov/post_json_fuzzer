@@ -126,7 +126,8 @@ def test_mutators(pattern, expected_result) -> None:
 
 @pytest.mark.parametrize(
     "pattern, expected_result", [
-        (('#ADD_DATASET#GENERATE#rand_nums_in_range#0#10$', '@'), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
+        (('#ADD_DATASET#GENERATE#rand_nums_in_range#0#10$', '@'),
+         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
     ]
 )
 def test_generators(pattern, expected_result) -> None:

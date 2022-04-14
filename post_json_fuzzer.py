@@ -77,9 +77,9 @@ if __name__ == '__main__':
     ]
     print(f'start sending {len(coroutines)} requests')
     results = loop.run_until_complete(asyncio.gather(*coroutines))
-    for result in results:
+    for num, result in enumerate(results):
         print(
-            f'current request with {result[1]} parameters results {result[0].status}: {result[0].reason}'
+            f'{num}: current request with {result[1]} parameters results {result[0].status}: {result[0].reason}'
         )
 
     curr_path = os.path.dirname(os.path.abspath(__file__))
@@ -95,13 +95,16 @@ if __name__ == '__main__':
             results_file, delimiter=',', quotechar='"',
             quoting=csv.QUOTE_MINIMAL
         )
-        title_list = list(result[1].keys())  # TODO : result?
+        title_list = list()
+        title_list.append('request_number')
+        title_list += list(results[0][1].keys())
         title_list.append('result')
         employee_writer.writerow(title_list)
-        for result in results:
-            l = list(result[1].values())
-            l.append(result[0].status)
-            employee_writer.writerow(l)
+        for i, result in enumerate(results):
+            lst = list() + [i]
+            lst += list(result[1].values())
+            lst.append(result[0].status)
+            employee_writer.writerow(lst)
 
 # TODO known issues:
 # cannot make case with lack of current parameter AND doubled string
