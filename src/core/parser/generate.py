@@ -1,9 +1,9 @@
 import re
 
-from src.utils.strategy.modifiers import restore_data_type
-from src.utils.parser.view import parser_view
-from src.data_structures.datastructures import Stack
-from src.strategies.strategies import strategies, methods
+from src.strategies.methods import restore_data_type
+from src.core.parser.view import parser_view
+from src.data_structures.stack import Stack
+from src.strategies.metadata_aggregator import data_sets, methods
 
 
 def sum_elems_of_different_types(elem1, elem2):
@@ -78,7 +78,7 @@ def generate_strategy(strategy_info: tuple):
                 strategy = get_seq_by_pattern_and_terminate_symb(item, '#ADD_DATASET')
                 if '#GET' in strategy:
                     strategy = get_last_part_after_pattern(strategy, '#GET')
-                result_strategy += strategies[strategy]
+                result_strategy += data_sets[strategy]
                 stack.push(result_strategy)
                 result_strategy = []
             elif item.startswith('#APPLY'):

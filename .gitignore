@@ -4,5 +4,5 @@ results/
 src/core/__pycache__/
 src/data_structures/__pycache__/
 src/strategies/__pycache__/
-src/utils/parser/__pycache__/
+src/core/parser/__pycache__/
 src/utils/strategy/__pycache__/

@@ -3,8 +3,8 @@ import itertools
 import re
 import uuid
 
-from src.utils.parser.generate import generate_strategy
-from src.utils.strategy.modifiers import make_ast_literal_eval
+from src.core.parser.generate import generate_strategy
+from src.strategies.methods import make_ast_literal_eval
 
 
 def get_jsons_for_fuzzing(d_base: dict):

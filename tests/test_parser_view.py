@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils.parser.view import parser_view
+from src.core.parser.view import parser_view
 
 
 @pytest.mark.parametrize(
@@ -37,7 +37,7 @@ from src.utils.parser.view import parser_view
         ('+|', ['+', '|']),
         ('|+|', ['|', '+', '|']),
 
-        ('*', ['*']),
+        # ('*', ['*']),  TODO: check in combinations with other elems within DSL
 
         ('1', ['1']),
         (

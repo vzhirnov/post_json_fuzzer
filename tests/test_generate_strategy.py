@@ -1,12 +1,8 @@
-import random
 import pytest
-import pyradamsa
 
-from collections.abc import Iterable
-
-from src.utils.parser.generate import generate_strategy
-from src.strategies.strategies import register_strategy, register_method
-from src.utils.strategy.modifiers import list_once, list_several_times
+from src.core.parser.generate import generate_strategy
+from src.strategies.registrars import register_strategy, register_method
+from src.strategies.methods import list_once, list_several_times, mutate_all_elements_by_radamsa
 
 digits = [1, 2, 3, 0.01]
 strings = ['4', '5', '6']
@@ -21,31 +17,6 @@ register_strategy('bls', bls)
 
 def nullify_all_elements(items):
     return [0] * len(items)
-
-
-def mutate_by_radamsa(item):
-    rad = pyradamsa.Radamsa()
-    fuzzed_item = rad.fuzz(bytes(str(item), 'utf-8'), seed=random.randrange(2000))
-    try:
-        decoded_item = fuzzed_item.decode()
-        return decoded_item
-    except Exception:
-        return fuzzed_item
-
-
-def mutate_all_elements_by_radamsa(items):
-    res = []
-    if isinstance(items, Iterable):
-        items_types = [type(x) for x in items]
-        mutated_items = [mutate_by_radamsa(x) for x in items]
-        for i, item in enumerate(mutated_items):
-            try:
-                elem = items_types[i](item)
-                res.append(elem)
-            except Exception:
-                res.append(item)
-        return res
-    return mutate_by_radamsa(items)
 
 
 register_method('nullify_all_elements', nullify_all_elements)
