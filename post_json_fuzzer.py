@@ -57,25 +57,28 @@ async def post(url_aim, json_params, hdrs, request_metainfo):
     async with aiohttp.ClientSession() as session:
         async with session.post(url_aim, json=json_params, headers=hdrs,
                                 ssl=False) as response:
-            return response, request_metainfo
+            response_body = await response.text()
+            return response, request_metainfo, response_body
 
 
 if __name__ == '__main__':
     with open(file, 'rb') as handle:
         native_file_contetns = handle.read()
-        d_base = eval(
-            native_file_contetns
-        )  # TODO need to check if file is correct dict
+        try:
+            d_base = eval(native_file_contetns)
+        except Exception:
+            raise Exception(
+                f"Error: cannot make eval method for {get_filename(file)}"
+            )
 
     result_jsons = get_jsons_for_fuzzing(d_base)
 
     loop = asyncio.get_event_loop()
-
     coroutines = [
         post(url, json_params[0], headers, json_params[1])
         for json_params in result_jsons
     ]
-    print(f'start sending {len(coroutines)} requests')
+    print(f'Start sending {len(coroutines)} requests:')
     results = loop.run_until_complete(asyncio.gather(*coroutines))
     for num, result in enumerate(results):
         print(
@@ -99,11 +102,13 @@ if __name__ == '__main__':
         title_list.append('request_number')
         title_list += list(results[0][1].keys())
         title_list.append('result')
+        title_list.append('body')
         employee_writer.writerow(title_list)
         for i, result in enumerate(results):
             lst = list() + [i]
             lst += list(result[1].values())
             lst.append(result[0].status)
+            lst.append(result[2])
             employee_writer.writerow(lst)
 
 # TODO known issues:
@@ -111,7 +116,7 @@ if __name__ == '__main__':
 
 # TODO improvements
 # ssdeep hash for quick reply investigation
-# add json_code filename to output file with results like antibot_YYMMDD.csv
+# add json_code filename to output file with results like antibot_YYMMDD.csv - DONE
 # replace list with set for not getting duplicates items
 # add (for Docker) dir with custom generators/mutators ot both dirs. First, post_json_fuzzrt will try to find and registrate those generators in those folders
 # USE both structed mutations(my own or try to find a good project) AND random(radamsa)
