@@ -1,7 +1,8 @@
 import ast
 
 
-def restore_type(lst: list):  # TODO there is also restore_data_type, think what to do with names and where to put both of them
+# TODO there is also restore_data_type, think what to do with names and where to put both of them
+def restore_type(lst: list):
     return [ast.literal_eval(x) for x in lst]
 
 

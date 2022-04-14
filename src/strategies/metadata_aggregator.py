@@ -12,8 +12,9 @@ data_sets = {
 
 methods = {
     # 'mutate': mutate,
-    'increment_every_item':
-        lambda item, val: [x + val for x in item if isinstance(x, int)] if isinstance(item, list) else item,
+    'increment_every_item': lambda item, val:
+    [x + val for x in item if isinstance(x, int)]
+    if isinstance(item, list) else item,
     'fun': fun
 }
 

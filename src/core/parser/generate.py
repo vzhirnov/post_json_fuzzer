@@ -6,6 +6,7 @@ from src.data_structures.stack import Stack
 from src.strategies.metadata_aggregator import data_sets, methods, generators
 from src.utils.types_handler import restore_type
 
+
 def sum_elems_of_different_types(elem1, elem2):
     if isinstance(elem1, list) and isinstance(elem2, list):
         elem1.append(elem2)
@@ -66,16 +67,20 @@ def save_type_info(tup: tuple):
 
 def generate_strategy(strategy_info: tuple):
     assert \
-        all(x.endswith('$') for x in strategy_info if isinstance(x, str) and x.startswith('#')),\
+        all(x.endswith('$') for x in strategy_info if isinstance(x, str) and x.startswith('#')), \
         'Invalid syntax. Have you installed all the # characters and the terminator symbol $?'
-    strategy = parser_view(str(save_type_info(strategy_info)))  # TODO replace word strategy if there is an another meaning
+    strategy = parser_view(
+        str(save_type_info(strategy_info))
+    )  # TODO replace word strategy if there is an another meaning
     strategy = restore_data_type(strategy)
     stack = Stack()
     result_strategy = []
     for item in strategy:
         if isinstance(item, str):
             if item.startswith('#ADD_DATASET'):
-                strategy = get_seq_by_pattern_and_terminate_symb(item, '#ADD_DATASET')
+                strategy = get_seq_by_pattern_and_terminate_symb(
+                    item, '#ADD_DATASET'
+                )
                 if '#GET' in strategy:
                     strategy = get_last_part_after_pattern(strategy, '#GET')
                     result_strategy += data_sets[strategy]
@@ -121,4 +126,3 @@ def generate_strategy(strategy_info: tuple):
         else:
             stack.push(item)
     return stack.items
-

@@ -33,12 +33,15 @@ def get_interesting_data(d_base: dict):
 
 
 def get_all_combinations(matched_items: dict):
-    keys, values = zip(*matched_items.items())  # TODO: assert if no ()s with strategy, just plain dict values
+    keys, values = zip(
+        *matched_items.items()
+    )  # TODO: assert if no ()s with strategy, just plain dict values
     experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
     return experiments
 
 
 def find_word_and_add_quotes(str_line: str, interesting_word: str):
+
     def insert_quote(string, index_num):
         return string[:index_num] + '\'' + string[index_num:]
 
@@ -75,4 +78,3 @@ def get_final_data(experiments: list, d_base: str):
         result_jsons.append((res_dict, fuzz_item))
         fuzz_item = {}
     return result_jsons
-
