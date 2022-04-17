@@ -65,7 +65,7 @@ register_generator('rand_nums_in_range', int_nums_in_range)
         (([1], [2], '+'), [[2, [1]]]),
     ]
 )
-def test_generate_strategy(pattern, expected_result) -> None:
+def test_generate_strategy(pattern: tuple, expected_result: list) -> None:
     """
     This test checks if adding simple object to stack handles by DSL as expected
     :param pattern: string with simple DSL code
@@ -96,7 +96,7 @@ def test_generate_strategy(pattern, expected_result) -> None:
         ), [0, 0, 0]),
     ]
 )
-def test_generate_strategy(pattern, expected_result) -> None:
+def test_generate_strategy(pattern: tuple, expected_result: list) -> None:
     """
     This test checks if complex DSL code generates the correct result lists
     :param pattern: string with complex DSL code
@@ -114,7 +114,7 @@ def test_generate_strategy(pattern, expected_result) -> None:
         ), []),
     ]
 )
-def test_mutators(pattern, expected_result) -> None:
+def test_mutators(pattern: tuple, expected_result: list) -> None:
     """
     This test check results lists made by mutators
     :param pattern: string with complex DSL code
@@ -130,7 +130,7 @@ def test_mutators(pattern, expected_result) -> None:
          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
     ]
 )
-def test_generators(pattern, expected_result) -> None:
+def test_generators(pattern: tuple, expected_result: list) -> None:
     """
     This test check results lists made by generators
     :param pattern: string with complex DSL code

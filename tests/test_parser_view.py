@@ -97,5 +97,5 @@ from src.core.parser.view import parser_view
         ("'1','#FUNC#LIST_IT#2$'", ['1', '#FUNC#LIST_IT#2$']),
     ]
 )
-def test_check_parser_view(pattern, expected_result):
+def test_check_parser_view(pattern: str, expected_result: list) -> None:
     assert parser_view(pattern) == expected_result

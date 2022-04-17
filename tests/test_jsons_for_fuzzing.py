@@ -37,5 +37,5 @@ from src.core.fuzz_data_creators import get_jsons_for_fuzzing
         ),
     ]
 )
-def test_jsons_for_fuzzing(json_with_dsl: dict, expected_jsons: list):
+def test_jsons_for_fuzzing(json_with_dsl: dict, expected_jsons: list) -> None:
     assert get_jsons_for_fuzzing(json_with_dsl) == expected_jsons
