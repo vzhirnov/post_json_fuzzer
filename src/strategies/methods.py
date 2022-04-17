@@ -55,6 +55,5 @@ def add_border_cases(left_num: int, right_num: int):
     if not isinstance(left_num, int) or not isinstance(right_num, int):
         return [0]
     return list((
-        left_num - 1, left_num, random.randrange(left_num + 1, right_num),
-        right_num, right_num + 1
+        left_num - 1, left_num, right_num, right_num + 1
     ))
