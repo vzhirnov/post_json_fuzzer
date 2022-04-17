@@ -30,7 +30,7 @@ POST JSON Fuzzer makes API check for critical bugs, and you can define test scri
 POST JSON Fuzzer is suitable in everyday work:
 * for a developer who needs API checks for the slightest changes in the code (for example, 2K checks in ~ 2 minutes). Unit tests have already been written, but additional system or integration testing is needed
 * for a QA engineer or a test engineer to automate those API checks that are done by hand. At the same time, solutions like Postman or Burp Suite are not suitable, or they don’t like it (with all due respect to these wonderful products), or their functionality is redundant for urgent tasks. At the same time, I would like to see a declarative description of the test suite in a concise form
-* if you have your own opinion on how to test the API, and do not want to use fuzzers, which are more complicated and may not find the right issue. You want to write your own scripts (strategies) for each JSON parameter (sets, mutations, random data in the right places, etc.)
+* if you have your own opinion on how to test the API, and do not want to use fuzzers, which are more complicated and may not find the right issue. You want to write your own fuzzing scenarios for each JSON parameter (add datasets, mutations, random data in the right places, etc.)
 * if you need somke tests in the pipeline
 * if you need an additional fuzzer that is easier to adjust for spot checks
 
@@ -51,14 +51,14 @@ Let's say you have a service with an API that expects a body with a JSON documen
 How to find the maximum set of parameter combinations that will lead to unexpected errors in your service? A similar class of problems is solved by fuzzers. There are a lot of fuzzers. Some of them are able to parse the Open API specification by parsing the swagger file. After the analysis, the fuzzer is able to check the compliance with the specification and the real API.
 
 But what if you want to do basic checks on the most frequent cases? Change the id in the range from 1 to 100K, or try to put a number instead of a string in the value of the title field. Change the price value from 109 dollars to two cents, etc. These are routine checks that are sometimes still done manually, oh horror! 
-This phaser suggests using a special small DSL that will generate as many variants of JSON bodies for your POST request as you need, based on your own work cases. At the same time, our goal is to get as many unexpected responses from the service as possible (500, 400, 404, etc.)
+This fuzzzer suggests using a special small DSL that will generate as many variants of JSON bodies for your POST request as you need, based on your own work cases. At the same time, our goal is to get as many unexpected responses from the service as possible (500, 400, 404, etc.)
 
 Let's check the above id, price and title fields, for example:
 - let id change in the range -1 to 100K (as indicated above). We also try to set another name, e.g. `"client_id"` 
 - we will make the price zero, in the value of two cents, a negative number, and very large. We will also add some garbage data
 - just try to change the title to a number, make it longer, shorter, and an empty string
 
-Create a test_api.py file with the following content:
+Create a `test_api.py` file with the following content:
 ```
 {
 	("id", "client_id"): (31, -1, 0, 1, 1000, 100000, 100001),
@@ -72,8 +72,8 @@ This file will be read by the fuzzer using the eval method, and will be converte
 
 The key point here is that you, as a fuzzer user:
 1. Create a JSON-like structure that you understand. There is no need to describe each parameter in an unreadable way, as in other fuzzers. Everything is familiar and obvious.
-2. In this structure, you use a DSL whose code is inside tuple-like structures. In fact, this is a tuple from python. And JSON has no analogue of tuple, so we can freely use it and not be afraid of anything.
-3. The fuzzer will cut each such tuple-like structure from the test_api.py file, parse them, and at the final stage create all possible combinations of parameters for JSON. After that, each created combination will be inserted into its own JSON structure, which will no longer have any tuples. 
+2. In this structure, you use a DSL whose code is inside tuple-like structures(let's call each such structure a "scenario"). In fact, this is a tuple from python. And JSON has no analogue of tuple, so we can freely use it and not be afraid of anything.
+3. The fuzzer will cut each such tuple-like structure from the `test_api.py` file, parse them, and at the final stage create all possible combinations of parameters for JSON. After that, each created combination will be inserted into its own JSON structure, which will no longer have any tuples. 
 An example of a structure from a similar set:
 ```
 {
@@ -108,7 +108,7 @@ An entry of the form `"id": (-1, 2, '+')` will mean - put the number -1 on the s
 
 #### DSL
 The main task of the DSL is to create a set of options with different values for each parameter of interest in our json document in the form of a python list.</br>
-For example, having the entry `"id": (31, -1, 0, 1, 1000, 100000, 100001)` the final list will be `[100001, 100000, 1000, 1, 0, -1, 31]`.
+For example, having the entry `"id": (31, -1, 0, 1, 1000, 100000, 100001)` the final list will be `[100001, 100000, 1000, 1, 0, -1, 31]` (say hello to stack).
 
 After all the lists have been created for each required parameter, the json post fuzzer will form all possible combinations from them, and create the final list of json structures that will be sent to your service.</br>
 If in our document we will check only two parameters -
@@ -117,38 +117,54 @@ If in our document we will check only two parameters -
 then the fuzzer will create two lists `[-1, 31]` and `["Buy", 1]` and then four combinations based on them. And finally, the fuzzer will create a list of four final json structures, each of which will contain both mutable parameters (for example, `"id"`), and those that have not changed (for example, the `"category"` field).
 
 To create more complex sets of parameters and their combinations, the DSL uses several operators:
-- **'@'** - operation of removing a leaf from the stack (`stack.pop()`). This operation should be used in cases where you have formed the resulting leaf lying on the top of the stack, and now you need to get it.<br />
+- **'@'** - operation of removing the result list from the stack (`stack.pop()`). This operation should be used in cases where you have formed the resulting list lying on the top of the stack, and now you need to get it.<br />
 Example:
 `("1", [4, 5, 6], '+', '@')`. Since this will be adding `"1"` to the already existing sheet, the stack will end up with the sheet `[['4', '5', '6', '1']]`, and the `@` operation will help get it - `['4', '5', '6', '1']`.
 
-- **'#'** - separator used by the STRATEGY and FUNC statements. It is always needed when you want to apply a function, before that you have specified its name and a set of parameters.<br />
+- **'#'** - separator used by the DSL expressions(see below). It is always needed when you want to apply a function, before that you have specified its name and a set of parameters.<br />
 Example:
-`(1, '#FUNC#LIST_IT#list_several_times#2$')`. The FUNC operator of the `LIST_IT` category of the list_several_times function, which takes the number of operations as input, will be applied to element 1.
+`(1, '#APPLY#LIST_IT#list_several_times#2$')`. The `LIST_IT` operator of the `APPLY` category of the list_several_times function, which takes the number of operations as input, will be applied to element 1. The result list is `[[1]]`.
 
-- **'$'** - termination character. Used for `STRATEGY` and `FUNC`, each must end with this character.<br />
-Examples:
-`('#STRATEGY#digits$', '@')`, `(1, '#FUNC#LIST_IT#list_once$')`
+- **'$'** - termination character. Used for `ADD_DATASET` and `APPLY`, each must end with this character.<br />
+Example:
+`('#ADD_DATASET#GET#digits$', '@')`
 
-- **STRATEGY** - adding a sheet with a strategy to the stack. A strategy is a ready-made list of elements that will be substituted into your json parameter. The built-in basic strategy will add contains different numbers, strings, characters, boolean values and the `None`(`null` in json) command. <br />
-Example: if we have a strategy `bls = [True, False]`, then `((0, '#STRATEGY#bls$', '+', '@')` will give us the option `[True, False, 0]`.
+- **ADD_DATASET** - adding a sheet with a specific dataset to the stack. A dataset is a ready-made list of elements that will be substituted into your json parameter. The built-in basic dataset will add contains different numbers, strings, characters, boolean values and the `None`(`null` in json) command. <br />
+Example: if we have a dataset `bls = [True, False]`, then `((0, '#ADD_DATASET#GET#bls$', '+', '@')` will give us the option `[True, False, 0]`.<br />
 
-- **FUNC** is an operator to apply some action to the top element on the stack. (Write about registering functions and lambdas)<br />
-Example: `(1, '#FUNC#LIST_IT#list_once$')` will result in `[[1]]`<br />
-Another example: `(1, '#FUNC#LIST_IT#list_several_times#2$')` would give `[[[1]]]`
+General rules for `ADD_DATASET` operation:
+
+- #ADD_DATASET#CATEGORY#NAME$
+    - CATEGOORY
+        - GET [DATASET_NAME]
+        - GENERATE [GENERATOR_NAME]
+
+- **APPLY** is an operator to apply some action to the top element on the stack. (Write about registering functions and lambdas)<br />
+Example: `(1, '#APPLY#LIST_IT#list_once$')` will result in `[[1]]`<br />
+Another example: `(132, '#APPLY#ADD_BORDER_CASES#0#255$')` would give `[-1, 0, 255, 256, 132]`
 
 - **MUTATE_IT** - mutate the top element on the stack. If a result list is at the top of the stack, all of its elements will be mutated. Otherwise, one element will be mutated.  <br />
 Example: if there is `([1, 2, 3], '#FUNC#MUTATE_IT#nullify_all_elements$', '@')`, then the result will be `[0, 0, 0]`.
 
-That's all, nothing complicated. More examples of the use of various options can be found in the [tests](https://github.com/vzhirnov/post_json_fuzzer/tree/master/tests).
+General rules for `APPLY` operation:
+
+- #APPLY#CATEGORY#METHOD_NAME#PARAMS$
+    - CATEGORY
+        - MUTATE_IT [MUTATOR_NAME]
+        - LIST_IT [LIST_FUNCTION_NAME]
+        - ADD_BORDER_CASES [LEFT_VALUE#RIGHT_VALUE]
+
+By the way, you can easily register your own functions, generators, mutators. See how it's done in [tests](https://github.com/vzhirnov/post_json_fuzzer/blob/master/tests/test_generate_strategy.py#L14).<br />
+That's all, nothing complicated.
 
 #### Make it all together
 Let's now get significantly more options for testing our API than in the first example.
 Take a look at this:
 ```
 {
-	("id", "id", '#FUNC#MUTATE_IT#mutate_element_by_radamsa$', '+', '@'): (31, '#STRATEGY#basic$', '+', '@'),
+	("id", "id", '#APPLY#MUTATE_IT#mutate_element_by_radamsa$', '+', '@'): (31, '#ADD_DATASET#basic$', '+', '@'),
 	"title": ("Buy some stuff", "'\xf3"),
-	"price": (109.95, '#STRATEGY#basic$', '+', '#STRATEGY#basic$', '#FUNC#MUTATE_IT#mutate_all_elements_by_radamsa$', '+', '@'),
+	"price": (109.95, '#ADD_DATASET#basic$', '+', '#ADD_DATASET#basic$', '#APPLY#MUTATE_IT#mutate_all_elements_by_radamsa$', '+', '@'),
 	"category": "gadgets",
 	"description": "Cool watches"
 }
@@ -156,10 +172,10 @@ Take a look at this:
 Here is what we get as a result:
 1. Keyname `"id"` will get two variants - the `"id"` itself, and muteted one, say `"id\x00"`. <br />It's value will be a list like `\["some str", "another str", ... , 31\]`
 2. "title" will have only two values. Obvious.
-3. "price" - `[_list items from basic strategy_, 109.95\, _muteted list items from basic strategy_]`
+3. "price" - `[_list items from basic dataset_, 109.95\, _muteted list items from basic dataset_]`
 All other fields will remain unchanged. 
 
-That's all. In any difficult situation, look at [tests](https://github.com/vzhirnov/post_json_fuzzer/blob/master/tests/test_generate_strategy.py), they have enough options for any of your fantasies (if not, please send me an MP with additions).
+That's all. In any difficult situation, look at [tests](https://github.com/vzhirnov/post_json_fuzzer/blob/master/tests/test_generate_strategy.py), they have enough options for any of your fantasies (if not, please send me a PR with additions).
 
 
 ## Tips and tricks
