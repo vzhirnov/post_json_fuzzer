@@ -3,7 +3,7 @@ import pytest
 from src.core.parser.generate import generate_strategy
 from src.strategies.registrars import register_strategy, register_method, register_generator
 from src.strategies.methods import mutate_all_elements_by_radamsa, add_border_cases
-from src.strategies.generators import rand_nums_in_range
+from src.strategies.generators import int_nums_in_range
 from src.utils.types_handler import list_once, list_several_times
 
 digits = [1, 2, 3, 0.01]
@@ -30,7 +30,7 @@ register_method('list_once', list_once)
 register_method('list_several_times', list_several_times)
 register_method('ADD_BORDER_CASES', add_border_cases)
 
-register_generator('rand_nums_in_range', rand_nums_in_range)
+register_generator('rand_nums_in_range', int_nums_in_range)
 
 
 @pytest.mark.parametrize(

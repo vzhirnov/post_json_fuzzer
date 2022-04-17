@@ -1,5 +1,5 @@
 from src.strategies.data_sets import default
-from src.strategies.generators import rand_nums_in_range
+from src.strategies.generators import int_nums_in_range
 
 
 def fun():
@@ -19,5 +19,5 @@ methods = {
 }
 
 generators = {
-    'rand_nums_in_range': rand_nums_in_range,
+    'rand_nums_in_range': int_nums_in_range,
 }
