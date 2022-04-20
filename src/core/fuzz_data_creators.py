@@ -33,9 +33,7 @@ def get_interesting_data(d_base: dict):
 
 
 def get_all_combinations(matched_items: dict):
-    keys, values = zip(
-        *matched_items.items()
-    )  # TODO: assert if no ()s with strategy, just plain dict values
+    keys, values = zip(*matched_items.items())  # TODO: assert if no ()s with strategy, just plain dict values
     experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
     return experiments
 
@@ -56,17 +54,11 @@ def get_indexes_of_nearest_brackets(basic_string: str, current_index: int):
     bs = basic_string[:current_index]  # TODO: refactoring
     left_closest_square_brace_index = bs.rfind('[')
     left_closest_curly_brace_index = bs.rfind('{')
-    left_index = max(
-        left_closest_square_brace_index,
-        left_closest_curly_brace_index,
-    )
+    left_index = max(left_closest_square_brace_index, left_closest_curly_brace_index,)
     bs = basic_string[current_index:]
     right_closest_square_brace_index = bs.find(']')
     right_closest_curly_brace_index = bs.find('}')
-    right_index = min(
-        right_closest_square_brace_index,
-        right_closest_curly_brace_index
-    )
+    right_index = min(right_closest_square_brace_index, right_closest_curly_brace_index)
     right_index += current_index + 1
     return left_index, right_index
 
@@ -102,7 +94,7 @@ def get_final_data(experiments: list, d_base: str):
                 key_index_in_d_base = tmp_d.find(key)
                 tmp_d = tmp_d.replace(key, value)
                 left_index, right_index = get_indexes_of_nearest_brackets(tmp_d, key_index_in_d_base)
-                key = tmp_d[left_index: right_index]
+                key = tmp_d[left_index:right_index]
                 tmp_d = eval(tmp_d)
                 fuzz_item.update({value: key})  # TODO: Improvement: replace key with correct path to value
             else:

@@ -6,18 +6,13 @@ def fun():
     return 1
 
 
-data_sets = {
-    'default': default,
-}
+data_sets = {'default': default,}
 
 methods = {
     # 'mutate': mutate,
-    'increment_every_item': lambda item, val:
-    [x + val for x in item if isinstance(x, int)]
-    if isinstance(item, list) else item,
+    'increment_every_item': lambda item,
+    val: [x + val for x in item if isinstance(x, int)] if isinstance(item, list) else item,
     'fun': fun
 }
 
-generators = {
-    'rand_nums_in_range': int_nums_in_range,
-}
+generators = {'rand_nums_in_range': int_nums_in_range,}

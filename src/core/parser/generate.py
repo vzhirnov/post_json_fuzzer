@@ -78,9 +78,7 @@ def generate_strategy(strategy_info: tuple):
     for item in strategy:
         if isinstance(item, str):
             if item.startswith('#ADD_DATASET'):
-                strategy = get_seq_by_pattern_and_terminate_symb(
-                    item, '#ADD_DATASET'
-                )
+                strategy = get_seq_by_pattern_and_terminate_symb(item, '#ADD_DATASET')
                 if '#GET' in strategy:
                     strategy = get_last_part_after_pattern(strategy, '#GET')
                     result_strategy += data_sets[strategy]

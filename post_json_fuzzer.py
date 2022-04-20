@@ -12,6 +12,7 @@ from src.utils.files_handler import get_filename
 from src.data_structures.fuzzer import Fuzzer
 from src.data_structures.fuzzy import Fuzzy
 
+
 class ParseKwargs(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
@@ -26,24 +27,13 @@ headers = dict()
 file = str()
 
 parser = argparse.ArgumentParser(
-    description="Make POST json fuzzing easy.",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    description="Make POST json fuzzing easy.", formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument(
-    "-url", type=str, dest="url", required=True,
-    help="URL to which requests will be made.", default='127.0.0.1'
+    "-url", type=str, dest="url", required=True, help="URL to which requests will be made.", default='127.0.0.1'
 )
-parser.add_argument(
-    '-file',
-    type=str,
-    dest='file',
-    required=True,
-    help="Path to file with pseudo-JSON metainfo.",
-)
-parser.add_argument(
-    "--headers", '-H', nargs='*', default=dict(), help="Additional headers.",
-    action=ParseKwargs
-)
+parser.add_argument('-file', type=str, dest='file', required=True, help="Path to file with pseudo-JSON metainfo.",)
+parser.add_argument("--headers", '-H', nargs='*', default=dict(), help="Additional headers.", action=ParseKwargs)
 args = parser.parse_args()
 
 if args.headers:
@@ -56,8 +46,7 @@ if args.file:
 
 async def post(url_aim, json_params, hdrs, request_metainfo):
     async with aiohttp.ClientSession() as session:
-        async with session.post(url_aim, json=json_params, headers=hdrs,
-                                ssl=False) as response:
+        async with session.post(url_aim, json=json_params, headers=hdrs, ssl=False) as response:
             response_body = await response.text()
             return response, request_metainfo, response_body
 
@@ -68,26 +57,18 @@ if __name__ == '__main__':
         try:
             d_base = eval(native_file_contetns)  #
         except Exception:
-            raise Exception(
-                f"Error: cannot make eval method for {get_filename(file)}"
-            )
+            raise Exception(f"Error: cannot make eval method for {get_filename(file)}")
 
     fuzzer = Fuzzer(d_base)
-    a = 1
 
     result_jsons = get_jsons_for_fuzzing(d_base)
 
     loop = asyncio.get_event_loop()
-    coroutines = [
-        post(url, json_params[0], headers, json_params[1])
-        for json_params in result_jsons
-    ]
+    coroutines = [post(url, json_params[0], headers, json_params[1]) for json_params in result_jsons]
     print(f'Start sending {len(coroutines)} requests:')
     results = loop.run_until_complete(asyncio.gather(*coroutines))
     for num, result in enumerate(results):
-        print(
-            f'{num}: current request with {result[1]} parameters results {result[0].status}: {result[0].reason}'
-        )
+        print(f'{num}: current request with {result[1]} parameters results {result[0].status}: {result[0].reason}')
 
     curr_path = os.path.dirname(os.path.abspath(__file__))
     results_dir = '/results/'  # TODO make parameter with name
@@ -98,10 +79,7 @@ if __name__ == '__main__':
     path_to_file = curr_path + f'{curr_date_time}_{filename}_results.csv'
 
     with open(path_to_file, mode='w') as results_file:
-        employee_writer = csv.writer(
-            results_file, delimiter=',', quotechar='"',
-            quoting=csv.QUOTE_MINIMAL
-        )
+        employee_writer = csv.writer(results_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         title_list = list()
         title_list.append('request_number')
         title_list += list(results[0][1].keys())

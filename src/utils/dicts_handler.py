@@ -1,5 +1,6 @@
 from copy import copy, deepcopy
 
+
 result = []
 path = []
 
@@ -49,35 +50,3 @@ def get_access_view_to_deep_key(dic_name, path):
             item = "'" + item + "'"
         res += '[' + str(item) + ']'
     return res
-
-def set_dict_deep_key_instead_of_current(dic, key_path, current_key, key_to_set):
-    d = dic
-    for key in key_path:
-        if key == current_key:
-            d[key_to_set] = d[current_key]
-            break
-        else:
-            d = d[key]
-    return d
-
-
-def set_dict_deep_value_instead_of_current(dic, current_key, key_to_set):
-    d = deepcopy(dic)
-    return d
-
-
-def delete_dict_deep_key_value(dic, key_path):
-    d = deepcopy(dic)
-    return d
-
-
-def nested_get(dic, keys):
-    for key in keys:
-        dic = dic[key]
-    return dic
-
-
-def nested_set(dic, keys, value):
-    for key in keys[:-1]:
-        dic = dic.setdefault(key, {})
-    dic[keys[-1]] = value

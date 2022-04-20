@@ -12,7 +12,6 @@ def smart_replace(base_str, substr_to_replace, on_what_to_replace):
             base_str = base_str.replace(substr_to_replace, replace_item)
             base_str = base_str[:found_substr_start_index - 1] + base_str[found_substr_start_index:]
             replace_item_curr_start_index = found_substr_start_index - 1
-            base_str = base_str[:replace_item_curr_start_index + len(replace_item)] + base_str[
-                                                                                      replace_item_curr_start_index + len(
-                                                                                          replace_item) + 1:]
+            base_str = base_str[:replace_item_curr_start_index +
+                                len(replace_item)] + base_str[replace_item_curr_start_index + len(replace_item) + 1:]
     return base_str

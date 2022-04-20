@@ -16,7 +16,7 @@ class Fuzzer:
         self.json_with_uuids, self.fuzzies = self.indexate_fuzzies(json_with_fuzzies)
         self.default_json_body = self.get_default_json_body(self.json_with_uuids)
 
-    def get_default_json_body(self, json_with_uuids):
+    def get_default_json_body(self, json_with_uuids: dict) -> dict:
         json_with_uuids = str(json_with_uuids)
         for k, v in self.fuzzies.items():
             json_with_uuids = smart_replace(json_with_uuids, k, v.default_value)

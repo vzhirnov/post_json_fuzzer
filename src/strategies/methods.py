@@ -26,9 +26,7 @@ def make_ast_literal_eval(item):
 
 def mutate_by_radamsa(item):
     rad = pyradamsa.Radamsa()
-    fuzzed_item = rad.fuzz(
-        bytes(str(item), 'utf-8'), seed=random.randrange(2000)
-    )
+    fuzzed_item = rad.fuzz(bytes(str(item), 'utf-8'), seed=random.randrange(2000))
     try:
         decoded_item = fuzzed_item.decode()
         return decoded_item
@@ -54,6 +52,4 @@ def mutate_all_elements_by_radamsa(items):
 def add_border_cases(left_num: int, right_num: int):
     if not isinstance(left_num, int) or not isinstance(right_num, int):
         return [0]
-    return list((
-        left_num - 1, left_num, right_num, right_num + 1
-    ))
+    return list((left_num - 1, left_num, right_num, right_num + 1))
