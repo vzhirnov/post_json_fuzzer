@@ -1,4 +1,4 @@
-import random
+import uuid
 
 
 class Fuzzy:
@@ -7,13 +7,13 @@ class Fuzzy:
         self.default_value = default_value
         self.scenario = tuple([default_value]) + scenario
 
-        self.id = random.randrange(100, 10000000)
+        self.obj_id = str(uuid.uuid4())
 
     def __repr__(self):
-        return f'Fuzzy({self.default_value})-{id(self)}'
+        return f'Fuzzy({self.default_value})-{self.obj_id[:6]}'
 
     def __hash__(self):
-        return hash((self.default_value, self.scenario))
+        return hash((self.obj_id, self.default_value, self.scenario))
 
     def __eq__(self, other):
-        return isinstance(other, Fuzzy) and self.id == other.id
+        return isinstance(other, type(self)) and self.obj_id == other.obj_id

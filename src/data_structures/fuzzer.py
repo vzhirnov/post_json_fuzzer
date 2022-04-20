@@ -35,7 +35,7 @@ class Fuzzer:
             unique_counter += 1
             k, v = stack.pop()
             if isinstance(k, Fuzzy):
-                uuid_key = str(uuid.uuid4())
+                uuid_key = k.obj_id
                 fuzzies[uuid_key] = k
 
                 if k in d_res:
@@ -56,7 +56,7 @@ class Fuzzer:
                     exec(b)
 
             if isinstance(v, Fuzzy):
-                uuid_key = str(uuid.uuid4())
+                uuid_key = v.obj_id
                 fuzzies[uuid_key] = v
 
                 if k in fuzzies.values():
@@ -70,7 +70,7 @@ class Fuzzer:
 
             # make all k:v items unique, even if they are identical
             # but are in different places in the dictionary
-            kv_ids_sum = id(k) + id(v) % unique_counter
+            kv_ids_sum = id(k) + id(v) % unique_counter  # TODO: delete it due to smart obj_id hashing
 
             if isinstance(v, dict):
                 if kv_ids_sum not in visited:
@@ -81,7 +81,7 @@ class Fuzzer:
                     if any(isinstance(x, Fuzzy) for x in v):
                         for i, item in enumerate(v):
                             if isinstance(item, Fuzzy):
-                                uuid_key = str(uuid.uuid4())
+                                uuid_key = item.obj_id
                                 fuzzies[uuid_key] = item
                                 v[i] = uuid_key
                     else:
