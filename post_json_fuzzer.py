@@ -9,7 +9,8 @@ from datetime import datetime
 
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 from src.utils.files_handler import get_filename
-
+from src.data_structures.fuzzer import Fuzzer
+from src.data_structures.fuzzy import Fuzzy
 
 class ParseKwargs(argparse.Action):
 
@@ -65,11 +66,14 @@ if __name__ == '__main__':
     with open(file, 'rb') as handle:
         native_file_contetns = handle.read()
         try:
-            d_base = eval(native_file_contetns)
+            d_base = eval(native_file_contetns)  #
         except Exception:
             raise Exception(
                 f"Error: cannot make eval method for {get_filename(file)}"
             )
+
+    fuzzer = Fuzzer(d_base)
+    a = 1
 
     result_jsons = get_jsons_for_fuzzing(d_base)
 
