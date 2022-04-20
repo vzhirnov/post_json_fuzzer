@@ -55,8 +55,6 @@ class Fuzzer:
                     b = "del " + access_view_to_old_deep_key + f"[k]"
                     exec(b)
 
-#                    del access_view_to_key[path_to_curr_deep_key]
-                    a = 10
             if isinstance(v, Fuzzy):
                 uuid_key = str(uuid.uuid4())
                 fuzzies[uuid_key] = v
@@ -68,7 +66,7 @@ class Fuzzer:
                             d_res[need_key] = uuid_key
                             break
                 else:
-                    d_res[k] = uuid_key
+                    d_res = find_obj_in_dict_and_replace_it(d_res, v, uuid_key)
 
             # make all k:v items unique, even if they are identical
             # but are in different places in the dictionary

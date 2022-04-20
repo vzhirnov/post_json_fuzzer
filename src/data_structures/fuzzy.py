@@ -1,5 +1,6 @@
 import random
 
+
 class Fuzzy:
 
     def __init__(self, default_value, scenario: tuple):
