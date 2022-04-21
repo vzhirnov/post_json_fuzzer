@@ -1,8 +1,8 @@
-from copy import deepcopy
 from typing import Tuple
-import uuid
+# import uuid
 
-from copy import copy
+# from copy import deepcopy
+from collections import defaultdict
 
 from src.data_structures.fuzzy import Fuzzy
 from src.utils.strings_handler import smart_replace
@@ -12,15 +12,26 @@ from src.utils.dicts_handler import *
 class Fuzzer:
 
     def __init__(self, json_with_fuzzies: dict):
-        self.json_with_fuzzies = json_with_fuzzies
+        self.json_with_fuzzies = deepcopy(json_with_fuzzies)
         self.json_with_uuids, self.fuzzies = self.indexate_fuzzies(json_with_fuzzies)
         self.default_json_body = self.get_default_json_body(self.json_with_uuids)
+        self.result_jsons_for_fuzzing = []
 
     def get_default_json_body(self, json_with_uuids: dict) -> dict:
         json_with_uuids = str(json_with_uuids)
         for k, v in self.fuzzies.items():
             json_with_uuids = smart_replace(json_with_uuids, k, v.default_value)
         return eval(json_with_uuids)
+
+    def get_jsons_for_fuzzing(self):
+        scenario = dict()
+        for test_method in self.fuzzies.values():
+            scenario[test_method.test_method] = \
+                [test_method.tape] if scenario.get(test_method.test_method) is None \
+                    else scenario[test_method.test_method] + [test_method.tape]
+        # ... \|/ ...
+        # ...........
+        return self.result_jsons_for_fuzzing
 
     def indexate_fuzzies(self, json_like_obj: dict) -> Tuple[dict, dict]:
         """

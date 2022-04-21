@@ -10,8 +10,8 @@ from datetime import datetime
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 from src.utils.files_handler import get_filename
 from src.data_structures.fuzzer import Fuzzer
-from src.data_structures.fuzzy import Fuzzy
-
+from src.data_structures.fuzzy import Fuzzy, extract_here
+from src.data_structures.test_method import TestMethod as tm
 
 class ParseKwargs(argparse.Action):
 
@@ -60,8 +60,10 @@ if __name__ == '__main__':
             raise Exception(f"Error: cannot make eval method for {get_filename(file)}")
 
     fuzzer = Fuzzer(d_base)
+    result_jsons = fuzzer.get_jsons_for_fuzzing()
+    # result_jsons = get_jsons_for_fuzzing(d_base)
 
-    result_jsons = get_jsons_for_fuzzing(d_base)
+    # TODO first of all, try to send request with default json body, make sure the reply is 200 OK
 
     loop = asyncio.get_event_loop()
     coroutines = [post(url, json_params[0], headers, json_params[1]) for json_params in result_jsons]
