@@ -18,8 +18,7 @@ class Fuzzy:
 
         if suspicious_responses is None:
             suspicious_responses = []
-        self.default_suspicious_responses = [500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]
-        self.suspicious_responses = self.default_suspicious_responses + suspicious_responses
+        self.suspicious_responses = suspicious_responses
 
         self.tape = self.make_tape()
 

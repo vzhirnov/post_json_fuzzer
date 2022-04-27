@@ -7,6 +7,7 @@ from collections import defaultdict
 from src.data_structures.fuzzy import Fuzzy
 from src.utils.strings_handler import smart_replace
 from src.utils.dicts_handler import *
+from src.core.combinator import Combinator
 
 
 class Fuzzer:
@@ -16,6 +17,7 @@ class Fuzzer:
         self.json_with_uuids, self.fuzzies = self.indexate_fuzzies(json_with_fuzzies)
         self.default_json_body = self.get_default_json_body(self.json_with_uuids)
         self.result_jsons_for_fuzzing = []
+        self.default_suspicious_responses = [500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]
 
     def get_default_json_body(self, json_with_uuids: dict) -> dict:
         json_with_uuids = str(json_with_uuids)
@@ -23,14 +25,41 @@ class Fuzzer:
             json_with_uuids = smart_replace(json_with_uuids, k, v.default_value)
         return eval(json_with_uuids)
 
-    def get_jsons_for_fuzzing(self):
-        scenario = dict()
-        for test_method in self.fuzzies.values():
-            scenario[test_method.test_method] = \
-                [test_method.tape] if scenario.get(test_method.test_method) is None \
-                    else scenario[test_method.test_method] + [test_method.tape]
-        # ... \|/ ...
-        # ...........
+    def make_final_jsons(self, json_with_uuids: dict, values: list) -> list:
+        final_jsons = []
+        for pairs in values:
+            fuzzies_keys = list(self.fuzzies.keys())
+            json_subject = str(deepcopy(json_with_uuids))
+            suspicious_replies = []
+            for pair in pairs:
+                if pair[2]:
+                    suspicious_replies += pair[2]
+                fuzzies_keys.remove(pair[0])
+                json_subject = smart_replace(json_subject, pair[0], pair[1])
+            for fuzzy_item_by_default in fuzzies_keys:
+                json_subject = smart_replace(json_subject, fuzzy_item_by_default, self.fuzzies[fuzzy_item_by_default].default_value)
+            json_subject = eval(json_subject)
+            final_jsons.append((json_subject, suspicious_replies))
+        return final_jsons
+
+    def get_result_jsons_for_fuzzing(self):
+        scenario = {}
+
+        for fuzzy_k, fuzzy_v in self.fuzzies.items():
+            suspicious_reply = self.fuzzies[fuzzy_k].suspicious_responses
+            scenario[fuzzy_v.test_method] = [[(fuzzy_k, x, suspicious_reply) for x in fuzzy_v.tape]] if scenario.get(fuzzy_v.test_method) is None \
+                else scenario[fuzzy_v.test_method] + [[(fuzzy_k, x, suspicious_reply) for x in fuzzy_v.tape]]
+
+        combinator = Combinator()
+        for test_method, values in scenario.items():
+            scenario[test_method] = combinator.make_variants(*scenario[test_method], test_method=test_method)
+
+        for test_method, values in scenario.items():
+            scenario[test_method] = self.make_final_jsons(self.json_with_uuids, values)
+
+        for item in scenario.values():
+            self.result_jsons_for_fuzzing += item
+
         return self.result_jsons_for_fuzzing
 
     def indexate_fuzzies(self, json_like_obj: dict) -> Tuple[dict, dict]:

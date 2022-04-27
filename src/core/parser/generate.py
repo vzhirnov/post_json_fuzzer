@@ -66,6 +66,7 @@ def save_type_info(tup: tuple):
 
 
 def generate_strategy(strategy_info: tuple):
+    #  TODO do not use assert in release "builds"
     assert \
         all(x.endswith('$') for x in strategy_info if isinstance(x, str) and x.startswith('#')), \
         'Invalid syntax. Have you installed all the # characters and the terminator symbol $?'

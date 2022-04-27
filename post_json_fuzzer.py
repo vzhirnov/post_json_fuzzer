@@ -60,7 +60,7 @@ if __name__ == '__main__':
             raise Exception(f"Error: cannot make eval method for {get_filename(file)}")
 
     fuzzer = Fuzzer(d_base)
-    result_jsons = fuzzer.get_jsons_for_fuzzing()
+    result_jsons = fuzzer.get_result_jsons_for_fuzzing()
     # result_jsons = get_jsons_for_fuzzing(d_base)
 
     # TODO first of all, try to send request with default json body, make sure the reply is 200 OK

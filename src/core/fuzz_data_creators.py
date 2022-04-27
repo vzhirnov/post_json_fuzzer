@@ -33,7 +33,7 @@ def get_interesting_data(d_base: dict):
 
 
 def get_all_combinations(matched_items: dict):
-    keys, values = zip(*matched_items.items())  # TODO: assert if no ()s with strategy, just plain dict values
+    keys, values = zip(*matched_items.items())  # TODO: assert(no assert but IF) if no ()s with strategy, just plain dict values
     experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
     return experiments
 
