@@ -8,7 +8,7 @@ from src.data_structures.fuzzy import Fuzzy
 from src.utils.strings_handler import smart_replace
 from src.utils.dicts_handler import *
 from src.core.combinator import Combinator
-
+from src.utils.types_handler import is_evaluable  # make_evaluable
 
 class Fuzzer:
 
@@ -38,8 +38,9 @@ class Fuzzer:
                 json_subject = smart_replace(json_subject, pair[0], pair[1])
             for fuzzy_item_by_default in fuzzies_keys:
                 json_subject = smart_replace(json_subject, fuzzy_item_by_default, self.fuzzies[fuzzy_item_by_default].default_value)
-            json_subject = eval(json_subject)
-            final_jsons.append((json_subject, suspicious_replies))
+            if is_evaluable(json_subject):
+                json_subject = eval(json_subject)
+                final_jsons.append((json_subject, suspicious_replies))
         return final_jsons
 
     def get_result_jsons_for_fuzzing(self):

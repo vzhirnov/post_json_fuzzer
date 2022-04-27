@@ -23,13 +23,13 @@ class Fuzzy:
         self.tape = self.make_tape()
 
     def make_tape(self):
-        return list(set(self.data_set))
+        return self.data_set  # TODO make refactoring list(set(self.data_set))
 
     def __repr__(self):
         return f'Fuzzy({self.default_value})-{self.obj_id[:6]}'
 
     def __hash__(self):
-        return hash((self.obj_id, self.default_value, self.data_set))
+        return hash((self.obj_id, self.default_value))
 
     def __eq__(self, other):
         return isinstance(other, type(self)) and self.obj_id == other.obj_id

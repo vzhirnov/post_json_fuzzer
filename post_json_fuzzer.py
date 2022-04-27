@@ -1,4 +1,6 @@
 import argparse
+import time
+
 import aiohttp
 import asyncio
 import csv
@@ -7,11 +9,14 @@ import pathlib
 
 from datetime import datetime
 
+from src.strategies.metadata_aggregator import *
+
 from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 from src.utils.files_handler import get_filename
 from src.data_structures.fuzzer import Fuzzer
 from src.data_structures.fuzzy import Fuzzy, extract_here
 from src.data_structures.test_method import TestMethod as tm
+
 
 class ParseKwargs(argparse.Action):
 
@@ -32,7 +37,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "-url", type=str, dest="url", required=True, help="URL to which requests will be made.", default='127.0.0.1'
 )
-parser.add_argument('-file', type=str, dest='file', required=True, help="Path to file with pseudo-JSON metainfo.",)
+parser.add_argument('-file', type=str, dest='file', required=True, help="Path to file with pseudo-JSON metainfo.")
 parser.add_argument("--headers", '-H', nargs='*', default=dict(), help="Additional headers.", action=ParseKwargs)
 args = parser.parse_args()
 
@@ -44,11 +49,12 @@ if args.file:
     file = args.file
 
 
-async def post(url_aim, json_params, hdrs, request_metainfo):
+async def post(url_aim, json_params, hdrs, suspicious_replies):
     async with aiohttp.ClientSession() as session:
-        async with session.post(url_aim, json=json_params, headers=hdrs, ssl=False) as response:
+        async with session.post(url_aim, json=json_params, headers=hdrs, ssl=False, timeout=10000000) as response:
+            got_suspicious_reply = True if response.status in suspicious_replies else False
             response_body = await response.text()
-            return response, request_metainfo, response_body
+            return response, json_params, response_body, got_suspicious_reply
 
 
 if __name__ == '__main__':
@@ -70,7 +76,7 @@ if __name__ == '__main__':
     print(f'Start sending {len(coroutines)} requests:')
     results = loop.run_until_complete(asyncio.gather(*coroutines))
     for num, result in enumerate(results):
-        print(f'{num}: current request with {result[1]} parameters results {result[0].status}: {result[0].reason}')
+        print(f'{num}: {result[0].status} {result[0].reason} when sending JSON body as follows: {result[1]}')
 
     curr_path = os.path.dirname(os.path.abspath(__file__))
     results_dir = '/results/'  # TODO make parameter with name

@@ -21,3 +21,19 @@ def list_several_times(items, n):
     for _ in range(n):
         lst = list_once(lst)
     return lst
+
+
+def is_evaluable(s):
+    try:
+        eval(s)
+        return True
+    except:
+        return False
+
+# TODO in case of dict corrector as kind of dict mutator
+# def make_evaluable(s):
+#     try:
+#         eval(s)
+#         return True
+#     except:
+#         return False

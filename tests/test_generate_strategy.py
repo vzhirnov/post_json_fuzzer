@@ -2,7 +2,7 @@ import pytest
 
 from src.core.parser.generate import generate_strategy
 from src.strategies.registrars import register_strategy, register_method, register_generator
-from src.strategies.methods import mutate_all_elements_by_radamsa, add_border_cases
+from src.strategies.methods import mutate_all_by_radamsa, add_border_cases
 from src.strategies.generators import int_nums_in_range
 from src.utils.types_handler import list_once, list_several_times
 
@@ -23,7 +23,7 @@ def nullify_all_elements(items):
 
 
 register_method('nullify_all_elements', nullify_all_elements)
-register_method('mutate_all_elements_by_radamsa', mutate_all_elements_by_radamsa)
+register_method('mutate_all_elements_by_radamsa', mutate_all_by_radamsa)
 
 register_method('list_once', list_once)
 register_method('list_several_times', list_several_times)
