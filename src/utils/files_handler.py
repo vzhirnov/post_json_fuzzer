@@ -1,5 +1,15 @@
-from pathlib import Path
+import os
+
+import pathlib
 
 
 def get_filename(param):
-    return Path(param).stem
+    return pathlib.Path(param).stem
+
+
+def make_dir(dir_name: str) -> bool:
+    try:
+        pathlib.Path(dir_name).mkdir(parents=True, exist_ok=True)
+        return True
+    except Exception:
+        return False

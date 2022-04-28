@@ -22,6 +22,17 @@ def list_several_times(items, n):
         lst = list_once(lst)
     return lst
 
+# TODO:
+"""
+Try to replace function below with the following(its more safely):
+def isevaluatable(s):
+    import ast
+    try:
+        ast.literal_eval(s)
+        return True
+    except ValueError:
+        return False
+"""
 
 def is_evaluable(s):
     try:
