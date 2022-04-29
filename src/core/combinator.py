@@ -4,7 +4,6 @@ from src.data_structures.test_method import TestMethod as tm
 
 
 class Combinator:
-
     def __init__(self):
         pass
 

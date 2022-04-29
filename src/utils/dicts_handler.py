@@ -36,10 +36,14 @@ def find_obj_in_dict_and_replace_it(c_obj, obj_to_replace, replacement_obj):
         return replacement_obj
     elif isinstance(c_obj, list):
         for i, v in enumerate(c_obj):
-            c_obj[i] = find_obj_in_dict_and_replace_it(v, obj_to_replace, replacement_obj)
+            c_obj[i] = find_obj_in_dict_and_replace_it(
+                v, obj_to_replace, replacement_obj
+            )
     elif isinstance(c_obj, dict):
         for k, v in c_obj.items():
-            c_obj[k] = find_obj_in_dict_and_replace_it(v, obj_to_replace, replacement_obj)
+            c_obj[k] = find_obj_in_dict_and_replace_it(
+                v, obj_to_replace, replacement_obj
+            )
     return c_obj
 
 
@@ -48,5 +52,5 @@ def get_access_view_to_deep_key(dic_name, path):
     for item in path[:-1]:
         if isinstance(item, str):
             item = "'" + item + "'"
-        res += '[' + str(item) + ']'
+        res += "[" + str(item) + "]"
     return res

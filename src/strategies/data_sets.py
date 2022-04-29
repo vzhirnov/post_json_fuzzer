@@ -11,7 +11,10 @@ default = [
     "a",
     None,
     True,
-    False, [], ["test"], [0],
+    False,
+    [],
+    ["test"],
+    [0],
     ";",
     "#",
 ]

@@ -8,8 +8,13 @@ def extract_here(lst: list):
 
 
 class Fuzzy:
-
-    def __init__(self, default_value: None, data_set: tuple, test_method=tm.pair_wise, suspicious_responses=None):
+    def __init__(
+        self,
+        default_value,
+        data_set: tuple,
+        test_method=tm.pair_wise,
+        suspicious_responses=None,
+    ):
         self.obj_id = str(uuid.uuid4())
 
         self.default_value = default_value
@@ -26,7 +31,7 @@ class Fuzzy:
         return self.data_set  # TODO make refactoring list(set(self.data_set))
 
     def __repr__(self):
-        return f'Fuzzy({self.default_value})-{self.obj_id[:6]}'
+        return f"Fuzzy({self.default_value})-{self.obj_id[:6]}"
 
     def __hash__(self):
         return hash((self.obj_id, self.default_value))

@@ -27,7 +27,7 @@ def make_ast_literal_eval(item):
 
 def mutate_by_radamsa(item):
     rad = pyradamsa.Radamsa()
-    fuzzed_item = rad.fuzz(bytes(str(item), 'utf-8'), seed=random.randrange(10000))
+    fuzzed_item = rad.fuzz(bytes(str(item), "utf-8"), seed=random.randrange(10000))
     try:
         decoded_item = fuzzed_item.decode()
         # eval(decoded_item)  need to?
@@ -43,7 +43,11 @@ def mutate_all_by_radamsa(items):
         mutated_items = [mutate_by_radamsa(x) for x in items]
         for i, item in enumerate(mutated_items):
             try:
-                elem = items_types[i](item) if type(item) == items_types[i] else base64.b64encode(item).decode('ascii')
+                elem = (
+                    items_types[i](item)
+                    if type(item) == items_types[i]
+                    else base64.b64encode(item).decode("ascii")
+                )
                 res.append(elem)
             except Exception:
                 res.append(item)

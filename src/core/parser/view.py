@@ -20,5 +20,5 @@ def parser_view(text: str) -> list:
     )
     """
     a = re.findall(interesting_data, text)
-    res = [x for x in a if x != '']  # TODO fix it, get rid of excess quotes in res list
+    res = [x for x in a if x != ""]  # TODO fix it, get rid of excess quotes in res list
     return res

@@ -1,4 +1,5 @@
 from typing import Tuple
+
 # import uuid
 
 # from copy import deepcopy
@@ -10,14 +11,26 @@ from src.utils.dicts_handler import *
 from src.core.combinator import Combinator
 from src.utils.types_handler import is_evaluable  # make_evaluable
 
-class Fuzzer:
 
+class Fuzzer:
     def __init__(self, json_with_fuzzies: dict):
         self.json_with_fuzzies = deepcopy(json_with_fuzzies)
         self.json_with_uuids, self.fuzzies = self.indexate_fuzzies(json_with_fuzzies)
         self.default_json_body = self.get_default_json_body(self.json_with_uuids)
         self.result_jsons_for_fuzzing = []
-        self.default_suspicious_responses = [500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]
+        self.default_suspicious_responses = [
+            500,
+            501,
+            502,
+            503,
+            504,
+            505,
+            506,
+            507,
+            508,
+            510,
+            511,
+        ]
 
     def get_default_json_body(self, json_with_uuids: dict) -> dict:
         json_with_uuids = str(json_with_uuids)
@@ -37,7 +50,11 @@ class Fuzzer:
                 fuzzies_keys.remove(pair[0])
                 json_subject = smart_replace(json_subject, pair[0], pair[1])
             for fuzzy_item_by_default in fuzzies_keys:
-                json_subject = smart_replace(json_subject, fuzzy_item_by_default, self.fuzzies[fuzzy_item_by_default].default_value)
+                json_subject = smart_replace(
+                    json_subject,
+                    fuzzy_item_by_default,
+                    self.fuzzies[fuzzy_item_by_default].default_value,
+                )
             if is_evaluable(json_subject):
                 json_subject = eval(json_subject)
                 final_jsons.append((json_subject, suspicious_replies))
@@ -48,12 +65,18 @@ class Fuzzer:
 
         for fuzzy_k, fuzzy_v in self.fuzzies.items():
             suspicious_reply = self.fuzzies[fuzzy_k].suspicious_responses
-            scenario[fuzzy_v.test_method] = [[(fuzzy_k, x, suspicious_reply) for x in fuzzy_v.tape]] if scenario.get(fuzzy_v.test_method) is None \
-                else scenario[fuzzy_v.test_method] + [[(fuzzy_k, x, suspicious_reply) for x in fuzzy_v.tape]]
+            scenario[fuzzy_v.test_method] = (
+                [[(fuzzy_k, x, suspicious_reply) for x in fuzzy_v.tape]]
+                if scenario.get(fuzzy_v.test_method) is None
+                else scenario[fuzzy_v.test_method]
+                + [[(fuzzy_k, x, suspicious_reply) for x in fuzzy_v.tape]]
+            )
 
         combinator = Combinator()
         for test_method, values in scenario.items():
-            scenario[test_method] = combinator.make_variants(*scenario[test_method], test_method=test_method)
+            scenario[test_method] = combinator.make_variants(
+                *scenario[test_method], test_method=test_method
+            )
 
         for test_method, values in scenario.items():
             scenario[test_method] = self.make_final_jsons(self.json_with_uuids, values)
@@ -85,13 +108,19 @@ class Fuzzer:
                 else:
                     find_path(d_res, k)
                     path_to_curr_deep_key = result.pop()
-                    path_to_required_old_deep_key = path_to_curr_deep_key[:-1] + [uuid_key]
+                    path_to_required_old_deep_key = path_to_curr_deep_key[:-1] + [
+                        uuid_key
+                    ]
 
-                    access_view_to_key = get_access_view_to_deep_key('d_res', path_to_curr_deep_key)
+                    access_view_to_key = get_access_view_to_deep_key(
+                        "d_res", path_to_curr_deep_key
+                    )
                     a = access_view_to_key + f"['{uuid_key}']" + " = " + f"{v}"
                     exec(a)
 
-                    access_view_to_old_deep_key = get_access_view_to_deep_key('d_res', path_to_required_old_deep_key)
+                    access_view_to_old_deep_key = get_access_view_to_deep_key(
+                        "d_res", path_to_required_old_deep_key
+                    )
 
                     b = "del " + access_view_to_old_deep_key + f"[k]"
                     exec(b)
@@ -111,7 +140,9 @@ class Fuzzer:
 
             # make all k:v items unique, even if they are identical
             # but are in different places in the dictionary
-            kv_ids_sum = id(k) + id(v) % unique_counter  # TODO: delete it due to smart obj_id hashing
+            kv_ids_sum = (
+                id(k) + id(v) % unique_counter
+            )  # TODO: delete it due to smart obj_id hashing
 
             if isinstance(v, dict):
                 if kv_ids_sum not in visited:

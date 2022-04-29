@@ -2,7 +2,7 @@ from texttable import Texttable
 
 
 def add_line_separator():
-    print('#' * 120)
+    print("#" * 120)
 
 
 def show_start_fuzz_info(route: str, headers, files_to_handle):
@@ -11,26 +11,26 @@ def show_start_fuzz_info(route: str, headers, files_to_handle):
     if isinstance(headers, str):
         headers = [headers]
 
-    print('Route:')
-    print(f'\t{route}')
+    print("Route:")
+    print(f"\t{route}")
 
-    print('Custom headers:')
+    print("Custom headers:")
     for header in headers:
-        print(f'\t{header}')
-    print('Cartridges with fuzzies to handle:')
+        print(f"\t{header}")
+    print("Cartridges with fuzzies to handle:")
     for file in files_to_handle:
-        print(f'\t{file}')
+        print(f"\t{file}")
 
 
 def show_fuzz_results_brief(file: str, actual_results: dict):
-    print('\nGot the following results:')
+    print("\nGot the following results:")
     table = Texttable()
     table.set_deco(Texttable.HEADER)
 
-    titles = ['Cartridge']
+    titles = ["Cartridge"]
     res = [file]
     for key, value in actual_results.items():
-        titles.append(' '.join([str(x) for x in key]))
+        titles.append(" ".join([str(x) for x in key]))
         res.append(len(actual_results[key]))
 
     # table.set_cols_dtype(['t',  # text
@@ -43,5 +43,3 @@ def show_fuzz_results_brief(file: str, actual_results: dict):
 
     table.add_rows([titles, res])
     print(table.draw())
-
-

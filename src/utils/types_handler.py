@@ -22,6 +22,7 @@ def list_several_times(items, n):
         lst = list_once(lst)
     return lst
 
+
 # TODO:
 """
 Try to replace function below with the following(its more safely):
@@ -34,12 +35,14 @@ def isevaluatable(s):
         return False
 """
 
+
 def is_evaluable(s):
     try:
         eval(s)
         return True
     except:
         return False
+
 
 # TODO in case of dict corrector as kind of dict mutator
 # def make_evaluable(s):
