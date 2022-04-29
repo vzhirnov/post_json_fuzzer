@@ -1,11 +1,8 @@
 import argparse
-import time
 import tqdm
 import aiohttp
 import asyncio
-import csv
 import os
-import pathlib
 
 from datetime import datetime
 
@@ -13,12 +10,13 @@ from src.strategies.metadata_aggregator import *
 
 from src.utils.files_handler import get_filename, make_dir
 from src.data_structures.fuzzer import Fuzzer
-from src.data_structures.fuzzy import Fuzzy, extract_here
+from src.data_structures.fuzzy import Fuzzy
 from src.data_structures.test_method import TestMethod as tm
 from src.utils.console_widgets import (
     show_start_fuzz_info,
     show_fuzz_results_brief,
     add_line_separator,
+    show_post_json_fuzzer_title,
 )
 
 
@@ -111,6 +109,8 @@ if __name__ == "__main__":
 
     # TODO first of all, try to send request with default json body, make sure the reply is 200 OK
 
+    add_line_separator()
+    show_post_json_fuzzer_title()
     add_line_separator()
     show_start_fuzz_info(url, headers, file)
     add_line_separator()

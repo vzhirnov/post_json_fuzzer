@@ -5,6 +5,10 @@ def add_line_separator():
     print("#" * 120)
 
 
+def show_post_json_fuzzer_title():
+    print("POST-JSON-FUZZER v2.0.0")
+
+
 def show_start_fuzz_info(route: str, headers, files_to_handle):
     if isinstance(files_to_handle, str):
         files_to_handle = [files_to_handle]
