@@ -1,15 +1,10 @@
 from typing import Tuple
 
-# import uuid
-
-# from copy import deepcopy
-from collections import defaultdict
-
 from src.data_structures.fuzzy import Fuzzy
 from src.utils.strings_handler import smart_replace
 from src.utils.dicts_handler import *
 from src.core.combinator import Combinator
-from src.utils.types_handler import is_evaluable  # make_evaluable
+from src.utils.types_handler import is_evaluable  # TODO make_evaluable ?
 
 
 class Fuzzer:

@@ -11,7 +11,6 @@ from datetime import datetime
 
 from src.strategies.metadata_aggregator import *
 
-from src.core.fuzz_data_creators import get_jsons_for_fuzzing
 from src.utils.files_handler import get_filename, make_dir
 from src.data_structures.fuzzer import Fuzzer
 from src.data_structures.fuzzy import Fuzzy, extract_here

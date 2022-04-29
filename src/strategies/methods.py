@@ -1,28 +1,8 @@
-import ast
 import random
 import pyradamsa
 import base64
 
 from collections.abc import Iterable
-
-
-def restore_data_type(littered_data: list):
-    l = []
-    type_add_info = ["^s", "^b"]
-    for littered_item in littered_data:
-        try:
-            c = ast.literal_eval(littered_item)
-            l.append(c)
-        except Exception:
-            if littered_item.endswith(tuple(type_add_info)):
-                index = littered_item.rfind("^")
-                littered_item = littered_item[:index]
-            l.append(littered_item)
-    return l
-
-
-def make_ast_literal_eval(item):
-    return [ast.literal_eval(x) for x in item]
 
 
 def mutate_by_radamsa(item):

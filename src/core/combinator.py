@@ -29,16 +29,9 @@ class Combinator:
         return list(product(*scenario))
 
     def make_variants(self, *scenario: list, test_method: tm):
-        # return {
-        #     tm.pair_wise: self.make_pairs(*scenario),
-        #     tm.triple_wise: self.make_triplets(*scenario),
-        #     tm.combinations: self.make_combinations(*scenario)
-        # }.get(test_method, tm.pair_wise)
+        return {
+            tm.pair_wise: self.make_pairs(*scenario),
+            tm.triple_wise: self.make_triplets(*scenario),
+            tm.combinations: self.make_combinations(*scenario)
+        }.get(test_method, tm.pair_wise)
 
-        if test_method == tm.pair_wise:
-            return self.make_pairs(*scenario)
-        elif test_method == tm.triple_wise:
-            return self.make_triplets(*scenario)
-        elif test_method == tm.combinations:
-            return self.make_combinations(*scenario)
-        return self.make_pairs(*scenario)
