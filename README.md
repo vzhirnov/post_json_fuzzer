@@ -1,6 +1,9 @@
 # POST JSON Fuzzer
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
+[![Required OS](https://img.shields.io/badge/OS-Linux%20based-blue)](https://en.wikipedia.org/wiki/Linux)
+[![Python3 Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/psf/black)
+[![Last Commit](https://img.shields.io/github/last-commit/vzhirnov/post_json_fuzzer/master)](https://github.com/vzhirnov/post_json_fuzzer)
 ## Table of Contents
 
 0. [Description](#Description)
