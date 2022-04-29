@@ -37,11 +37,6 @@ def show_fuzz_results_brief(file: str, actual_results: dict):
         titles.append(" ".join([str(x) for x in key]))
         res.append(len(actual_results[key]))
 
-    # table.set_cols_dtype(['t',  # text
-    #                       'f',  # float (decimal)
-    #                       'e',  # float (exponent)
-    #                       'i',  # integer
-    #                       'a'])  # automatic
     table.set_header_align(["l" for x in titles])
     table.set_cols_align(["l" if i == 0 else "r" for i, x in enumerate(res)])
 

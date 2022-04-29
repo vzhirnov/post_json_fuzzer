@@ -4,7 +4,7 @@ from src.data_structures.fuzzy import Fuzzy
 from src.utils.strings_handler import smart_replace
 from src.utils.dicts_handler import *
 from src.core.combinator import Combinator
-from src.utils.types_handler import is_evaluable  # TODO make_evaluable ?
+from src.utils.types_handler import is_evaluable
 
 
 class Fuzzer:
@@ -55,7 +55,7 @@ class Fuzzer:
                 final_jsons.append((json_subject, suspicious_replies))
         return final_jsons
 
-    def get_result_jsons_for_fuzzing(self):
+    def get_result_jsons_for_fuzzing(self) -> list:
         scenario = {}
 
         for fuzzy_k, fuzzy_v in self.fuzzies.items():
@@ -137,7 +137,7 @@ class Fuzzer:
             # but are in different places in the dictionary
             kv_ids_sum = (
                 id(k) + id(v) % unique_counter
-            )  # TODO: delete it due to smart obj_id hashing
+            )  # TODO: check if this could be removed because of smart obj_id hashing
 
             if isinstance(v, dict):
                 if kv_ids_sum not in visited:

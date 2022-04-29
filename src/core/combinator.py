@@ -10,7 +10,7 @@ class Combinator:
     def make_n_wises(self, *scenario: list, n: int) -> list:
         res = list()
 
-        def n_wises(*scenario):
+        def n_wises(*scenario: list):
             for t in combinations(scenario, n):
                 for pair in product(*t):
                     yield pair

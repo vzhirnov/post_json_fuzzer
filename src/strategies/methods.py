@@ -10,7 +10,6 @@ def mutate_by_radamsa(item):
     fuzzed_item = rad.fuzz(bytes(str(item), "utf-8"), seed=random.randrange(10000))
     try:
         decoded_item = fuzzed_item.decode()
-        # eval(decoded_item)  need to?
         return decoded_item
     except Exception:
         return fuzzed_item

@@ -1,5 +1,7 @@
 import uuid
 
+import collections.abc
+
 from src.data_structures.test_method import TestMethod as tm
 
 
@@ -28,7 +30,14 @@ class Fuzzy:
         self.tape = self.make_tape()
 
     def make_tape(self):
-        return self.data_set  # TODO make refactoring list(set(self.data_set))
+        s = set()
+        lst = []
+        for item in self.data_set:
+            if isinstance(item, collections.Hashable):
+                s.add(item)
+            else:
+                lst.append(item)
+        return lst + list(s)
 
     def __repr__(self):
         return f"Fuzzy({self.default_value})-{self.obj_id[:6]}"

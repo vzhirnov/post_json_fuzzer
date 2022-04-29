@@ -138,7 +138,7 @@ if __name__ == "__main__":
     curr_date_time = datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
     curr_path = curr_path + "/" + get_filename(file) + "_" + curr_date_time
     if not make_dir(curr_path):
-        raise Exception(f"Error: cannot create {file} directory")  # TODO wrong dir name
+        raise Exception(f"Error: cannot create {get_filename(file)} directory")
 
     for request_result, jsons_to_save in result_to_save.items():
         file_name = str(request_result[0])
