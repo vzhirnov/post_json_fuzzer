@@ -1,4 +1,9 @@
 from texttable import Texttable
+import os
+
+
+def clear_console():
+    os.system('clear')
 
 
 def add_line_separator():
@@ -29,8 +34,8 @@ def show_start_fuzz_info(route: str, headers, files_to_handle):
 def show_fuzz_results_brief(file: str, actual_results: dict):
     print("\nGot the following results:")
     table = Texttable()
-    table.set_deco(Texttable.HEADER)
-
+    table.set_deco(Texttable.BORDER | Texttable.HEADER | Texttable.VLINES)
+    table.set_max_width(440)
     titles = ["Cartridge"]
     res = [file]
     for key, value in actual_results.items():

@@ -17,6 +17,7 @@ from src.utils.console_widgets import (
     show_fuzz_results_brief,
     add_line_separator,
     show_post_json_fuzzer_title,
+    clear_console
 )
 
 
@@ -108,7 +109,7 @@ if __name__ == "__main__":
     result_jsons = fuzzer.get_result_jsons_for_fuzzing()
 
     # TODO first of all, try to send request with default json body, make sure the reply is 200 OK
-
+    clear_console()
     add_line_separator()
     show_post_json_fuzzer_title()
     add_line_separator()
@@ -120,6 +121,13 @@ if __name__ == "__main__":
 
     result_to_save = {}
     for response in actual_responses:  # TODO replace tuples with named tuple
+        if response[3]['suspicious_reply']:
+            result_to_save[('Suspicious', response[0].status, response[0].reason)] = (
+                [response[1]]
+                if result_to_save.get(('Suspicious', response[0].status, response[0].reason)) is None
+                else result_to_save[('Suspicious', response[0].status, response[0].reason)] + [response[1]]
+            )
+            continue
         result_to_save[(response[0].status, response[0].reason)] = (
             [response[1]]
             if result_to_save.get((response[0].status, response[0].reason)) is None
@@ -147,24 +155,3 @@ if __name__ == "__main__":
         with open(path_to_file, mode="w") as results_file:
             for item in jsons_to_save:
                 results_file.write(f"{item}\n")
-
-# TODO known issues:
-# cannot make case with lack of current parameter AND doubled string
-
-# TODO improvements
-# ssdeep hash for quick reply investigation
-# replace list with set for not getting duplicates items
-# add (for Docker) dir with custom generators/mutators ot both dirs. First, post_json_fuzzrt will try to find and registrate those generators in those folders
-# USE both structed mutations(my own or try to find a good project) AND random(radamsa)
-# add system time mutator (time bombs) - libfaketime
-# add lazy generator(lazy?): "id": (132, '#FUNC#random_every_time$'), "test": (1, 2, 3) means that for every permutation
-# id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc. make it
-# universal: #FUNC#LAZY#random_every_time$'
-
-# add parameters from other hints and services (to HintsdB from APIGW)
-# merge parameters from other hints and services, other variant /|\
-# add id field to csv(-DATASET!!!) as first field
-
-# TODO results analys:
-# long execution check
-# ssdeep suspicious (99% 404 ... but 1% is .........)
