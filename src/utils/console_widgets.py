@@ -6,6 +6,10 @@ def clear_console():
     os.system('clear')
 
 
+def add_blank_line():
+    print()
+
+
 def add_line_separator():
     print("#" * 120)
 

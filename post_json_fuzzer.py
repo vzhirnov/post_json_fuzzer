@@ -17,7 +17,8 @@ from src.utils.console_widgets import (
     show_fuzz_results_brief,
     add_line_separator,
     show_post_json_fuzzer_title,
-    clear_console
+    clear_console,
+    add_blank_line
 )
 
 
@@ -70,6 +71,18 @@ if args.file:
     file = args.file
 
 
+async def check_service_is_available(url_aim, hdrs):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url_aim, headers=hdrs, ssl=False) as response:
+            print("Fuzzzed service status: ", end="")
+            if response.status in range(500, 512):  # TODO replace with const list
+                print(f"{response.status}")
+                print("Error: cannot tart fuzzing because the service didn't respond with a 200 code")
+                exit(0)
+            else:
+                print("OK")
+
+
 async def post(url_aim, json_params, hdrs, suspicious_replies):
     async with aiohttp.ClientSession() as session:
         async with session.post(
@@ -108,12 +121,13 @@ if __name__ == "__main__":
     fuzzer = Fuzzer(d_base)
     result_jsons = fuzzer.get_result_jsons_for_fuzzing()
 
-    # TODO first of all, try to send request with default json body, make sure the reply is 200 OK
     clear_console()
     add_line_separator()
     show_post_json_fuzzer_title()
     add_line_separator()
     show_start_fuzz_info(url, headers, file)
+    add_blank_line()
+    asyncio.run(check_service_is_available(url_aim=url, hdrs=headers))
     add_line_separator()
 
     print(f"Start fuzzing with {len(result_jsons)} requests:")
