@@ -53,7 +53,7 @@ class Fuzzer:
                 )
             if is_evaluable(json_subject):
                 json_subject = eval(json_subject)
-                final_jsons.append((json_subject, suspicious_replies))
+                final_jsons.append((json_subject, list(set(suspicious_replies))))
         return final_jsons
 
     def get_result_jsons_for_fuzzing(self) -> list:

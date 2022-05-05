@@ -35,3 +35,4 @@ Tasks for future:
        It could be execute in bash loop script with i as -n(after all is fixed)
     2. from string import Template - try to replace str(dict)/smart_replace and others by substitute operation
     3. check if Python is > 3.6 because of potential using of named tuples
+    4. *get_pack_by_methods("client_id", [list_once, list_several_times]) - try to add parameters for every function
