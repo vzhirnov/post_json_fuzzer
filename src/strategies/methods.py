@@ -71,12 +71,11 @@ def list_once(items):
     return [items]
 
 
-def list_several_times(items, n=2):
-    # if not n.isdigit():
-    #     return items
-    # else:
-    #     n = ast.literal_eval(n)
-    lst = items
-    for _ in range(n):
-        lst = list_once(lst)
-    return lst
+def list_several_times(n=2):
+    def list_it(items):
+        lst = items
+        for _ in range(n):
+            lst = list_once(lst)
+        return lst
+
+    return list_it

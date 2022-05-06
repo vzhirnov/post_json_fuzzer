@@ -19,7 +19,7 @@ Business logic tasks:
     14. Add structed mutations(testing with structly-correct randon data input)
 
 Routine tasks:
-    5. Attach file with patterns for fuzzing  --> EASY
+    5. Attach file with patterns for fuzzing  --> DONE
     8. Make sure that all items in tape are unique
     10. Add option for adding dir with custom generators/mutators
         First, post_json_fuzzer will try to find and registrate those generators in those folders

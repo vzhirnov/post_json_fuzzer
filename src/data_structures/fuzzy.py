@@ -31,12 +31,18 @@ class Fuzzy:
 
     def make_tape(self):
         s = set()
+        s_str = set()
         lst = []
         for item in self.data_set:
             if isinstance(item, collections.Hashable):
                 s.add(item)
             else:
-                lst.append(item)
+                s_item = str(item)
+                if s_item not in s_str:
+                    s_str.add(s_item)
+                    lst.append(item)
+                else:
+                    continue
         return lst + list(s)
 
     def __repr__(self):

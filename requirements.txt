@@ -1,8 +1,8 @@
 aiohttp~=3.8.1
 asyncio~=3.4.3
-pytest~=7.1.1
-pyradamsa~=0.1.1
-tqdm~=4.64.0
-texttable~=1.6.4
+allpairspy~=2.5.0
 black~=22.3.0
-allpairspy
+pyradamsa~=0.1.1
+pytest~=7.1.1
+texttable~=1.6.4
+tqdm~=4.64.0

@@ -73,20 +73,23 @@ if args.file:
 
 async def check_service_is_available(url_aim, hdrs):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url_aim, headers=hdrs, ssl=False) as response:
-            print("Fuzzzed service status: ", end="")
-            if response.status in range(500, 512):  # TODO replace with const list
-                print(f"{response.status}")
-                print("Error: cannot tart fuzzing because the service didn't respond with a 200 code")
-                exit(0)
-            else:
-                print("OK")
+        try:
+            async with session.get(url_aim, headers=hdrs, ssl=False) as response:
+                if response.status in range(500, 512):  # TODO replace with const list
+                    print(f"{response.status}")
+                    print("Error: cannot tart fuzzing because the service didn't respond with a 200 code")
+                    exit(0)
+                else:
+                    print("OK")
+        except Exception:
+            print("Error: [response[1]]Service is unavailable")
+            exit(0)
 
 
 async def post(url_aim, json_params, hdrs, suspicious_replies):
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            url_aim, json=json_params, headers=hdrs, ssl=False, timeout=10000000
+                url_aim, json=json_params, headers=hdrs, ssl=False, timeout=10000000
         ) as response:
             got_suspicious_reply = (
                 {"suspicious_reply": True}
@@ -127,6 +130,7 @@ if __name__ == "__main__":
     add_line_separator()
     show_start_fuzz_info(url, headers, file)
     add_blank_line()
+    print("Fuzzzed service status: ", end="")
     asyncio.run(check_service_is_available(url_aim=url, hdrs=headers))
     add_line_separator()
 
