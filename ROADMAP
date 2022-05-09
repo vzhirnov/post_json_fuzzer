@@ -15,12 +15,16 @@ Business logic tasks:
         4.1 action mytator by mutation testig tools(extract code or use tool as is to get mutated code bundle)
         4.2 JSON mutator - big project with semantic mutation, many questions how to realize
     6. RegEx generator (as UUID-regex or something else)
-    7. Realize lack of current parameter AND doubled one
-    14. Add structed mutations(testing with structly-correct randon data input)
+    7. Realize 1) lack of current parameter and 2) doubled one - DONE,
+       can be realized easy with
+        1) Fuzzy itself with any dataset value wich differs from base one
+        2) One mode Fuzzy with all required params for curre nt JSON in corresponding place
+           (e.g. for clientid create another dummy Fuzzy with "dummy" default name and clientid in dataset)
+    14. Add structed mutations(testing with structly-correct random data input)
 
 Routine tasks:
     5. Attach file with patterns for fuzzing  --> DONE
-    8. Make sure that all items in tape are unique
+    8. Make sure that all items in tape are unique - DONE
     10. Add option for adding dir with custom generators/mutators
         First, post_json_fuzzer will try to find and registrate those generators in those folders
     11. Add fuzzer.log file with deep log info: as in  --> EASY

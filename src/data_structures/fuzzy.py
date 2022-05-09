@@ -14,7 +14,7 @@ class Fuzzy:
         self,
         default_value,
         data_set: tuple,
-        test_method=tm.pair_wise,
+        test_method=None,
         suspicious_responses=None,
     ):
         self.obj_id = str(uuid.uuid4())
