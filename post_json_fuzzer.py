@@ -88,7 +88,7 @@ async def check_service_is_available(url_aim, hdrs):
 
 
 async def post(url_aim, json_params, hdrs, suspicious_replies):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         async with session.post(
                 url_aim, json=json_params, headers=hdrs, ssl=False, timeout=10000000
         ) as response:

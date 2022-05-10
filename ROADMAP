@@ -9,6 +9,9 @@ Architectural tasks:
         merge parameters from other hints and services, other variant /|\
     Additional tasks:
         types refactoring - make named tuple where required
+    12. Try to addd lazy generator random_every_time$ with all other params which could be pairwise:
+        id": (132, '#FUNC#random_every_time$'), "test": (1, 2, 3) means that for every permutation
+        id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc. make it
 
 Business logic tasks:
     4. Semantic mutation:  --> HARD
@@ -29,9 +32,7 @@ Routine tasks:
         First, post_json_fuzzer will try to find and registrate those generators in those folders
     11. Add fuzzer.log file with deep log info: as in  --> EASY
         https://s3.amazonaws.com/clickhouse-test-reports/33698/ea527ff7790372cd3ecb0bac111fd5af44c50103/fuzzer_astfuzzertsan,actions//fuzzer.log
-    12. Try to addd lazy generator random_every_time$ with all other params which could be pairwise:
-        id": (132, '#FUNC#random_every_time$'), "test": (1, 2, 3) means that for every permutation
-        id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc. make it
+
 
 
 Tasks for future:
@@ -39,4 +40,4 @@ Tasks for future:
        It could be execute in bash loop script with i as -n(after all is fixed)
     2. from string import Template - try to replace str(dict)/smart_replace and others by substitute operation
     3. check if Python is > 3.6 because of potential using of named tuples
-    4. *get_pack_by_methods("client_id", [list_once, list_several_times]) - try to add parameters for every function
+    4. *get_pack_by_methods("client_id", [list_once, list_several_times]) - try to add parameters for every function  --> DONE

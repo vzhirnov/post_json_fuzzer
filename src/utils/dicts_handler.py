@@ -1,3 +1,5 @@
+import ast
+
 from copy import copy, deepcopy
 
 
@@ -45,3 +47,22 @@ def get_access_view_to_deep_key(dic_name, path):
             item = "'" + item + "'"
         res += "[" + str(item) + "]"
     return res
+
+
+def deep_sorted(obj, *, key=None, reverse=False):
+    if isinstance(obj, dict):
+        return {k: deep_sorted(v, key=key, reverse=reverse) for k, v in sorted(obj.items(), key=key, reverse=reverse)}
+    if isinstance(obj, list):
+        return [deep_sorted(v, key=key, reverse=reverse) for i, v in sorted(enumerate(obj), key=key, reverse=reverse)]
+    return obj
+
+
+def make_dictionary_items_unique(jsons: list):
+    final_jsons = deep_sorted(jsons)
+    res_set = set()
+    for item in final_jsons:
+        res_set.add(str(item))
+    res_list = list()
+    for item in res_set:
+        res_list.append(ast.literal_eval(item))
+    return res_list

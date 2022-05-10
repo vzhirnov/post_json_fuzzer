@@ -1,4 +1,5 @@
 from typing import Tuple, List
+import ast
 
 from src.data_structures.fuzzy import Fuzzy
 from src.utils.strings_handler import smart_replace
@@ -76,6 +77,7 @@ class Fuzzer:
                         json_subject = eval(json_subject)
                         final_jsons.append((json_subject, list(set(suspicious_replies))))
 
+        final_jsons = make_dictionary_items_unique(final_jsons)
         return final_jsons
 
     def get_result_jsons_for_fuzzing(self) -> list:
@@ -100,7 +102,6 @@ class Fuzzer:
 
         for item in scenario.values():
             self.result_jsons_for_fuzzing += item
-
         return self.result_jsons_for_fuzzing
 
     def indexate_fuzzies(self, json_like_obj: dict) -> Tuple[dict, dict]:
