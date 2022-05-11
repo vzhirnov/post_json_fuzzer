@@ -12,20 +12,25 @@ Architectural tasks:
     12. Try to addd lazy generator random_every_time$ with all other params which could be pairwise:
         id": (132, '#FUNC#random_every_time$'), "test": (1, 2, 3) means that for every permutation
         id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc. make it
+    15. Save data results during fuzzing
 
 Business logic tasks:
+    Compare my fuzzer with this one - https://github.com/bahruzjabiyev/t-reqs-http-fuzzer
     4. Semantic mutation:  --> HARD
         4.1 action mytator by mutation testig tools(extract code or use tool as is to get mutated code bundle)
         4.2 JSON mutator - big project with semantic mutation, many questions how to realize
-    6. RegEx generator (as UUID-regex or something else)
+    6. RegEx generator (as UUID-regex or something else) - look here https://blog.intigriti.com/2021/03/17/bug-bytes-114-binary-fuzzing-for-web-vulnerabilities-leaky-page-nahamcon2021/
     7. Realize 1) lack of current parameter and 2) doubled one - DONE,
        can be realized easy with
         1) Fuzzy itself with any dataset value wich differs from base one
         2) One mode Fuzzy with all required params for curre nt JSON in corresponding place
            (e.g. for clientid create another dummy Fuzzy with "dummy" default name and clientid in dataset)
     14. Add structed mutations(testing with structly-correct random data input)
+    16. Try to realize lamport talks for services to get error information
+    17. I'm lucky parameter
 
 Routine tasks:
+    Recursively decrease delay between 500s for second check
     5. Attach file with patterns for fuzzing  --> DONE
     8. Make sure that all items in tape are unique - DONE
     10. Add option for adding dir with custom generators/mutators

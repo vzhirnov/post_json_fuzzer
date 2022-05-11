@@ -1,4 +1,6 @@
 import argparse
+import time
+
 import tqdm
 import aiohttp
 import asyncio
@@ -89,17 +91,22 @@ async def check_service_is_available(url_aim, hdrs):
 
 async def post(url_aim, json_params, hdrs, suspicious_replies):
     async with aiohttp.ClientSession(trust_env=True) as session:
-        async with session.post(
-                url_aim, json=json_params, headers=hdrs, ssl=False, timeout=10000000
-        ) as response:
-            got_suspicious_reply = (
-                {"suspicious_reply": True}
-                if response.status in suspicious_replies
-                else {"suspicious_reply": False}
-            )
-            response_body = await response.text()
-            return response, json_params, response_body, got_suspicious_reply
-
+        for _ in range(120):
+            try:
+                async with session.post(
+                        url_aim, json=json_params, headers=hdrs, ssl=False, timeout=10000000
+                ) as response:
+                    got_suspicious_reply = (
+                        {"suspicious_reply": True}
+                        if response.status in suspicious_replies
+                        else {"suspicious_reply": False}
+                    )
+                    response_body = await response.text()
+                    return response, json_params, response_body, got_suspicious_reply
+            except Exception:  # TODO handle exception correctly to get correct return at the end
+                time.sleep(1)
+                continue
+        return None, {}, None, False
 
 async def start_fuzz(jsons):
     request_tasks = [
