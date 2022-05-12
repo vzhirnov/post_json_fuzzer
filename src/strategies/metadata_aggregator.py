@@ -7,7 +7,7 @@ from src.strategies.methods import (
     add_from_file,
     get_pack_by_methods,
     list_once,
-    list_several_times
+    list_several_times,
 )
 
 data_sets = {"default": default}
@@ -19,7 +19,7 @@ methods = {
     "add_from_file": add_from_file,
     "get_pack_by_methods": get_pack_by_methods,
     "list_once": list_once,
-    "list_several_times": list_several_times
+    "list_several_times": list_several_times,
 }
 
 generators = {"int_nums_in_range": int_nums_in_range}

@@ -51,9 +51,15 @@ def get_access_view_to_deep_key(dic_name, path):
 
 def deep_sorted(obj, *, key=None, reverse=False):
     if isinstance(obj, dict):
-        return {k: deep_sorted(v, key=key, reverse=reverse) for k, v in sorted(obj.items(), key=key, reverse=reverse)}
+        return {
+            k: deep_sorted(v, key=key, reverse=reverse)
+            for k, v in sorted(obj.items(), key=key, reverse=reverse)
+        }
     if isinstance(obj, list):
-        return [deep_sorted(v, key=key, reverse=reverse) for i, v in sorted(enumerate(obj), key=key, reverse=reverse)]
+        return [
+            deep_sorted(v, key=key, reverse=reverse)
+            for i, v in sorted(enumerate(obj), key=key, reverse=reverse)
+        ]
     return obj
 
 

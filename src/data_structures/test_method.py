@@ -2,7 +2,9 @@ import enum
 
 
 @enum.unique
-class TestMethod(enum.Enum):  # TODO make aliasas for several values e.g. (pair_wise | miss_it) - need to?
+class TestMethod(
+    enum.Enum
+):  # TODO make aliasas for several values e.g. (pair_wise | miss_it) - need to?
     pair_wise = 7  # DONE: real pair_wise
     combinations = 6  # DONE: make all combinations
 
@@ -15,4 +17,4 @@ class TestMethod(enum.Enum):  # TODO make aliasas for several values e.g. (pair_
     miss_it = 3
     duplicate_it = 2  # TODO: try to bind key and value and make them be missed
 
-    hypothesis = 1    # TODO: description WIP
+    hypothesis = 1  # TODO: description WIP

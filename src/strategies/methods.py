@@ -1,8 +1,6 @@
 import random
 import pyradamsa
 import base64
-import os
-import ast
 
 from collections.abc import Iterable
 from src.utils.types_handler import is_evaluable
@@ -47,7 +45,7 @@ def add_border_cases(left_num: int, right_num: int) -> list:
 def add_from_file(file_name: str) -> list:
     res = []
     root_dir = DefaultValues.PROJECT_ROOT_DIR
-    path_to_file = os.path.join(root_dir, file_name)
+    path_to_file = root_dir / file_name
     with open(path_to_file) as file:
         for line in file:
             l = line.rstrip()

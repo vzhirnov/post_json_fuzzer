@@ -38,14 +38,20 @@ class Fuzzer:
         final_jsons = []
         for metadata_package in bundle:
             suspicious_replies = []
-            if isinstance(metadata_package, List) and all(isinstance(x, Metadata) for x in metadata_package):
+            if isinstance(metadata_package, List) and all(
+                isinstance(x, Metadata) for x in metadata_package
+            ):
                 for metadata in metadata_package:
                     json_subject = str(deepcopy(json_with_uuids))
                     fuzzies_keys = list(self.fuzzies.keys())
                     if metadata.suspicious_reply:
                         suspicious_replies += metadata.suspicious_reply
-                    fuzzies_keys.remove(metadata.uuid) if metadata.uuid in fuzzies_keys else True
-                    json_subject = smart_replace(json_subject, metadata.uuid, metadata.fuzz_data)
+                    fuzzies_keys.remove(
+                        metadata.uuid
+                    ) if metadata.uuid in fuzzies_keys else True
+                    json_subject = smart_replace(
+                        json_subject, metadata.uuid, metadata.fuzz_data
+                    )
 
                     for fuzzy_item_by_default in fuzzies_keys:
                         json_subject = smart_replace(
@@ -55,7 +61,9 @@ class Fuzzer:
                         )
                     if is_evaluable(json_subject):
                         json_subject = eval(json_subject)
-                        final_jsons.append((json_subject, list(set(suspicious_replies))))
+                        final_jsons.append(
+                            (json_subject, list(set(suspicious_replies)))
+                        )
             else:
                 for metadata_item in metadata_package:
                     json_subject = str(deepcopy(json_with_uuids))
@@ -63,8 +71,12 @@ class Fuzzer:
                     for metadata in metadata_item:
                         if metadata.suspicious_reply:
                             suspicious_replies += metadata.suspicious_reply
-                        fuzzies_keys.remove(metadata.uuid) if metadata.uuid in fuzzies_keys else True
-                        json_subject = smart_replace(json_subject, metadata.uuid, metadata.fuzz_data)
+                        fuzzies_keys.remove(
+                            metadata.uuid
+                        ) if metadata.uuid in fuzzies_keys else True
+                        json_subject = smart_replace(
+                            json_subject, metadata.uuid, metadata.fuzz_data
+                        )
 
                     for fuzzy_item_by_default in fuzzies_keys:
                         json_subject = smart_replace(
@@ -74,7 +86,9 @@ class Fuzzer:
                         )
                     if is_evaluable(json_subject):
                         json_subject = eval(json_subject)
-                        final_jsons.append((json_subject, list(set(suspicious_replies))))
+                        final_jsons.append(
+                            (json_subject, list(set(suspicious_replies)))
+                        )
 
         final_jsons = make_dictionary_items_unique(final_jsons)
         return final_jsons
@@ -84,10 +98,20 @@ class Fuzzer:
         for fuzzy_uuid, fuzzy_itself in self.fuzzies.items():
             suspicious_reply = fuzzy_itself.suspicious_responses
             scenario[fuzzy_itself.test_method] = (
-                [[Metadata(fuzzy_uuid, data_set_item, suspicious_reply) for data_set_item in fuzzy_itself.tape]]
+                [
+                    [
+                        Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
+                        for data_set_item in fuzzy_itself.tape
+                    ]
+                ]
                 if scenario.get(fuzzy_itself.test_method) is None
                 else scenario[fuzzy_itself.test_method]
-                     + [[Metadata(fuzzy_uuid, data_set_item, suspicious_reply) for data_set_item in fuzzy_itself.tape]]
+                + [
+                    [
+                        Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
+                        for data_set_item in fuzzy_itself.tape
+                    ]
+                ]
             )
 
         combinator = Combinator()
@@ -97,7 +121,9 @@ class Fuzzer:
             )
 
         for test_method, metadata_bundle in scenario.items():
-            scenario[test_method] = self.make_final_jsons(self.json_with_uuids, metadata_bundle)
+            scenario[test_method] = self.make_final_jsons(
+                self.json_with_uuids, metadata_bundle
+            )
 
         for item in scenario.values():
             self.result_jsons_for_fuzzing += item
@@ -158,7 +184,7 @@ class Fuzzer:
             # make all k:v items unique, even if they are identical
             # but are in different places in the dictionary
             kv_ids_sum = (
-                    id(k) + id(v) % unique_counter
+                id(k) + id(v) % unique_counter
             )  # TODO: check if this could be removed because of smart obj_id hashing
 
             if isinstance(v, dict):
