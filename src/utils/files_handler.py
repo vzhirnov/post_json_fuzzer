@@ -21,24 +21,24 @@ def make_dir(dir_name: str) -> bool:
         return False
 
 
-def load_cartridge_from_file(file_name: str) -> dict:
-    cartridge_bundle = {}
+def load_deck_from_file(file_name: str) -> dict:
+    deck_bundle = {}
     file = Path(file_name)
     if file.is_file():
         base_name = file.name
         if Path(base_name).suffix == DefaultValues.FUZZIES_EXTENSION:
             with open(file_name, "rb") as f:
                 try:
-                    cartridge_bundle[file] = eval(f.read())
+                    deck_bundle[file] = eval(f.read())
                 except Exception:
                     raise Exception(
                         f"Error: cannot make eval method for {get_filename(file_name)}"
                     )
-    return cartridge_bundle
+    return deck_bundle
 
 
-def load_cartridges_from_folder(dir_name: str) -> dict:
-    cartridge_bundle = {}
+def load_decks_from_folder(dir_name: str) -> dict:
+    deck_bundle = {}
     folder = Path(dir_name)
     if folder.is_dir():
         for file_name in glob.glob(
@@ -47,9 +47,9 @@ def load_cartridges_from_folder(dir_name: str) -> dict:
             with open(file_name, "r") as f:
                 try:
                     base_name = Path(file_name).name
-                    cartridge_bundle[folder / base_name] = eval(f.read())
+                    deck_bundle[folder / base_name] = eval(f.read())
                 except Exception:
                     raise Exception(
                         f"Error: cannot make eval method for {get_filename(file_name)}"
                     )
-    return cartridge_bundle
+    return deck_bundle

@@ -1,5 +1,4 @@
 import aiohttp
-import asyncio
 
 
 async def check_service_is_available(url_aim, hdrs):

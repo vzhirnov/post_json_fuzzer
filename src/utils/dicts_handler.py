@@ -1,6 +1,6 @@
 import ast
 
-from copy import copy, deepcopy
+from copy import copy
 
 
 result = []

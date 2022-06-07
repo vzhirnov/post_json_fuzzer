@@ -1,5 +1,5 @@
 .idea/
-cartridges/
+decks/
 results/
 src/core/__pycache__/
 src/data_structures/__pycache__/

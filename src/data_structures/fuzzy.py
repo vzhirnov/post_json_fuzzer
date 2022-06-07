@@ -2,8 +2,6 @@ import uuid
 
 import collections.abc
 
-from src.data_structures.test_method import TestMethod as tm
-
 
 def extract_here(lst: list):
     return lst

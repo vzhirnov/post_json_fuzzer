@@ -1,29 +1,37 @@
 import argparse
-import time
-
-import tqdm
-import aiohttp
 import asyncio
+import urllib3
 
-
-from default_values import DefaultValues
-
-from src.utils.network.service_avail_checker import check_service_is_available
-from src.utils.files_handler import (
-    load_cartridge_from_file,
-    load_cartridges_from_folder,
-)
 from src.data_structures.fuzzer import Fuzzer
-from src.utils.data_handler import save_artifacts_to_corr_files
+from src.utils.network.service_avail_checker import check_service_is_available
 
+from src.utils.files_handler import (
+    load_deck_from_file,
+    load_decks_from_folder,
+)
+from src.utils.results_saver import (
+    AsyncResultsSaverFactory,
+    SyncResultsSaverFactory,
+    create_results_saver
+)
 from src.utils.console_widgets import (
     show_start_fuzz_info,
-    show_fuzz_results_brief,
     add_line_separator,
     show_post_json_fuzzer_title,
     clear_console,
-    add_blank_line,
 )
+from src.utils.network.request_generator.request_generator import (
+    AsyncRequestHandlerFactory,
+    SyncRequestHandlerFactory,
+    create_request_handler
+)
+from src.utils.results_handler import (
+    AsyncResultsHandlerFactory,
+    SyncResultsHandlerFactory,
+    create_results_handler
+)
+
+urllib3.disable_warnings()
 
 
 class ParseKwargs(argparse.Action):
@@ -38,6 +46,7 @@ url = str()
 headers = dict()
 file = str()
 folder = str()
+use_async = bool()
 
 parser = argparse.ArgumentParser(
     description="Make POST json fuzzing easy.",
@@ -73,6 +82,11 @@ parser.add_argument(
     help="Additional headers.",
     action=ParseKwargs,
 )
+parser.add_argument(
+    '--useasync'
+    , action='store_true'
+)
+
 args = parser.parse_args()
 
 if args.headers:
@@ -83,6 +97,8 @@ if args.file:
     file = args.file
 if args.folder:
     folder = args.folder
+if args.useasync:
+    use_async = True
 
 if file and folder:
     print(
@@ -91,53 +107,17 @@ if file and folder:
     exit(0)
 
 
-async def post(url_aim, json_params, hdrs, suspicious_replies):
-    async with aiohttp.ClientSession(trust_env=True) as session:
-        for _ in range(120):
-            try:
-                async with session.post(
-                    url_aim, json=json_params, headers=hdrs, ssl=False, timeout=10000000
-                ) as response:
-                    got_suspicious_reply = (
-                        {"suspicious_reply": True}
-                        if response.status in suspicious_replies
-                        else {"suspicious_reply": False}
-                    )
-                    response_body = await response.text()
-                    return response, json_params, response_body, got_suspicious_reply
-            except Exception:  # TODO handle exception correctly to get correct return at the end
-                time.sleep(1)
-                continue
-        return None, {}, None, False
-
-
-async def start_fuzz(jsons):
-    request_tasks = [
-        post(url, json_params[0], headers, json_params[1]) for json_params in jsons
-    ]
-    responses_bundle = [
-        await f
-        for f in tqdm.tqdm(
-            asyncio.as_completed(request_tasks), total=len(request_tasks)
-        )
-    ]
-    return responses_bundle
-
-
-# TODO add to doc:
-#  cartridge is the set of fuzzy items within json
-#  cartridge_bundle is set of cartridges
-cartridge_bundle = []
 if __name__ == "__main__":
+    deck_bundle = []
     if file:
-        cartridge_bundle = load_cartridge_from_file(file)
+        deck_bundle = load_deck_from_file(file)
     elif folder:
-        cartridge_bundle = load_cartridges_from_folder(folder)
+        deck_bundle = load_decks_from_folder(folder)
 
     fuzzers = {}
     result_jsons = {}
-    for relative_file_path, cartridge in cartridge_bundle.items():
-        fuzzers[relative_file_path] = Fuzzer(cartridge)
+    for relative_file_path, deck in deck_bundle.items():
+        fuzzers[relative_file_path] = Fuzzer(deck)  # should it really be named Fuzzer?
         result_jsons[relative_file_path] = fuzzers[
             relative_file_path
         ].get_result_jsons_for_fuzzing()
@@ -147,19 +127,32 @@ if __name__ == "__main__":
     show_post_json_fuzzer_title()
     add_line_separator()
     show_start_fuzz_info(url, headers, file if file else folder)
-    add_blank_line()
+    add_line_separator()
     print("Waiting for fuzzed service status: ", end="")
     asyncio.run(check_service_is_available(url_aim=url, hdrs=headers))
-    add_line_separator()
     print(
         f"Start fuzzing with {sum([len(x) for x in result_jsons.values()])} requests:"
     )
 
     actual_results = {}
-    for relative_file_path, jsons in result_jsons.items():
-        actual_results[relative_file_path] = asyncio.run(start_fuzz(jsons=jsons))
+    if use_async:
+        async_rg = create_request_handler(AsyncRequestHandlerFactory, url, headers)
+        for relative_file_path, jsons in result_jsons.items():
+            actual_results[relative_file_path] = asyncio.run(async_rg.start_fuzz(jsons=jsons))
 
-    add_line_separator()
-    show_fuzz_results_brief(actual_results)
+        async_results_handler = create_results_handler(AsyncResultsHandlerFactory, actual_results)
+        async_results_handler.show_fuzz_results_brief()
 
-    save_artifacts_to_corr_files(actual_results)
+        async_results_saver = create_results_saver(AsyncResultsSaverFactory, actual_results)
+        async_results_saver.save_artifacts_to_corr_files()
+    else:
+        sync_rg = create_request_handler(SyncRequestHandlerFactory, url, headers)
+        for relative_file_path, jsons in result_jsons.items():
+            actual_results[relative_file_path] = sync_rg.start_fuzz(jsons=jsons)
+
+        sync_results_handler = create_results_handler(SyncResultsHandlerFactory, actual_results)
+        sync_results_handler.show_fuzz_results_brief()
+
+        sync_results_saver = create_results_saver(SyncResultsSaverFactory, actual_results)
+        sync_results_saver.save_artifacts_to_corr_files()
+

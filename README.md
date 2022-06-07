@@ -196,7 +196,7 @@ Duplicate parameter value
 ## Building and Running in Docker
 ```bash
 docker build --tag post_json_fuzzer:0.0.1 .
-docker run -v /tmp/cartridges:/cartridges -v /tmp/results:/results --rm --name post_json_fuzzer.container post_json_fuzzer:0.0.1 -url="https://YOUR_ENDPOINT" -H "X-HEADER-UUID=HEADER-UUID" "X-API-Secret=API-Secret" -file "cartridges/json_tests_dsl_description.txt"
+docker run -v /tmp/decks:/decks -v /tmp/results:/results --rm --name post_json_fuzzer.container post_json_fuzzer:0.0.1 -url="https://YOUR_ENDPOINT" -H "X-HEADER-UUID=HEADER-UUID" "X-API-Secret=API-Secret" -file "decks/json_tests_dsl_description.txt"
 ```
 ## Tests
 To run basic tests go to tests/ dir and run:

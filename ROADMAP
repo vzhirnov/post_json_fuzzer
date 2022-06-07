@@ -32,7 +32,7 @@ Business logic tasks:
 
 Routine tasks:
     Add terms:
-        tape, cartridge, metadata, fuzzy, deck(jsons with add_data ready to send)
+        tape, metadata, fuzzy, deck(jsons with add_data ready to send)
     Add work with default_value within dataset: data_set=(mutate_by_radamsa(default_value)),
     Recursively decrease delay between 500s for second check - PRIORITY_1
     5. Attach file with patterns for fuzzing  --> DONE

@@ -1,4 +1,5 @@
 from typing import Tuple, List
+from copy import deepcopy
 
 from src.data_structures.fuzzy import Fuzzy
 from src.utils.strings_handler import smart_replace
