@@ -7,4 +7,4 @@ class DefaultValues:
     RESULTS_ROOT_DIR = PROJECT_ROOT_DIR / "results"
     CARTRIDGES_DIR = PROJECT_ROOT_DIR / "cartridges"
 
-    FUZZIES_EXTENSION = ".fuzzies"
+    FUZZIES_EXTENSION = ".deck"

@@ -15,6 +15,7 @@ Architectural tasks:
     15. Save data results during fuzzing
 
 Business logic tasks:
+    Make single k_v_Fuzzy object(mix to basic json sometimes <-- this case) OR test_method mix_it_sometimes
     Compare my fuzzer with this one - https://github.com/bahruzjabiyev/t-reqs-http-fuzzer
     4. Semantic mutation:  --> HARD
         4.1 action mytator by mutation testig tools(extract code or use tool as is to get mutated code bundle)
@@ -33,7 +34,7 @@ Routine tasks:
     Add terms:
         tape, cartridge, metadata, fuzzy, deck(jsons with add_data ready to send)
     Add work with default_value within dataset: data_set=(mutate_by_radamsa(default_value)),
-    Recursively decrease delay between 500s for second check
+    Recursively decrease delay between 500s for second check - PRIORITY_1
     5. Attach file with patterns for fuzzing  --> DONE
     8. Make sure that all items in tape are unique - DONE
     10. Add option for adding dir with custom generators/mutators
@@ -49,3 +50,13 @@ Tasks for future:
     2. from string import Template - try to replace str(dict)/smart_replace and others by substitute operation
     3. check if Python is > 3.6 because of potential using of named tuples
     4. *get_pack_by_methods("client_id", [list_once, list_several_times]) - try to add parameters for every function  --> DONE
+    Watch JS-fromtend code for actions creation, compare with Nikita's variant in tests, try to compare them by statistical approach
+
+
+Thoughts:
+    Idempotent functions for ast mutator will give coverage larger than just using basic function mutation?
+    Add method for checking if API is fuzzable(has RPS > priemlemogo N bez deadlock oshibok etc.)
+    AST-based action mutations - this is structure based mutation?
+        Can it be coverage guided? Function-based mutation(actions by JS or Nikita) - is closer to semantic mutation?
+    I need to check if there is project that allows to create functions that produces the same result
+        as current function(for making several variants of functions which I can use for mutate operations within ast)
