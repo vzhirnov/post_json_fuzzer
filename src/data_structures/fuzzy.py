@@ -44,7 +44,7 @@ class Fuzzy:
         return lst + list(s)
 
     def __repr__(self):
-        return f"Fuzzy({self.default_value})-{self.obj_id[:6]}"
+        return f'{self.__class__.__name__}('f'{self.default_value!r}-{self.obj_id[:6]!r})'
 
     def __hash__(self):
         return hash((self.obj_id, self.default_value))

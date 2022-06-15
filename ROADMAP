@@ -60,3 +60,5 @@ Thoughts:
         Can it be coverage guided? Function-based mutation(actions by JS or Nikita) - is closer to semantic mutation?
     I need to check if there is project that allows to create functions that produces the same result
         as current function(for making several variants of functions which I can use for mutate operations within ast)
+    Try to make decorator with request parameters for pytest requests via post_json_fuzzer
+        (e.g. @params(headers={"one":1, "two": 2}def send_fuzz_requests() ...))
