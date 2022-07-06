@@ -13,6 +13,7 @@ default = [
     True,
     False,
     [],
+    [[]],
     ["test"],
     [0],
     ";",

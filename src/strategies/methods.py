@@ -7,9 +7,9 @@ from src.utils.types_handler import is_evaluable
 from default_values import DefaultValues
 
 
-def mutate_by_radamsa(item):
+def mutate_by_radamsa(item, seed=random.randrange(10000), max_num_of_mutations=random.randrange(1, 5)):
     rad = pyradamsa.Radamsa()
-    fuzzed_item = rad.fuzz(bytes(str(item), "utf-8"), seed=random.randrange(10000))
+    fuzzed_item = rad.fuzz(bytes(str(item), "utf-8"), seed=seed, max_mut=max_num_of_mutations)
     try:
         decoded_item = fuzzed_item.decode()
         return decoded_item

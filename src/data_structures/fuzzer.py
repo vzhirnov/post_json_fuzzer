@@ -150,7 +150,7 @@ class Fuzzer:
                     d_res[uuid_key] = d_res[k]
                     del d_res[k]
                 else:
-                    find_path(d_res, k)
+                    find_path_for_key(d_res, k)
                     path_to_curr_deep_key = result.pop()
                     path_to_required_old_deep_key = path_to_curr_deep_key[:-1] + [
                         uuid_key
@@ -159,7 +159,7 @@ class Fuzzer:
                     access_view_to_key = get_access_view_to_deep_key(
                         "d_res", path_to_curr_deep_key
                     )
-                    a = access_view_to_key + f"['{uuid_key}']" + " = " + f"{v}"
+                    a = access_view_to_key + f"['{uuid_key}']" + " = " + "v"
                     exec(a)
 
                     access_view_to_old_deep_key = get_access_view_to_deep_key(
@@ -173,14 +173,23 @@ class Fuzzer:
                 uuid_key = v.obj_id
                 fuzzies[uuid_key] = v
 
-                if k in fuzzies.values():
-                    for key, value in fuzzies.items():
-                        if value == k:
-                            need_key = key
-                            d_res[need_key] = uuid_key
-                            break
+                if k in d_res.values():
+                    if k in fuzzies.values():
+                        for key, value in fuzzies.items():
+                            if value == k:
+                                need_key = key
+                                d_res[need_key] = uuid_key
+                                break
+                    else:
+                        d_res = find_obj_in_dict_and_replace_it(d_res, v, uuid_key)
                 else:
-                    d_res = find_obj_in_dict_and_replace_it(d_res, v, uuid_key)
+                    find_path_for_value(d_res, v)
+                    path_to_curr_deep_value = result.pop()
+                    access_view_to_value = get_access_view_to_deep_value(
+                        "d_res", path_to_curr_deep_value
+                    )
+                    a = access_view_to_value + " = " + f"'{uuid_key}'"
+                    exec(a)
 
             # make all k:v items unique, even if they are identical
             # but are in different places in the dictionary

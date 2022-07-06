@@ -54,6 +54,8 @@ Tasks for future:
 
 
 Thoughts:
+    all data_set items MUST be invalid, and only default value should be valid. This is important because we need to get json bodies with only wrong values
+    try to apply a genetic algorithm to function fuzzing, i.e. mutate operators, add idempotent operations according to the rules of the genetic algorithm
     Idempotent functions for ast mutator will give coverage larger than just using basic function mutation?
     Add method for checking if API is fuzzable(has RPS > priemlemogo N bez deadlock oshibok etc.)
     AST-based action mutations - this is structure based mutation?

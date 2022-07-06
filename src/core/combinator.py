@@ -35,7 +35,7 @@ class Combinator:
                 res.append(md_item)
         return res
 
-    def check_once_with_defaults(self, scenario: list) -> list:
+    def add_once_with_defaults(self, scenario: list) -> list:
         pass
 
     def make_variants(self, scenario: list, test_method: tm):
