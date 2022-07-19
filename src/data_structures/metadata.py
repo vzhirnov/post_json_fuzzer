@@ -5,7 +5,8 @@ class Metadata:
         self.suspicious_reply = suspicious_reply
 
     def __repr__(self):
-        return f"Metadata({self.uuid[:6]})"
+        # return f"Metadata({self.uuid[:6]})"
+        return f'{self.__class__.__name__}('f'Metadata-{self.fuzz_data!r}-{self.uuid[:6]!r})'
 
     def __hash__(self):
         return hash((self.uuid, self.fuzz_data))

@@ -31,83 +31,85 @@ from src.utils.results_handler import (
     create_results_handler
 )
 
-urllib3.disable_warnings()
+if __name__ == "__main__":  # TODO check right position for this check
+
+    urllib3.disable_warnings()
 
 
-class ParseKwargs(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        setattr(namespace, self.dest, dict())
-        for value in values:
-            key, value = value.split("=")
-            getattr(namespace, self.dest)[key] = value
+    class ParseKwargs(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            setattr(namespace, self.dest, dict())
+            for value in values:
+                key, value = value.split("=")
+                getattr(namespace, self.dest)[key] = value
 
 
-url = str()
-headers = dict()
-file = str()
-folder = str()
-use_async = bool()
+    url = str()
+    headers = dict()
+    file = str()
+    folder = str()
+    use_async = bool()
 
-parser = argparse.ArgumentParser(
-    description="Make POST json fuzzing easy.",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-)
-parser.add_argument(
-    "-url",
-    type=str,
-    dest="url",
-    required=True,
-    help="URL to which requests will be made.",
-    default="127.0.0.1",
-)
-parser.add_argument(
-    "-file",
-    type=str,
-    dest="file",
-    required=False,
-    help="Path to file with pseudo-JSON metainfo.",
-)
-parser.add_argument(
-    "-folder",
-    type=str,
-    dest="folder",
-    required=False,
-    help="Path to file with pseudo-JSON metainfo.",
-)
-parser.add_argument(
-    "--headers",
-    "-H",
-    nargs="*",
-    default=dict(),
-    help="Additional headers.",
-    action=ParseKwargs,
-)
-parser.add_argument(
-    '--useasync'
-    , action='store_true'
-)
+    parser = argparse.ArgumentParser(
+        description="Make POST json fuzzing easy.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "-url",
+        type=str,
+        dest="url",
+        required=True,
+        help="URL to which requests will be made.",
+        default="127.0.0.1",
+    )
+    parser.add_argument(
+        "-file",
+        type=str,
+        dest="file",
+        required=False,
+        help="Path to file with pseudo-JSON metainfo.",
+    )
+    parser.add_argument(
+        "-folder",
+        type=str,
+        dest="folder",
+        required=False,
+        help="Path to file with pseudo-JSON metainfo.",
+    )
+    parser.add_argument(
+        "--headers",
+        "-H",
+        nargs="*",
+        default=dict(),
+        help="Additional headers.",
+        action=ParseKwargs,
+    )
+    parser.add_argument(
+        '--useasync'
+        , action='store_true'
+    )
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-if args.headers:
-    headers = args.headers
-if args.url:
-    url = args.url
-if args.file:
-    file = args.file
-if args.folder:
-    folder = args.folder
-if args.useasync:
-    use_async = True
+    if args.headers:
+        headers = args.headers
+    if args.url:
+        url = args.url
+    if args.file:
+        file = args.file
+    if args.folder:
+        folder = args.folder
+    if args.useasync:
+        use_async = True
 
-if file and folder:
-    print(
-        "Error: You should choose either folder or file to get fuzzy data, but not both"
-    )  # TODO: make both? add possibility to add several files?
-    exit(0)
+    if file and folder:
+        print(
+            "Error: You should choose either folder or file to get fuzzy data, but not both"
+        )  # TODO: make both? add possibility to add several files?
+        exit(0)
 
 
-if __name__ == "__main__":
+
     deck_bundle = []
     if file:
         deck_bundle = load_deck_from_file(file)
