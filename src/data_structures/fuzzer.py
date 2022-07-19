@@ -115,11 +115,9 @@ class Fuzzer:
                 ]
             )
 
-        combinator = Combinator()
-        for test_method, metadata_bundle in scenario.items():
-            scenario[test_method] = combinator.make_variants(
-                metadata_bundle, test_method=test_method
-            )
+        combinator = Combinator(scenario)
+        for test_method, _ in scenario.items():
+            scenario[test_method] = combinator.make_variants(test_method=test_method)
 
         for test_method, metadata_bundle in scenario.items():
             scenario[test_method] = self.make_final_jsons(
@@ -132,7 +130,7 @@ class Fuzzer:
 
     def indexate_fuzzies(self, json_like_obj: dict) -> Tuple[dict, dict]:
         """
-        returns res dict with uuids instead of Fs, dict like {uuid1: F1, uuid2: F2} etc
+        returns res dict with uuids instead of Fs, dict like {uuid1: F1, uuid2: F2, uuid3: uuid4}
         """
         d_res = deepcopy(json_like_obj)
         stack = list(d_res.items())
@@ -144,12 +142,7 @@ class Fuzzer:
             k, v = stack.pop()
             if isinstance(k, Fuzzy):
                 uuid_key = k.obj_id
-                fuzzies[uuid_key] = k
-
-                if k in d_res:
-                    d_res[uuid_key] = d_res[k]
-                    del d_res[k]
-                else:
+                if k.enabled is False:
                     find_path_for_key(d_res, k)
                     path_to_curr_deep_key = result.pop()
                     path_to_required_old_deep_key = path_to_curr_deep_key[:-1] + [
@@ -159,7 +152,7 @@ class Fuzzer:
                     access_view_to_key = get_access_view_to_deep_key(
                         "d_res", path_to_curr_deep_key
                     )
-                    a = access_view_to_key + f"['{uuid_key}']" + " = " + "v"
+                    a = access_view_to_key + f"['{k.default_value}']" + " = " + "v"
                     exec(a)
 
                     access_view_to_old_deep_key = get_access_view_to_deep_key(
@@ -168,9 +161,45 @@ class Fuzzer:
 
                     b = "del " + access_view_to_old_deep_key + f"[k]"
                     exec(b)
+                else:
+
+                    uuid_key = k.obj_id
+                    fuzzies[uuid_key] = k
+
+                    if k in d_res:
+                        d_res[uuid_key] = d_res[k]
+                        del d_res[k]
+                    else:
+                        find_path_for_key(d_res, k)
+                        path_to_curr_deep_key = result.pop()
+                        path_to_required_old_deep_key = path_to_curr_deep_key[:-1] + [
+                            uuid_key
+                        ]
+
+                        access_view_to_key = get_access_view_to_deep_key(
+                            "d_res", path_to_curr_deep_key
+                        )
+                        a = access_view_to_key + f"['{uuid_key}']" + " = " + "v"
+                        exec(a)
+
+                        access_view_to_old_deep_key = get_access_view_to_deep_key(
+                            "d_res", path_to_required_old_deep_key
+                        )
+
+                        b = "del " + access_view_to_old_deep_key + f"[k]"
+                        exec(b)
 
             if isinstance(v, Fuzzy):
                 uuid_key = v.obj_id
+                if v.enabled is False:
+                    find_path_for_value(d_res, v)
+                    path_to_curr_deep_value = result.pop()
+                    access_view_to_value = get_access_view_to_deep_value(
+                        "d_res", path_to_curr_deep_value
+                    )
+                    a = access_view_to_value + " = " + f"'{v.default_value}'"
+                    exec(a)
+                    continue
                 fuzzies[uuid_key] = v
 
                 if k in d_res.values():

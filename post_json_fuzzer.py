@@ -155,4 +155,5 @@ if __name__ == "__main__":
 
         sync_results_saver = create_results_saver(SyncResultsSaverFactory, actual_results)
         sync_results_saver.save_artifacts_to_corr_files()
+        sync_results_saver.save_artifacts_as_curl_requests()
 
