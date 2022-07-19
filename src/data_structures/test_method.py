@@ -5,6 +5,7 @@ import enum
 class TestMethod(
     enum.Enum
 ):  # TODO make aliasas for several values e.g. (pair_wise | miss_it) - need to?
+    take_curr_and_others_by_their_test_method = 8
     pair_wise = 7  # DONE: real pair_wise
     combinations = 6  # DONE: make all combinations
 

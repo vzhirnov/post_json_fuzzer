@@ -1,12 +1,27 @@
 from allpairspy import AllPairs
 
 from itertools import product
+from copy import deepcopy
 from src.data_structures.test_method import TestMethod as tm
 
 
 class Combinator:
-    def __init__(self):
-        pass
+    def __init__(self, scenario: dict):
+        self.scenario = deepcopy(scenario)
+
+    def take_curr_and_others_by_their_test_method(self):
+        curr = []
+        others = []
+        for test_method, metadata_bundle in self.scenario.items():
+            if test_method == tm.take_curr_and_others_by_their_test_method:
+                curr = [x for x in metadata_bundle][0]
+            else:
+                others = self.make_variants(test_method=test_method)[0]
+        res = []
+        for currs_metadata in curr:
+            for others_metadata in others:
+                res.append([currs_metadata] + others_metadata)
+        return res
 
     def make_pair_wise(self, scenario: list) -> list:  # Correct
         res = [values for values in AllPairs(scenario)]
@@ -38,18 +53,21 @@ class Combinator:
     def add_once_with_defaults(self, scenario: list) -> list:
         pass
 
-    def make_variants(self, scenario: list, test_method: tm):
+    def make_variants(self, test_method: tm):
+        metadata_bundle = self.scenario[test_method]
+        if test_method == tm.take_curr_and_others_by_their_test_method:
+            return (self.take_curr_and_others_by_their_test_method(),)
         if test_method == tm.pair_wise:
-            return (self.make_pair_wise(scenario),)  # Correct
+            return (self.make_pair_wise(metadata_bundle),)  # Correct
         elif test_method == tm.combinations:
-            return (self.make_all_combinations(scenario),)  # Correct
+            return (self.make_all_combinations(metadata_bundle),)  # Correct
         elif test_method == tm.miss_it:
-            return (self.miss_it(scenario),)
+            return (self.miss_it(metadata_bundle),)
         elif test_method == tm.duplicate_it:
-            return (self.duplicate_it(scenario),)
+            return (self.duplicate_it(metadata_bundle),)
         elif test_method == tm.nothing_more_but_this:
-            return (self.nothing_more_but_this(scenario),)
+            return (self.nothing_more_but_this(metadata_bundle),)
         elif test_method == tm.hypothesis:
-            return (self.hypothesis(scenario),)
+            return (self.hypothesis(metadata_bundle),)
         elif test_method == tm.take_curr_and_others_by_def:  # Correct
-            return (self.take_curr_and_others_by_def(scenario),)
+            return (self.take_curr_and_others_by_def(metadata_bundle),)

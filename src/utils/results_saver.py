@@ -1,3 +1,5 @@
+import curlify
+
 from pathlib import Path
 from datetime import datetime
 
@@ -37,18 +39,18 @@ class SyncResultsSaverFactory(ResultsSaverFactory):  # TODO: get rid of code dup
                     raise Exception(f"Error: cannot create results directories")
                 for artifacts in result_for_separate_deck:
                     if all_reply_statuses.get(artifacts[0].status_code, None):
-                        all_reply_statuses[artifacts[0].status_code] = all_reply_statuses[
-                                                                           artifacts[0].status_code
-                                                                       ] + [artifacts[1]]
+                        all_reply_statuses[artifacts[0].status_code] += [(artifacts[1], artifacts[0])]
                     else:
-                        all_reply_statuses[artifacts[0].status_code] = [artifacts[1]]
+                        all_reply_statuses[artifacts[0].status_code] = [] + [(artifacts[1], artifacts[0])]
 
                 for status, response_data in all_reply_statuses.items():
-                    with open(
-                            Path(path_to_deck_folder / str(status)), mode="w"
-                    ) as file:
-                        for data in response_data:
-                            file.write(f"{data}\n")
+                    with open(Path(path_to_deck_folder / str(status)), mode="w") as file, \
+                            open(Path(path_to_deck_folder / str('curls_for_' + str(status))), mode="w") as file_with_curls:
+                        for item in response_data:
+                            file.write(f"{item[0]}\n")
+                            file_with_curls.write(
+                                f"{curlify.to_curl(item[1].request, compressed=True, verify=False)}\n\n"
+                            )
 
 
 class AsyncResultsSaverFactory(ResultsSaverFactory):

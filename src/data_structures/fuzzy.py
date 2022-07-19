@@ -14,18 +14,29 @@ class Fuzzy:
         data_set: tuple,
         test_method=None,
         suspicious_responses=None,
+        enabled=True,
+        description=None
     ):
         self.obj_id = str(uuid.uuid4())
-
         self.default_value = default_value
-        self.data_set = tuple([default_value]) + data_set
+
+        self.enabled = enabled
+
+        self.data_set = tuple()
         self.test_method = test_method
-
-        if suspicious_responses is None:
-            suspicious_responses = []
         self.suspicious_responses = suspicious_responses
+        self.tape = None
+        self.description = description
 
-        self.tape = self.make_tape()
+        if enabled:
+            self.data_set = tuple([default_value]) + data_set
+            self.test_method = test_method
+
+            if suspicious_responses is None:
+                suspicious_responses = []
+            self.suspicious_responses = suspicious_responses
+
+            self.tape = self.make_tape()
 
     def make_tape(self):
         s = set()

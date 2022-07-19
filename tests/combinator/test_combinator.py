@@ -7,7 +7,7 @@ from src.data_structures.metadata import Metadata
 
 class TestCombinator:
     @pytest.mark.parametrize(
-        "scenario, expected_result",
+        "metadata_bundle, expected_result",
         [
             (
                 [
@@ -26,7 +26,7 @@ class TestCombinator:
         assert c.take_curr_and_others_by_def(scenario) == expected_result
 
     @pytest.mark.parametrize(
-        "scenario, expected_result",
+        "metadata_bundle, expected_result",
         [
             (
                 [
@@ -74,7 +74,7 @@ class TestCombinator:
         assert c.make_pair_wise(scenario) == expected_result
 
     @pytest.mark.parametrize(
-        "scenario, expected_result",
+        "metadata_bundle, expected_result",
         [
             (
                 [
