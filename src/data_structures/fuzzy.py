@@ -12,7 +12,7 @@ class Fuzzy:
         self,
         default_value,
         data_set: tuple,
-        test_method=None,
+        test_methods=None,
         suspicious_responses=None,
         enabled=True,
         description=None
@@ -23,14 +23,14 @@ class Fuzzy:
         self.enabled = enabled
 
         self.data_set = tuple()
-        self.test_method = test_method
+        self.test_methods = test_methods
         self.suspicious_responses = suspicious_responses
         self.tape = None
         self.description = description
 
         if enabled:
             self.data_set = tuple([default_value]) + data_set
-            self.test_method = test_method
+            self.test_methods = test_methods
 
             if suspicious_responses is None:
                 suspicious_responses = []

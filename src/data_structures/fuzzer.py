@@ -7,7 +7,7 @@ from src.utils.dicts_handler import *
 from src.core.combinator import Combinator
 from src.utils.types_handler import is_evaluable
 from src.data_structures.metadata import Metadata
-
+from src.data_structures.test_method import TestMethod
 
 class Fuzzer:
     def __init__(self, json_with_fuzzies: dict):
@@ -104,22 +104,24 @@ class Fuzzer:
         scenario = {}
         for fuzzy_uuid, fuzzy_itself in self.fuzzies.items():
             suspicious_reply = fuzzy_itself.suspicious_responses
-            scenario[fuzzy_itself.test_method] = (
-                [
+            all_curr_test_methods = TestMethod().split(fuzzy_itself.test_methods)
+            for tm in all_curr_test_methods:
+                scenario[tm] = (
                     [
-                        Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
-                        for data_set_item in fuzzy_itself.tape
+                        [
+                            Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
+                            for data_set_item in fuzzy_itself.tape
+                        ]
                     ]
-                ]
-                if scenario.get(fuzzy_itself.test_method) is None
-                else scenario[fuzzy_itself.test_method]
-                + [
-                    [
-                        Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
-                        for data_set_item in fuzzy_itself.tape
+                    if scenario.get(tm) is None
+                    else scenario[tm]
+                    + [
+                        [
+                            Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
+                            for data_set_item in fuzzy_itself.tape
+                        ]
                     ]
-                ]
-            )
+                )
 
         combinator = Combinator(scenario, self.default_json_body)
         for test_method, _ in scenario.items():

@@ -157,5 +157,4 @@ if __name__ == "__main__":  # TODO check right position for this check
 
         sync_results_saver = create_results_saver(SyncResultsSaverFactory, actual_results)
         sync_results_saver.save_artifacts_to_corr_files()
-        sync_results_saver.save_artifacts_as_curl_requests()
 

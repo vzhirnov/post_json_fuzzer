@@ -1,21 +1,29 @@
-import enum
 
 
-@enum.unique
-class TestMethod(
-    enum.Enum
-):  # TODO make aliasas for several values e.g. (pair_wise | miss_it) - need to?
-    take_curr_and_others_by_their_test_method = 8
-    pair_wise = 7  # DONE: real pair_wise
-    combinations = 6  # DONE: make all combinations
+class TestMethod:
+    num_of_test_methods = 8
 
-    take_curr_and_others_by_def = 5  # DONE
-    # TODO: make test bundle with only this item to be mutated, and no other items at all in json
-    nothing_more_but_this = 4
+    @staticmethod
+    def split(tm: int):
+        res = []
+        for i in range(0, TestMethod.num_of_test_methods):
+            val_to_compare = 1 << i
+            if (val_to_compare & tm) > 0:
+                res.append(val_to_compare)
+        return res
 
-    # TODO: if key - make one case where this param is missed,
-    #  if value - make it None. Ot try to bind key to value/vaue to key and make both be missed
-    miss_it = 3
-    duplicate_it = 2  # TODO: try to bind key and value and make them be missed
+    take_curr_and_others_by_their_test_method = 1 << 7  # DONE
 
-    hypothesis = 1  # TODO: description WIP
+    pair_wise = 1 << 6  # DONE: real pair_wise
+
+    combinations = 1 << 5  # DONE: make all combinations
+
+    take_curr_and_others_by_def = 1 << 4  # DONE
+
+    nothing_more_but_this = 1 << 3
+
+    miss_it = 1 << 2  # DONE
+
+    duplicate_it = 1 << 1  # TODO: this is not what we exactly need, json takes just one key and ignore the second one
+
+    hypothesis = 1 << 0  # TODO: for what??? it seems that it should be deleted
