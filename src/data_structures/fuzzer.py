@@ -2,7 +2,7 @@ from typing import Tuple, List
 from copy import deepcopy
 
 from src.data_structures.fuzzy import Fuzzy
-from src.utils.strings_handler import smart_replace
+from src.utils.strings_handler import smart_replace, smart_remove
 from src.utils.dicts_handler import *
 from src.core.combinator import Combinator
 from src.utils.types_handler import is_evaluable
@@ -50,9 +50,15 @@ class Fuzzer:
                     fuzzies_keys.remove(
                         metadata.uuid
                     ) if metadata.uuid in fuzzies_keys else True
-                    json_subject = smart_replace(
-                        json_subject, metadata.uuid, metadata.fuzz_data
-                    )
+
+                    if metadata.enabled is False:
+                        json_subject = smart_remove(
+                            json_subject, metadata.uuid
+                        )
+                    else:
+                        json_subject = smart_replace(
+                            json_subject, metadata.uuid, metadata.fuzz_data
+                        )
 
                     for fuzzy_item_by_default in fuzzies_keys:
                         json_subject = smart_replace(
@@ -115,7 +121,7 @@ class Fuzzer:
                 ]
             )
 
-        combinator = Combinator(scenario)
+        combinator = Combinator(scenario, self.default_json_body)
         for test_method, _ in scenario.items():
             scenario[test_method] = combinator.make_variants(test_method=test_method)
 
@@ -197,7 +203,8 @@ class Fuzzer:
                     access_view_to_value = get_access_view_to_deep_value(
                         "d_res", path_to_curr_deep_value
                     )
-                    a = access_view_to_value + " = " + f"'{v.default_value}'"
+                    a = access_view_to_value + " = " + \
+                        (f"{v.default_value}" if not isinstance(v.default_value, str) else f"'{v.default_value}'")
                     exec(a)
                     continue
                 fuzzies[uuid_key] = v

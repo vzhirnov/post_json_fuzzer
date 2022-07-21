@@ -3,6 +3,11 @@ class Metadata:
         self.uuid = uuid
         self.fuzz_data = fuzz_data
         self.suspicious_reply = suspicious_reply
+        self.enabled = True
+
+    def reset(self):
+        self.fuzz_data = None
+        self.enabled = False
 
     def __repr__(self):
         # return f"Metadata({self.uuid[:6]})"

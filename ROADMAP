@@ -28,6 +28,7 @@ Routine tasks:
         First, post_json_fuzzer will try to find and registrate those generators in those folders
     3. Add fuzzer.log file with deep log info
     4. Add jupiter notebook description for project
+    5. After merge tm params, make every tm to have its own susp request(e.g. pair_wise[200, 404] | miss_it[200, 204])
 
 Tasks for future:
     1. From string import Template - try to replace str(dict)/smart_replace and others by substitute operation
