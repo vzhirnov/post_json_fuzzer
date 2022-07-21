@@ -18,7 +18,7 @@ def add_line_separator():
 
 
 def show_post_json_fuzzer_title():
-    print("POST-JSON-FUZZER v2.1.0")
+    print("POST-JSON-FUZZER v2.1.1")
 
 
 def show_start_fuzz_info(route: str, headers, file_or_dir):
