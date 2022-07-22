@@ -3,7 +3,7 @@ from allpairspy import AllPairs
 from itertools import product
 from copy import deepcopy
 from src.datastructures.testmethod import TestMethod as tm
-
+from src.datastructures.metadata import Metadata
 
 class Combinator:
     def __init__(self, scenario: dict, default_json_body=None):
@@ -15,13 +15,17 @@ class Combinator:
         others = []
         for test_method, metadata_bundle in self.scenario.items():
             if test_method == tm.TAKE_CURR_AND_OTHERS_BY_THEIR_TEST_METHOD:
-                curr = [x for x in metadata_bundle][0]
+                for item in metadata_bundle:
+                    curr += item
             else:
-                others = self.make_variants(test_method=test_method)[0]
+                others += self.make_variants(test_method=test_method)
         res = []
         for currs_metadata in curr:
             for others_metadata in others:
-                res.append([currs_metadata] + others_metadata)
+                for item in others_metadata:
+                    res.append(
+                        [currs_metadata] + [item]
+                    )
         return res
 
     def make_pair_wise(self, scenario: list) -> list:  # Correct

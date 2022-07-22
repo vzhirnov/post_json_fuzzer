@@ -54,6 +54,9 @@ class Fuzzy:
                     continue
         return lst + list(s)
 
+    def get_itself(self):
+        return self
+
     def __repr__(self):
         return (
             f"{self.__class__.__name__}(" f"{self.default_value!r}-{self.obj_id[:6]!r})"
