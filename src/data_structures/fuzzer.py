@@ -52,9 +52,7 @@ class Fuzzer:
                     ) if metadata.uuid in fuzzies_keys else True
 
                     if metadata.enabled is False:
-                        json_subject = smart_remove(
-                            json_subject, metadata.uuid
-                        )
+                        json_subject = smart_remove(json_subject, metadata.uuid)
                     else:
                         json_subject = smart_replace(
                             json_subject, metadata.uuid, metadata.fuzz_data
@@ -205,8 +203,15 @@ class Fuzzer:
                     access_view_to_value = get_access_view_to_deep_value(
                         "d_res", path_to_curr_deep_value
                     )
-                    a = access_view_to_value + " = " + \
-                        (f"{v.default_value}" if not isinstance(v.default_value, str) else f"'{v.default_value}'")
+                    a = (
+                        access_view_to_value
+                        + " = "
+                        + (
+                            f"{v.default_value}"
+                            if not isinstance(v.default_value, str)
+                            else f"'{v.default_value}'"
+                        )
+                    )
                     exec(a)
                     continue
                 fuzzies[uuid_key] = v

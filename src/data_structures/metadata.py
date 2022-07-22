@@ -10,7 +10,10 @@ class Metadata:
         self.enabled = False
 
     def __repr__(self):
-        return f'{self.__class__.__name__}('f'Metadata-{self.fuzz_data!r}-{self.uuid[:6]!r})'
+        return (
+            f"{self.__class__.__name__}("
+            f"Metadata-{self.fuzz_data!r}-{self.uuid[:6]!r})"
+        )
 
     def __hash__(self):
         return hash((self.uuid, self.fuzz_data))

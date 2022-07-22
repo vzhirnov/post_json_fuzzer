@@ -15,7 +15,7 @@ class Fuzzy:
         test_methods=None,
         suspicious_responses=None,
         enabled=True,
-        description=None
+        description=None,
     ):
         self.obj_id = str(uuid.uuid4())
         self.default_value = default_value
@@ -55,7 +55,9 @@ class Fuzzy:
         return lst + list(s)
 
     def __repr__(self):
-        return f'{self.__class__.__name__}('f'{self.default_value!r}-{self.obj_id[:6]!r})'
+        return (
+            f"{self.__class__.__name__}(" f"{self.default_value!r}-{self.obj_id[:6]!r})"
+        )
 
     def __hash__(self):
         return hash((self.obj_id, self.default_value))

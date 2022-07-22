@@ -40,5 +40,3 @@ def show_start_fuzz_info(route: str, headers: dict, file_or_dir: str):
                 print(f"\t{Path(file_name).stem}")
     elif Path(file_or_dir).is_file():
         print(f"\t{Path(file_or_dir).stem}")
-
-

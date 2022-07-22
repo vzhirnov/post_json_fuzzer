@@ -12,7 +12,7 @@ from src.utils.handlers.files import (
 from src.utils.handlers.saveresults import (
     AsyncResultsSaverFactory,
     SyncResultsSaverFactory,
-    create_results_saver
+    create_results_saver,
 )
 from src.utils.handlers.consolewidgets import (
     show_start_fuzz_info,
@@ -23,18 +23,17 @@ from src.utils.handlers.consolewidgets import (
 from src.utils.network.requestsender import (
     AsyncRequestHandlerFactory,
     SyncRequestHandlerFactory,
-    create_request_handler
+    create_request_handler,
 )
 from src.utils.handlers.briefresults import (
     AsyncResultsHandlerFactory,
     SyncResultsHandlerFactory,
-    create_results_handler
+    create_results_handler,
 )
 
 if __name__ == "__main__":  # TODO check right position for this check
 
     urllib3.disable_warnings()
-
 
     class ParseKwargs(argparse.Action):
         def __call__(self, parser, namespace, values, option_string=None):
@@ -42,7 +41,6 @@ if __name__ == "__main__":  # TODO check right position for this check
             for value in values:
                 key, value = value.split("=")
                 getattr(namespace, self.dest)[key] = value
-
 
     url = str()
     headers = dict()
@@ -84,10 +82,7 @@ if __name__ == "__main__":  # TODO check right position for this check
         help="Additional headers.",
         action=ParseKwargs,
     )
-    parser.add_argument(
-        '--useasync'
-        , action='store_true'
-    )
+    parser.add_argument("--useasync", action="store_true")
 
     args = parser.parse_args()
 
@@ -138,21 +133,30 @@ if __name__ == "__main__":  # TODO check right position for this check
     if use_async:
         async_rg = create_request_handler(AsyncRequestHandlerFactory, url, headers)
         for relative_file_path, jsons in result_jsons.items():
-            actual_results[relative_file_path] = asyncio.run(async_rg.start_fuzz(jsons=jsons))
+            actual_results[relative_file_path] = asyncio.run(
+                async_rg.start_fuzz(jsons=jsons)
+            )
 
-        async_results_handler = create_results_handler(AsyncResultsHandlerFactory, actual_results)
+        async_results_handler = create_results_handler(
+            AsyncResultsHandlerFactory, actual_results
+        )
         async_results_handler.show_fuzz_results_brief()
 
-        async_results_saver = create_results_saver(AsyncResultsSaverFactory, actual_results)
+        async_results_saver = create_results_saver(
+            AsyncResultsSaverFactory, actual_results
+        )
         async_results_saver.save_artifacts_to_corr_files()
     else:
         sync_rg = create_request_handler(SyncRequestHandlerFactory, url, headers)
         for relative_file_path, jsons in result_jsons.items():
             actual_results[relative_file_path] = sync_rg.start_fuzz(jsons=jsons)
 
-        sync_results_handler = create_results_handler(SyncResultsHandlerFactory, actual_results)
+        sync_results_handler = create_results_handler(
+            SyncResultsHandlerFactory, actual_results
+        )
         sync_results_handler.show_fuzz_results_brief()
 
-        sync_results_saver = create_results_saver(SyncResultsSaverFactory, actual_results)
+        sync_results_saver = create_results_saver(
+            SyncResultsSaverFactory, actual_results
+        )
         sync_results_saver.save_artifacts_to_corr_files()
-

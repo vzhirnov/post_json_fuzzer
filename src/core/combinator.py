@@ -64,18 +64,18 @@ class Combinator:
     def make_variants(self, test_method: tm):
         metadata_bundle = self.scenario[test_method]
         if test_method == tm.TAKE_CURR_AND_OTHERS_BY_THEIR_TEST_METHOD:
-            return self.take_curr_and_others_by_their_test_method(),  # Correct
+            return (self.take_curr_and_others_by_their_test_method(),)  # Correct
         if test_method == tm.PAIR_WISE:
-            return self.make_pair_wise(metadata_bundle),  # Correct
+            return (self.make_pair_wise(metadata_bundle),)  # Correct
         elif test_method == tm.COMBINATIONS:
-            return self.make_all_combinations(metadata_bundle),  # Correct
+            return (self.make_all_combinations(metadata_bundle),)  # Correct
         elif test_method == tm.MISS_IT:
-            return self.miss_it(metadata_bundle),
+            return (self.miss_it(metadata_bundle),)
         elif test_method == tm.DUPLICATE_IT:
-            return self.duplicate_it(metadata_bundle),
+            return (self.duplicate_it(metadata_bundle),)
         elif test_method == tm.NOTHING_MORE_BUT_THIS:
-            return self.nothing_more_but_this(metadata_bundle),
+            return (self.nothing_more_but_this(metadata_bundle),)
         elif test_method == tm.HYPOTHESIS:
-            return self.hypothesis(metadata_bundle),
+            return (self.hypothesis(metadata_bundle),)
         elif test_method == tm.TAKE_CURR_AND_OTHERS_BY_DEF:  # Correct
-            return self.take_curr_and_others_by_def(metadata_bundle),
+            return (self.take_curr_and_others_by_def(metadata_bundle),)
