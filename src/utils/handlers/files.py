@@ -1,13 +1,12 @@
 import glob
 import os
-import random
 
-from default_values import DefaultValues
+from defaults.constants import ProjectValues
 from pathlib import Path
 
 from src.data_structures.fuzzy import Fuzzy
-from src.data_structures.test_method import TestMethod as tm
-from src.strategies.metadata_aggregator import *
+from src.data_structures.testmethod import TestMethod as tm
+from src.strategies.aggregator import *
 
 
 def get_filename(param):
@@ -27,7 +26,7 @@ def load_deck_from_file(file_name: str) -> dict:
     file = Path(file_name)
     if file.is_file():
         base_name = file.name
-        if Path(base_name).suffix == DefaultValues.FUZZIES_EXTENSION:
+        if Path(base_name).suffix == ProjectValues.FUZZIES_EXTENSION:
             with open(file_name, "rb") as f:
                 try:
                     deck_bundle[file] = eval(f.read())
@@ -43,7 +42,7 @@ def load_decks_from_folder(dir_name: str) -> dict:
     folder = Path(dir_name)
     if folder.is_dir():
         for file_name in glob.glob(
-            os.path.join(folder.absolute(), "*" + DefaultValues.FUZZIES_EXTENSION)
+            os.path.join(folder.absolute(), "*" + ProjectValues.FUZZIES_EXTENSION)
         ):
             with open(file_name, "r") as f:
                 try:

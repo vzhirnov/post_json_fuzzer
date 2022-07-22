@@ -1,7 +1,7 @@
-from src.utils.dicts_handler import *
+from src.utils.handlers.dicts import *
 
 
-def smart_replace(base_str, substr_to_replace, on_what_to_replace):
+def smart_replace(base_str: str, substr_to_replace: str, on_what_to_replace):
     if substr_to_replace not in base_str:
         return base_str
     if isinstance(on_what_to_replace, str):
@@ -29,7 +29,7 @@ def smart_replace(base_str, substr_to_replace, on_what_to_replace):
     return base_str
 
 
-def smart_remove(base_str, substr_to_remove):
+def smart_remove(base_str: str, substr_to_remove: str):
     base_dict = eval(base_str)
     if base_dict.get(substr_to_remove, None):
         del base_dict[substr_to_remove]

@@ -3,8 +3,8 @@ import pyradamsa
 import base64
 
 from collections.abc import Iterable
-from src.utils.types_handler import is_evaluable
-from default_values import DefaultValues
+from src.utils.handlers.types import is_evaluable
+from defaults.constants import ProjectValues
 
 
 def mutate_by_radamsa(item, seed=random.randrange(10000), max_num_of_mutations=random.randrange(1, 5)):
@@ -44,7 +44,7 @@ def add_border_cases(left_num: int, right_num: int) -> list:
 
 def add_from_file(file_name: str) -> list:
     res = []
-    root_dir = DefaultValues.PROJECT_ROOT_DIR
+    root_dir = ProjectValues.ROOT_DIR
     path_to_file = root_dir / file_name
     with open(path_to_file) as file:
         for line in file:
@@ -57,10 +57,7 @@ def add_from_file(file_name: str) -> list:
 
 
 def get_pack_by_methods(item, funcs: list):
-    res = []
-    for func in funcs:
-        res.append(func(item))
-    return res
+    return [func(item) for func in funcs]
 
 
 def list_once(items):

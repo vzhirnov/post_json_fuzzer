@@ -2,7 +2,7 @@ from allpairspy import AllPairs
 
 from itertools import product
 from copy import deepcopy
-from src.data_structures.test_method import TestMethod as tm
+from src.data_structures.testmethod import TestMethod as tm
 
 
 class Combinator:
@@ -14,7 +14,7 @@ class Combinator:
         curr = []
         others = []
         for test_method, metadata_bundle in self.scenario.items():
-            if test_method == tm.take_curr_and_others_by_their_test_method:
+            if test_method == tm.TAKE_CURR_AND_OTHERS_BY_THEIR_TEST_METHOD:
                 curr = [x for x in metadata_bundle][0]
             else:
                 others = self.make_variants(test_method=test_method)[0]
@@ -63,19 +63,19 @@ class Combinator:
 
     def make_variants(self, test_method: tm):
         metadata_bundle = self.scenario[test_method]
-        if test_method == tm.take_curr_and_others_by_their_test_method:
+        if test_method == tm.TAKE_CURR_AND_OTHERS_BY_THEIR_TEST_METHOD:
             return self.take_curr_and_others_by_their_test_method(),  # Correct
-        if test_method == tm.pair_wise:
+        if test_method == tm.PAIR_WISE:
             return self.make_pair_wise(metadata_bundle),  # Correct
-        elif test_method == tm.combinations:
+        elif test_method == tm.COMBINATIONS:
             return self.make_all_combinations(metadata_bundle),  # Correct
-        elif test_method == tm.miss_it:
+        elif test_method == tm.MISS_IT:
             return self.miss_it(metadata_bundle),
-        elif test_method == tm.duplicate_it:
+        elif test_method == tm.DUPLICATE_IT:
             return self.duplicate_it(metadata_bundle),
-        elif test_method == tm.nothing_more_but_this:
+        elif test_method == tm.NOTHING_MORE_BUT_THIS:
             return self.nothing_more_but_this(metadata_bundle),
-        elif test_method == tm.hypothesis:
+        elif test_method == tm.HYPOTHESIS:
             return self.hypothesis(metadata_bundle),
-        elif test_method == tm.take_curr_and_others_by_def:  # Correct
+        elif test_method == tm.TAKE_CURR_AND_OTHERS_BY_DEF:  # Correct
             return self.take_curr_and_others_by_def(metadata_bundle),

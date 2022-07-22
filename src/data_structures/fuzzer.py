@@ -1,13 +1,13 @@
-from typing import Tuple, List
+from typing import Tuple
 from copy import deepcopy
 
-from src.data_structures.fuzzy import Fuzzy
-from src.utils.strings_handler import smart_replace, smart_remove
-from src.utils.dicts_handler import *
+from src.utils.handlers.strings import smart_replace, smart_remove
+from src.utils.handlers.dicts import *
 from src.core.combinator import Combinator
-from src.utils.types_handler import is_evaluable
+from src.utils.handlers.types import is_evaluable
 from src.data_structures.metadata import Metadata
-from src.data_structures.test_method import TestMethod
+from src.data_structures.testmethod import TestMethod
+
 
 class Fuzzer:
     def __init__(self, json_with_fuzzies: dict):

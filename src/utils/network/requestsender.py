@@ -6,11 +6,11 @@ import tqdm
 
 class RequestHandlerFactory:
     @classmethod
-    def create_handler(cls, url_aim, hdrs):
+    def create_handler(cls, url_aim: str, hdrs: dict):
         return cls.RequestHandler(url_aim, hdrs)
 
 
-def create_request_handler(factory, url_aim, hdrs):
+def create_request_handler(factory, url_aim: str, hdrs: dict):
     return factory.create_handler(url_aim, hdrs)
 
 
@@ -20,7 +20,7 @@ class SyncRequestHandlerFactory(RequestHandlerFactory):
             self.url_aim = url_aim
             self.hdrs = hdrs
 
-        def post(self, url_aim, json_params, hdrs, suspicious_replies):
+        def post(self, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list):
             response = requests.post(url=url_aim, json=json_params, headers=hdrs, verify=False, timeout=10000000)
             got_suspicious_reply = (
                 {"suspicious_reply": True} if response.status_code in suspicious_replies else {
@@ -29,7 +29,7 @@ class SyncRequestHandlerFactory(RequestHandlerFactory):
             response_body = response.content.decode()
             return response, json_params, response_body, got_suspicious_reply
 
-        def start_fuzz(self, jsons):
+        def start_fuzz(self, jsons: list):
             responses_bundle = []
             for json_params in tqdm.tqdm(jsons):
                 result = self.post(self.url_aim, json_params[0], self.hdrs, json_params[1])
@@ -43,7 +43,7 @@ class AsyncRequestHandlerFactory(RequestHandlerFactory):
             self.url_aim = url_aim
             self.hdrs = hdrs
 
-        async def post(self, url_aim, json_params, hdrs, suspicious_replies):
+        async def post(self, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list):
             async with aiohttp.ClientSession(trust_env=True) as session:
                 for _ in range(120):
                     try:
@@ -62,7 +62,7 @@ class AsyncRequestHandlerFactory(RequestHandlerFactory):
                         continue
                 return None, {}, None, False
 
-        async def start_fuzz(self, jsons):
+        async def start_fuzz(self, jsons: list):
             request_tasks = [
                 self.post(self.url_aim, json_params[0], self.hdrs, json_params[1]) for json_params in jsons
             ]

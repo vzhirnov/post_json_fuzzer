@@ -3,8 +3,8 @@ import curlify
 from pathlib import Path
 from datetime import datetime
 
-from default_values import DefaultValues
-from src.utils.files_handler import make_dir, get_filename
+from defaults.constants import ProjectValues
+from src.utils.handlers.files import make_dir, get_filename
 
 
 class ResultsSaverFactory:
@@ -23,7 +23,7 @@ class SyncResultsSaverFactory(ResultsSaverFactory):  # TODO: get rid of code dup
             self.actual_results = actual_results
 
         def save_artifacts_to_corr_files(self):
-            results_dir = DefaultValues.RESULTS_ROOT_DIR
+            results_dir = ProjectValues.RESULTS_ROOT_DIR
             dir_name_with_curr_date_time = Path(
                 results_dir / datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
             )
@@ -59,7 +59,7 @@ class AsyncResultsSaverFactory(ResultsSaverFactory):
             self.actual_results = actual_results
 
         def save_artifacts_to_corr_files(self):
-            results_dir = DefaultValues.RESULTS_ROOT_DIR
+            results_dir = ProjectValues.RESULTS_ROOT_DIR
             dir_name_with_curr_date_time = Path(
                 results_dir / datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
             )

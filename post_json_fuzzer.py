@@ -3,29 +3,29 @@ import asyncio
 import urllib3
 
 from src.data_structures.fuzzer import Fuzzer
-from src.utils.network.service_avail_checker import check_service_is_available
+from src.utils.network.servicechecker import check_service_is_available
 
-from src.utils.files_handler import (
+from src.utils.handlers.files import (
     load_deck_from_file,
     load_decks_from_folder,
 )
-from src.utils.results_saver import (
+from src.utils.handlers.saveresults import (
     AsyncResultsSaverFactory,
     SyncResultsSaverFactory,
     create_results_saver
 )
-from src.utils.console_widgets import (
+from src.utils.handlers.consolewidgets import (
     show_start_fuzz_info,
     add_line_separator,
     show_post_json_fuzzer_title,
     clear_console,
 )
-from src.utils.network.request_generator.request_generator import (
+from src.utils.network.requestsender import (
     AsyncRequestHandlerFactory,
     SyncRequestHandlerFactory,
     create_request_handler
 )
-from src.utils.results_handler import (
+from src.utils.handlers.briefresults import (
     AsyncResultsHandlerFactory,
     SyncResultsHandlerFactory,
     create_results_handler
@@ -107,8 +107,6 @@ if __name__ == "__main__":  # TODO check right position for this check
             "Error: You should choose either folder or file to get fuzzy data, but not both"
         )  # TODO: make both? add possibility to add several files?
         exit(0)
-
-
 
     deck_bundle = []
     if file:

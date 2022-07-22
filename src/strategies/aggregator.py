@@ -1,4 +1,4 @@
-from src.strategies.data_sets import default
+from src.strategies.datasets import default
 from src.strategies.generators import int_nums_in_range
 from src.strategies.methods import (
     mutate_all_by_radamsa,

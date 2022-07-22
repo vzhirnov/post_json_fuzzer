@@ -1,13 +1,15 @@
 import ast
 
-from copy import copy
+from typing import Union, List, Dict
 
+from copy import copy
+from src.data_structures.fuzzy import Fuzzy
 
 result = []
 path = []
 
 
-def find_path_for_key(dict_obj, key, i=None):
+def find_path_for_key(dict_obj: dict, key: Fuzzy, i=None):
     for k, v in dict_obj.items():
         path.append(k)
         if isinstance(v, dict):
@@ -24,7 +26,7 @@ def find_path_for_key(dict_obj, key, i=None):
             path.pop()
 
 
-def find_path_for_value(dict_obj, value, i=None):
+def find_path_for_value(dict_obj: dict, value: Fuzzy, i=None):
     for k, v in dict_obj.items():
         path.append(k)
         if isinstance(v, dict):
@@ -57,7 +59,7 @@ def find_obj_in_dict_and_replace_it(c_obj, obj_to_replace, replacement_obj):
     return c_obj
 
 
-def get_access_view_to_deep_key(dic_name, path):
+def get_access_view_to_deep_key(dic_name: str, path: list):
     res = str(dic_name)
     for item in path[:-1]:
         if isinstance(item, str):
@@ -66,7 +68,7 @@ def get_access_view_to_deep_key(dic_name, path):
     return res
 
 
-def get_access_view_to_deep_value(dic_name, path):
+def get_access_view_to_deep_value(dic_name: str, path: list):
     res = str(dic_name)
     for item in path:
         if isinstance(item, str):
@@ -75,7 +77,7 @@ def get_access_view_to_deep_value(dic_name, path):
     return res
 
 
-def deep_sorted(obj, *, key=None, reverse=False):
+def deep_sorted(obj: Union[Dict, List], *, key=None, reverse=False):
     if isinstance(obj, dict):
         return {
             k: deep_sorted(v, key=key, reverse=reverse)

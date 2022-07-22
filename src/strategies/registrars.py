@@ -1,4 +1,4 @@
-from src.strategies.metadata_aggregator import data_sets, methods, generators
+from src.strategies.aggregator import data_sets, methods, generators
 
 
 def register_strategy(name: str, data) -> None:

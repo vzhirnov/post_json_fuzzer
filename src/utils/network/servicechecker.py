@@ -1,7 +1,7 @@
 import aiohttp
 
 
-async def check_service_is_available(url_aim, hdrs):
+async def check_service_is_available(url_aim: str, hdrs: dict):
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(url_aim, headers=hdrs, ssl=False) as response:
