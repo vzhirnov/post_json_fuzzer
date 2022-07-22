@@ -1,6 +1,6 @@
 import pytest
 
-from src.data_structures.fuzzer import Fuzzer, Fuzzy
+from src.datastructures.fuzzer import Fuzzer, Fuzzy
 
 
 @pytest.mark.parametrize(

@@ -2,7 +2,7 @@ import argparse
 import asyncio
 import urllib3
 
-from src.data_structures.fuzzer import Fuzzer
+from src.datastructures.fuzzer import Fuzzer
 from src.utils.network.servicechecker import check_service_is_available
 
 from src.utils.handlers.files import (

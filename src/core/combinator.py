@@ -2,7 +2,7 @@ from allpairspy import AllPairs
 
 from itertools import product
 from copy import deepcopy
-from src.data_structures.testmethod import TestMethod as tm
+from src.datastructures.testmethod import TestMethod as tm
 
 
 class Combinator:

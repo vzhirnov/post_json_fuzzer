@@ -5,8 +5,8 @@ from src.utils.handlers.strings import smart_replace, smart_remove
 from src.utils.handlers.dicts import *
 from src.core.combinator import Combinator
 from src.utils.handlers.types import is_evaluable
-from src.data_structures.metadata import Metadata
-from src.data_structures.testmethod import TestMethod
+from src.datastructures.metadata import Metadata
+from src.datastructures.testmethod import TestMethod
 
 
 class Fuzzer:

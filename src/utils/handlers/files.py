@@ -4,8 +4,8 @@ import os
 from defaults.constants import ProjectValues
 from pathlib import Path
 
-from src.data_structures.fuzzy import Fuzzy
-from src.data_structures.testmethod import TestMethod as tm
+from src.datastructures.fuzzy import Fuzzy
+from src.datastructures.testmethod import TestMethod as tm
 from src.strategies.aggregator import *
 
 

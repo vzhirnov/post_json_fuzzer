@@ -3,7 +3,7 @@ import ast
 from typing import Union, List, Dict
 
 from copy import copy
-from src.data_structures.fuzzy import Fuzzy
+from src.datastructures.fuzzy import Fuzzy
 
 result = []
 path = []

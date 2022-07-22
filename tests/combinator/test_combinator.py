@@ -1,8 +1,8 @@
 import pytest
 
 from src.core.combinator import Combinator
-from src.data_structures.testmethod import TestMethod
-from src.data_structures.metadata import Metadata
+from src.datastructures.testmethod import TestMethod
+from src.datastructures.metadata import Metadata
 
 
 class TestCombinator:
