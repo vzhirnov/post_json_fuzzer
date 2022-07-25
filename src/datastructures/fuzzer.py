@@ -107,7 +107,7 @@ class Fuzzer:
                 scenario[tm] = (
                     [
                         [
-                            Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
+                            Metadata(fuzzy_uuid, data_set_item, suspicious_reply, fuzzy_itself.test_methods)
                             for data_set_item in fuzzy_itself.tape
                         ]
                     ]
@@ -115,7 +115,7 @@ class Fuzzer:
                     else scenario[tm]
                     + [
                         [
-                            Metadata(fuzzy_uuid, data_set_item, suspicious_reply)
+                            Metadata(fuzzy_uuid, data_set_item, suspicious_reply, fuzzy_itself.test_methods)
                             for data_set_item in fuzzy_itself.tape
                         ]
                     ]

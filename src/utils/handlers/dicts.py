@@ -77,18 +77,27 @@ def get_access_view_to_deep_value(dic_name: str, path: list):
     return res
 
 
-def deep_sorted(obj: Union[Dict, List], *, key=None, reverse=False):
-    if isinstance(obj, dict):
+def deep_sorted(lst: Union[Dict, List]):
+    def sort_key(e):
+        if isinstance(e, list):
+            return str([sort_key(inner) for inner in e])
+        elif isinstance(e, dict):
+            return str(e)
+        return str(e)
+
+    if isinstance(lst, list):
+        res = [
+                deep_sorted(e) if isinstance(e, list)
+                else {k: v for k, v in sorted(e.items(), key=lambda item: str(item[0]))} if isinstance(e, dict)
+                else e for e in lst
+            ]
+        return sorted(res, key=sort_key)
+    elif isinstance(lst, dict):
         return {
-            k: deep_sorted(v, key=key, reverse=reverse)
-            for k, v in sorted(obj.items(), key=key, reverse=reverse)
+            k: deep_sorted(v) for k, v in sorted(lst.items(), key=lambda item: str(item[0]))
         }
-    if isinstance(obj, list):
-        return [
-            deep_sorted(v, key=key, reverse=reverse)
-            for i, v in sorted(enumerate(obj), key=key, reverse=reverse)
-        ]
-    return obj
+    else:
+        return lst
 
 
 def make_dictionary_items_unique(jsons: list):

@@ -5,6 +5,7 @@ from copy import deepcopy
 from src.datastructures.testmethod import TestMethod as tm
 from src.datastructures.metadata import Metadata
 
+
 class Combinator:
     def __init__(self, scenario: dict, default_json_body=None):
         self.scenario = deepcopy(scenario)
@@ -23,9 +24,13 @@ class Combinator:
         for currs_metadata in curr:
             for others_metadata in others:
                 for item in others_metadata:
-                    res.append(
-                        [currs_metadata] + [item]
-                    )
+                    if isinstance(item, Metadata):
+                        res.append(
+                            [currs_metadata] + [item]
+                        )
+                    else:
+                        lst = [currs_metadata] + item
+                        res.append(lst)
         return res
 
     def make_pair_wise(self, scenario: list) -> list:  # Correct
