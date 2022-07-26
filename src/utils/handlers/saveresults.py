@@ -64,6 +64,17 @@ class SyncResultsSaverFactory(ResultsSaverFactory):  # TODO: get rid of code dup
                                 f"{curlify.to_curl(item[1].request, compressed=True, verify=False)}\n\n"
                             )
 
+                with open(Path(path_to_deck_folder / str(f"fuzzing-{deck_file_name}.log")), mode="w") as log:
+                    log.write("Results for " + str(deck_name) + "\n\n")
+                    for response in result_for_separate_deck:
+                        log.write("URL: " + response[0].url + "\n")
+                        log.write("Status code: " + str(response[0].status_code) + "\n")
+                        log.write("Reason: " + response[0].reason + "\n")
+                        log.write("Time elapsed: " + str(response[0].elapsed) + "\n")
+                        log.write("Text: " + response[0].text)
+                        log.write("Content: " + str(response[0].content))
+                        log.write("\n\n")
+
 
 class AsyncResultsSaverFactory(ResultsSaverFactory):
     class ResultsSaver:

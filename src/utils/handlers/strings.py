@@ -35,10 +35,20 @@ def smart_remove(base_str: str, substr_to_remove: str):
         del base_dict[substr_to_remove]
     else:
         find_path_for_value(base_dict, substr_to_remove)
-        path_to_curr_deep_value = result.pop()
-        access_view_to_value = get_access_view_to_deep_value(
-            "base_dict", path_to_curr_deep_value
-        )
-        a = "del " + access_view_to_value
-        exec(a)
+        if len(result) > 0:
+            path_to_curr_deep_value = result.pop()
+            access_view_to_value = get_access_view_to_deep_value(
+                "base_dict", path_to_curr_deep_value
+            )
+            a = "del " + access_view_to_value
+            exec(a)
+        else:
+            find_path_for_key(base_dict, substr_to_remove)
+            path_to_curr_deep_key = result.pop()
+
+            access_view_to_key = get_access_view_to_deep_key(
+                "base_dict", path_to_curr_deep_key
+            )
+            a = "del " + access_view_to_key + f"['{substr_to_remove}']"
+            exec(a)
     return str(base_dict)
