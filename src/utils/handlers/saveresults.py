@@ -5,7 +5,7 @@ from datetime import datetime
 
 from defaults.constants import ProjectValues
 from src.utils.handlers.files import make_dir, get_filename
-
+from src.core.analyzedata import DataAnalyzer
 
 class ResultsSaverFactory:
     @classmethod
@@ -34,13 +34,24 @@ class SyncResultsSaverFactory(ResultsSaverFactory):  # TODO: get rid of code dup
                 raise Exception(f"Error: cannot create results directories")
 
             for deck_name, result_for_separate_deck in self.actual_results.items():
-                all_reply_statuses = {}
+                replies = [len(x[0].text) for x in result_for_separate_deck]
+                data_analyzer = DataAnalyzer(replies)
+                anomalies = data_analyzer.find_anomalies()
+                if len(anomalies):
+                    print(f"\nAnomaly is found in the following requests"
+                          f"(mean request length is {round(data_analyzer.mean, 1)}):", sep='\n')
+                    for item in anomalies:
+                        print("response number " + str(item[0]) + f" has length {str(item[1])}", sep=' ')
+                    print("\n\n")
+
                 deck_file_name = get_filename(deck_name)
                 path_to_deck_folder = Path(
                     dir_name_with_curr_date_time / deck_file_name
                 )
                 if not make_dir(str(path_to_deck_folder)):
                     raise Exception(f"Error: cannot create results directories")
+
+                all_reply_statuses = {}
                 for artifacts in result_for_separate_deck:
                     if all_reply_statuses.get(artifacts[0].status_code, None):
                         all_reply_statuses[artifacts[0].status_code] += [
@@ -53,20 +64,21 @@ class SyncResultsSaverFactory(ResultsSaverFactory):  # TODO: get rid of code dup
 
                 for status, response_data in all_reply_statuses.items():
                     with open(
-                        Path(path_to_deck_folder / str(status)), mode="w"
+                            Path(path_to_deck_folder / str(status)), mode="w"
                     ) as file, open(
                         Path(path_to_deck_folder / str("curls_for_" + str(status))),
                         mode="w",
                     ) as file_with_curls:
-                        for item in response_data:
-                            file.write(f"{item[0]}\n")
+                        for i, item in enumerate(response_data):
+                            file.write(f"{i}: {item[0]}\n")
                             file_with_curls.write(
-                                f"{curlify.to_curl(item[1].request, compressed=True, verify=False)}\n\n"
+                                f"{i}: {curlify.to_curl(item[1].request, compressed=True, verify=False)}\n\n"
                             )
 
                 with open(Path(path_to_deck_folder / str(f"fuzzing-{deck_file_name}.log")), mode="w") as log:
                     log.write("Results for " + str(deck_name) + "\n\n")
-                    for response in result_for_separate_deck:
+                    for i, response in enumerate(result_for_separate_deck):
+                        log.write(f"({i}):" + "\n\n")
                         log.write("URL: " + response[0].url + "\n")
                         log.write("Request body: " + str(response[0].request.body) + "\n")
                         log.write("Status code: " + str(response[0].status_code) + "\n")
@@ -93,13 +105,23 @@ class AsyncResultsSaverFactory(ResultsSaverFactory):
                 raise Exception(f"Error: cannot create results directories")
 
             for deck_name, result_for_separate_deck in self.actual_results.items():
-                all_reply_statuses = {}
+                replies = [len(x[2]) for x in result_for_separate_deck]
+                data_analyzer = DataAnalyzer(replies)
+                anomalies = data_analyzer.find_anomalies()
+                if len(anomalies):
+                    print(f"\nAnomaly is found in the following requests"
+                          f"(mean request length is {round(data_analyzer.mean, 1)}):", sep='\n')
+                    for item in anomalies:
+                        print("response number " + str(item[0]) + f" has length {str(item[1])}", sep=' ')
+                    print("\n\n")
+
                 deck_file_name = get_filename(deck_name)
                 path_to_deck_folder = Path(
                     dir_name_with_curr_date_time / deck_file_name
                 )
                 if not make_dir(str(path_to_deck_folder)):
                     raise Exception(f"Error: cannot create results directories")
+                all_reply_statuses = {}
                 for artifacts in result_for_separate_deck:
                     if all_reply_statuses.get(artifacts[0].status, None):
                         all_reply_statuses[artifacts[0].status] = all_reply_statuses[

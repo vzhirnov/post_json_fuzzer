@@ -15,7 +15,6 @@
 7. [Tests](#Tests)
 8. [CLI Interface](#CLI-Interface)
 9. [Restrictions](#Restrictions)
-10. [TODO](#TODO)
 
 ## Description
 POST JSON Fuzzer: "Your API could have been in his place"
@@ -137,7 +136,8 @@ Feel free to ask questions if something seems unclear.
 * black~=22.3.0
 * requests~=2.27.1
 * urllib3~=1.26.9
-
+* numpy~=1.23.1
+* 
 ## Building and Running in Docker
 ```bash
 docker build --tag post_json_fuzzer:0.0.1 .
@@ -156,5 +156,4 @@ usage: post_json_fuzzer.py [-h] -url URL -file FILE
 ## Restrictions
 Works with secret token only, there is no other authentication scenarios yet
 
-## TODO
-WIP</br>
+
