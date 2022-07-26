@@ -1,5 +1,5 @@
-TODO plan:
-Architectural tasks:
+## TODO plan
+### Architectural tasks
     1. SSDEEP responsese check
     2. Reply time check - session tracking(e.g. for python requests package)
     3. Mark both 1,2 as suspicious if stats has anomalies
@@ -13,7 +13,7 @@ Architectural tasks:
         (id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc.)
     8. Save data results during fuzzing
 
-Business logic tasks:
+### Business logic tasks
     1. Make single k_v_Fuzzy object(mix to basic json sometimes <-- this case) OR test_method mix_it_sometimes
     2. Semantic mutation:  --> HARD
         4.1 action mytator by mutation testig tools(extract code or use tool as is to get mutated code bundle)
@@ -22,21 +22,22 @@ Business logic tasks:
     4. Try to realize Lamport timestamp for services to get error information
     5. I'm lucky parameter
 
-Routine tasks:
+### Routine tasks
     1. Recursively decrease delay between 500s for second check
     2. Add option for adding dir with custom generators/mutators
         First, post_json_fuzzer will try to find and registrate those generators in those folders
     3. Add fuzzer.log file with deep log info
     4. Add jupiter notebook description for project
     5. After merge tm params, make every tm to have its own susp request(e.g. pair_wise[200, 404] | miss_it[200, 204])
+    6. Add the possibility not to add data_set(in case when we just use MISS_IT test-method so there is no need to fuzz default value)
 
-Tasks for future:
+### Tasks for future
     1. From string import Template - try to replace str(dict)/smart_replace and others by substitute operation
     2. Check if Python is > 3.6 because of potential using of named tuples
     3. Add parameter for pair_wise(combine with fuzzy with spesific index)
     4. Pay attention to Dharma fuzzer
 
-Thoughts:
+### Thoughts
     1. All items in data_set items MUST be invalid, and only default value should be valid.
         This is important because we need to get json bodies with only wrong values
     2. Try to apply a genetic algorithm to function fuzzing, i.e. mutate operators,
@@ -54,13 +55,13 @@ Thoughts:
     8. Watch which bugs are fixed and fuzz all combinations of fixes mentioned on GL
 
 
-DONE for sync requests
+### DONE for sync requests
     optionally save results as ready curl requests, deep info logs
 
-DONE, but not tested
+### DONE, but not tested
     For every fuzzy(for deep info log puropses) we need the description(e.g. what protobuf/grpc data in the current fuzzy could be)
 
-DONE:
+### DONE
     add turm_on flag(if it is false, the current fuzzy does not participate in fuzzing)
     add pm for use this parameter in every test neverless other parameters pms(take_curr_and_others_by_their_test_method)
     *get_pack_by_methods("client_id", [list_once, list_several_times])
