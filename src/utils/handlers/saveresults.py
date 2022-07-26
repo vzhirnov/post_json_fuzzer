@@ -68,11 +68,11 @@ class SyncResultsSaverFactory(ResultsSaverFactory):  # TODO: get rid of code dup
                     log.write("Results for " + str(deck_name) + "\n\n")
                     for response in result_for_separate_deck:
                         log.write("URL: " + response[0].url + "\n")
+                        log.write("Request body: " + str(response[0].request.body) + "\n")
                         log.write("Status code: " + str(response[0].status_code) + "\n")
                         log.write("Reason: " + response[0].reason + "\n")
                         log.write("Time elapsed: " + str(response[0].elapsed) + "\n")
                         log.write("Text: " + response[0].text)
-                        log.write("Content: " + str(response[0].content))
                         log.write("\n\n")
 
 
@@ -114,3 +114,13 @@ class AsyncResultsSaverFactory(ResultsSaverFactory):
                     ) as file:
                         for data in response_data:
                             file.write(f"{data}\n")
+
+                with open(Path(path_to_deck_folder / str(f"fuzzing-{deck_file_name}.log")), mode="w") as log:
+                    log.write("Results for " + str(deck_name) + "\n\n")
+                    for response in result_for_separate_deck:
+                        log.write("URL: " + str(response[0].url) + "\n")
+                        log.write("Requst body: " + str(response[1]) + "\n")
+                        log.write("Status code: " + str(response[0].status) + "\n")
+                        log.write("Reason: " + response[0].reason + "\n")
+                        log.write("Text: " + response[2])
+                        log.write("\n\n")
