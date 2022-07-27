@@ -87,14 +87,18 @@ def deep_sorted(lst: Union[Dict, List]):
 
     if isinstance(lst, list):
         res = [
-                deep_sorted(e) if isinstance(e, list)
-                else {k: v for k, v in sorted(e.items(), key=lambda item: str(item[0]))} if isinstance(e, dict)
-                else e for e in lst
-            ]
+            deep_sorted(e)
+            if isinstance(e, list)
+            else {k: v for k, v in sorted(e.items(), key=lambda item: str(item[0]))}
+            if isinstance(e, dict)
+            else e
+            for e in lst
+        ]
         return sorted(res, key=sort_key)
     elif isinstance(lst, dict):
         return {
-            k: deep_sorted(v) for k, v in sorted(lst.items(), key=lambda item: str(item[0]))
+            k: deep_sorted(v)
+            for k, v in sorted(lst.items(), key=lambda item: str(item[0]))
         }
     else:
         return lst

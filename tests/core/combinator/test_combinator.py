@@ -9,14 +9,14 @@ class TestCombinator:
         "metadata_bundle, expected_result",
         [
             (
-                    [
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
-                    ],
-                    [
-                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200]),
-                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 2, [200]),
-                    ],
+                [
+                    [Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
+                    [Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
+                ],
+                [
+                    Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200]),
+                    Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 2, [200]),
+                ],
             ),
         ],
     )
@@ -28,43 +28,43 @@ class TestCombinator:
         "metadata_bundle, expected_result",
         [
             (
+                [
                     [
-                        [
-                            [Metadata("1972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
-                            [Metadata("2972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
-                            [Metadata("3972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
-                        ],
-                        [
-                            [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
-                            [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
-                        ],
+                        [Metadata("1972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
+                        [Metadata("2972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
+                        [Metadata("3972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
                     ],
                     [
-                        [
-                            [Metadata("1972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
-                            [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
-                        ],
-                        [
-                            [Metadata("2972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
-                            [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
-                        ],
-                        [
-                            [Metadata("3972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
-                            [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
-                        ],
-                        [
-                            [Metadata("3972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
-                            [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
-                        ],
-                        [
-                            [Metadata("2972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
-                            [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
-                        ],
-                        [
-                            [Metadata("1972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
-                            [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
-                        ],
+                        [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
+                        [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
                     ],
+                ],
+                [
+                    [
+                        [Metadata("1972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
+                        [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
+                    ],
+                    [
+                        [Metadata("2972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
+                        [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
+                    ],
+                    [
+                        [Metadata("3972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
+                        [Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
+                    ],
+                    [
+                        [Metadata("3972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
+                        [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
+                    ],
+                    [
+                        [Metadata("2972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
+                        [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
+                    ],
+                    [
+                        [Metadata("1972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
+                        [Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200])],
+                    ],
+                ],
             ),
         ],
     )
@@ -76,43 +76,43 @@ class TestCombinator:
         "metadata_bundle, expected_result",
         [
             (
+                [
                     [
-                        [
-                            [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
-                            [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
-                        ],
-                        [
-                            Metadata("3972b612-df65-4d99-923b-8494d88b0ac5", 3, [200]),
-                            Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
-                            Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200]),
-                        ],
+                        [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
+                        [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
                     ],
                     [
-                        (
-                                [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
-                                Metadata("3972b612-df65-4d99-923b-8494d88b0ac5", 3, [200]),
-                        ),
-                        (
-                                [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
-                                Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
-                        ),
-                        (
-                                [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
-                                Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200]),
-                        ),
-                        (
-                                [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
-                                Metadata("3972b612-df65-4d99-923b-8494d88b0ac5", 3, [200]),
-                        ),
-                        (
-                                [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
-                                Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
-                        ),
-                        (
-                                [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
-                                Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200]),
-                        ),
+                        Metadata("3972b612-df65-4d99-923b-8494d88b0ac5", 3, [200]),
+                        Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
+                        Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200]),
                     ],
+                ],
+                [
+                    (
+                        [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
+                        Metadata("3972b612-df65-4d99-923b-8494d88b0ac5", 3, [200]),
+                    ),
+                    (
+                        [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
+                        Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
+                    ),
+                    (
+                        [Metadata("1972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
+                        Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200]),
+                    ),
+                    (
+                        [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
+                        Metadata("3972b612-df65-4d99-923b-8494d88b0ac5", 3, [200]),
+                    ),
+                    (
+                        [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
+                        Metadata("4972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
+                    ),
+                    (
+                        [Metadata("2972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
+                        Metadata("5972b612-df65-4d99-923b-8494d88b0ac5", 5, [200]),
+                    ),
+                ],
             ),
         ],
     )
@@ -124,14 +124,14 @@ class TestCombinator:
         "metadata_bundle, expected_result",
         [
             (
-                    [
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
-                    ],
-                    [
-                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200]),
-                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 1, [200]),
-                    ],
+                [
+                    [Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200])],
+                    [Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 2, [200])],
+                ],
+                [
+                    Metadata("c972b612-df65-4d99-923b-8494d88b0ac5", 1, [200]),
+                    Metadata("c972b612-df65-4d99-923b-8494d88b0ac6", 1, [200]),
+                ],
             ),
         ],
     )
@@ -145,25 +145,41 @@ class TestCombinator:
         "metadata_bundle, expected_result",
         [
             (
-                    {
-                        1 << 7: [
-                            [Metadata("c972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
-                            [Metadata("c972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
-                        ],
-                        1 << 4: [
-                            [Metadata("c972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
-                            [Metadata("c972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
-                        ],
-                    },
+                {
+                    1
+                    << 7: [
+                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac1", 1, [200])],
+                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac2", 2, [200])],
+                    ],
+                    1
+                    << 4: [
+                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
+                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
+                    ],
+                },
+                [
                     [
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac1", 1, [200]), Metadata("c972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac1", 1, [200]), Metadata("c972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])],
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac2", 2, [200]), Metadata("c972b612-df65-4d99-923b-8494d88b0ac3", 3, [200])],
-                        [Metadata("c972b612-df65-4d99-923b-8494d88b0ac2", 2, [200]), Metadata("c972b612-df65-4d99-923b-8494d88b0ac4", 4, [200])]
-                     ],
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac1", 1, [200]),
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac3", 3, [200]),
+                    ],
+                    [
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac1", 1, [200]),
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
+                    ],
+                    [
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac2", 2, [200]),
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac3", 3, [200]),
+                    ],
+                    [
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac2", 2, [200]),
+                        Metadata("c972b612-df65-4d99-923b-8494d88b0ac4", 4, [200]),
+                    ],
+                ],
             ),
         ],
     )
-    def test_take_curr_and_others_by_their_test_method(self, metadata_bundle: list, expected_result):
+    def test_take_curr_and_others_by_their_test_method(
+        self, metadata_bundle: list, expected_result
+    ):
         c = Combinator(metadata_bundle)
         assert c.take_curr_and_others_by_their_test_method() == expected_result

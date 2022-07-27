@@ -25,9 +25,7 @@ class Combinator:
             for others_metadata in others:
                 for item in others_metadata:
                     if isinstance(item, Metadata):
-                        res.append(
-                            [currs_metadata] + [item]
-                        )
+                        res.append([currs_metadata] + [item])
                     else:
                         lst = [currs_metadata] + item
                         res.append(lst)

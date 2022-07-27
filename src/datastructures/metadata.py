@@ -1,5 +1,7 @@
 class Metadata:
-    def __init__(self, uuid: str, fuzz_data: str, suspicious_reply: list, test_method: int):
+    def __init__(
+        self, uuid: str, fuzz_data: str, suspicious_reply: list, test_method: int
+    ):
         self.uuid = uuid
         self.fuzz_data = fuzz_data
         self.suspicious_reply = suspicious_reply
