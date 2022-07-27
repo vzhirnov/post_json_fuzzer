@@ -6,24 +6,26 @@ import tqdm
 
 class RequestHandlerFactory:
     @classmethod
-    def create_handler(cls, url_aim: str, hdrs: dict):
-        return cls.RequestHandler(url_aim, hdrs)
+    def create_handler(cls, method: str, url_aim: str, hdrs: dict):
+        return cls.RequestHandler(method, url_aim, hdrs)
 
 
-def create_request_handler(factory, url_aim: str, hdrs: dict):
-    return factory.create_handler(url_aim, hdrs)
+def create_request_handler(factory, method: str, url_aim: str, hdrs: dict):
+    return factory.create_handler(method, url_aim, hdrs)
 
 
 class SyncRequestHandlerFactory(RequestHandlerFactory):
     class RequestHandler:
-        def __init__(self, url_aim, hdrs):
+        def __init__(self, method: str, url_aim: str, hdrs: dict):
             self.url_aim = url_aim
             self.hdrs = hdrs
+            self.method = method
 
-        def post(
-            self, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list
+        def send(
+            self, method: str, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list
         ):
-            response = requests.post(
+            response = requests.request(
+                method=method,
                 url=url_aim,
                 json=json_params,
                 headers=hdrs,
@@ -41,8 +43,8 @@ class SyncRequestHandlerFactory(RequestHandlerFactory):
         def start_fuzz(self, jsons: list):
             responses_bundle = []
             for json_params in tqdm.tqdm(jsons):
-                result = self.post(
-                    self.url_aim, json_params[0], self.hdrs, json_params[1]
+                result = self.send(
+                    self.method, self.url_aim, json_params[0], self.hdrs, json_params[1]
                 )
                 responses_bundle.append(result)
             return responses_bundle
@@ -50,18 +52,20 @@ class SyncRequestHandlerFactory(RequestHandlerFactory):
 
 class AsyncRequestHandlerFactory(RequestHandlerFactory):
     class RequestHandler:
-        def __init__(self, url_aim, hdrs):
+        def __init__(self, method: str, url_aim: str, hdrs: dict):
             self.url_aim = url_aim
             self.hdrs = hdrs
+            self.method = method
 
-        async def post(
-            self, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list
+        async def send(
+            self, method: str, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list
         ):
             async with aiohttp.ClientSession(trust_env=True) as session:
                 for _ in range(120):
                     try:
-                        async with session.post(
-                            url_aim,
+                        async with session.request(
+                            method=method,
+                            url=url_aim,
                             json=json_params,
                             headers=hdrs,
                             ssl=False,
@@ -88,7 +92,7 @@ class AsyncRequestHandlerFactory(RequestHandlerFactory):
 
         async def start_fuzz(self, jsons: list):
             request_tasks = [
-                self.post(self.url_aim, json_params[0], self.hdrs, json_params[1])
+                self.send(self.method, self.url_aim, json_params[0], self.hdrs, json_params[1])
                 for json_params in jsons
             ]
             responses_bundle = []

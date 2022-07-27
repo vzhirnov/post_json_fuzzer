@@ -127,7 +127,7 @@ class AsyncResultsSaverFactory(ResultsSaverFactory):
                 if len(anomalies):
                     print(
                         f"\nAnomaly is found in the following requests"
-                        f"(mean request length is {round(data_analyzer.mean, 1)}):",
+                        f"(mean request length is {int(data_analyzer.mean)}):",
                         sep="\n",
                     )
                     for item in anomalies:
@@ -137,6 +137,7 @@ class AsyncResultsSaverFactory(ResultsSaverFactory):
                             + f" has length {str(item[1])}",
                             sep=" ",
                         )
+                        print("\t response trailer: ", result_for_separate_deck[item[0]][2][:100])
                     print("\n\n")
 
                 deck_file_name = get_filename(deck_name)
