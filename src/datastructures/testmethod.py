@@ -1,6 +1,8 @@
 class TestMethod:
     NUM_OF_TEST_METHODS = 8
 
+    # TODO make __repr__ view for beauty
+
     @staticmethod
     def split(tm: int):
         return [
@@ -13,9 +15,14 @@ class TestMethod:
     PAIR_WISE = 1 << 6  # 64 DONE: real PAIR_WISE
     COMBINATIONS = 1 << 5  # 32 DONE: make all COMBINATIONS
     TAKE_CURR_AND_OTHERS_BY_DEF = 1 << 4  # 16 DONE
-    NOTHING_MORE_BUT_THIS = 1 << 3  # 8
+    NOTHING_MORE_BUT_THIS = 1 << 3  # 8  TODO add only this k_v to json and nothing else
     MISS_IT = 1 << 2  # 4 DONE
-    DUPLICATE_IT = (
+    GENERATE_IT = (
         1 << 1  # 2
-    )  # TODO: this is not what we exactly need, json takes just one key and ignore the second one
+    )  # TODO: make generator work for every final json
     HYPOTHESIS = 1 << 0  # 1 TODO: for what??? it seems that it should be deleted
+
+    # def __repr__(self):
+    #     return (
+    #         f"{self.__class__.__name__}(" f"{self.default_value!r}-{self.obj_id[:6]!r})"
+    #     )

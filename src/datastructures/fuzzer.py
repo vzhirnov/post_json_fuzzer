@@ -15,19 +15,7 @@ class Fuzzer:
         self.json_with_uuids, self.fuzzies = self.indexate_fuzzies(json_with_fuzzies)
         self.default_json_body = self.get_default_json_body(self.json_with_uuids)
         self.result_jsons_for_fuzzing = []
-        self.default_suspicious_responses = [
-            500,
-            501,
-            502,
-            503,
-            504,
-            505,
-            506,
-            507,
-            508,
-            510,
-            511,
-        ]
+        self.default_suspicious_responses = [x for x in range(500, 512) if x != 509]
 
     def get_default_json_body(self, json_with_uuids: dict) -> dict:
         json_with_uuids = str(json_with_uuids)

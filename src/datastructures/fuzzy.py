@@ -2,6 +2,8 @@ import uuid
 
 import collections.abc
 
+from typing import Generator, Callable
+
 
 def extract_here(lst: list):
     return lst
@@ -18,7 +20,7 @@ class Fuzzy:
         description=None,
     ):
         self.obj_id = str(uuid.uuid4())
-        self.default_value = default_value
+        self.default_value = None
 
         self.enabled = enabled
 
@@ -29,14 +31,22 @@ class Fuzzy:
         self.description = description
 
         if enabled:
-            self.data_set = tuple([default_value]) + data_set
             self.test_methods = test_methods
 
             if suspicious_responses is None:
                 suspicious_responses = []
             self.suspicious_responses = suspicious_responses
 
-            self.tape = self.make_tape()
+            if any(isinstance(x, Callable) for x in data_set):
+                self.data_set = next((x for x in data_set if isinstance(x, Callable)), None)
+                self.default_value = self.data_set()
+                self.tape = [self.data_set]
+            else:
+                self.default_value = default_value
+                self.data_set = tuple([default_value]) + data_set
+                self.tape = self.make_tape()
+        else:
+            self.default_value = default_value
 
     def make_tape(self):
         s = set()

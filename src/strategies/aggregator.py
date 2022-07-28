@@ -1,5 +1,5 @@
 from src.strategies.datasets import default
-from src.strategies.generators import int_nums_in_range
+from src.strategies.generators import int_nums_in_range, get_new_uuid, Repeater
 from src.strategies.methods import (
     mutate_all_by_radamsa,
     mutate_by_radamsa,
@@ -22,4 +22,8 @@ methods = {
     "list_several_times": list_several_times,
 }
 
-generators = {"int_nums_in_range": int_nums_in_range}
+generators = {
+    "int_nums_in_range": int_nums_in_range,
+    "get_new_uuid": get_new_uuid,
+    "Repeater": Repeater
+}

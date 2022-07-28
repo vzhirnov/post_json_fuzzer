@@ -1,3 +1,4 @@
+from typing import Callable
 from allpairspy import AllPairs
 
 from itertools import product
@@ -49,8 +50,15 @@ class Combinator:
                 break
         return res
 
-    def duplicate_it(self, scenario: list) -> list:
-        pass
+    def generate_it(self, scenario: list) -> list:
+        res = []
+        scen = deepcopy(scenario)
+        for md_tapes in scen:
+            for md_item in md_tapes:
+                if isinstance(md_item.fuzz_data, Callable):
+                    md_item.fuzz_data = md_item.fuzz_data()
+                res.append(md_item)
+        return res
 
     def nothing_more_but_this(self, scenario: list) -> list:
         pass
@@ -78,8 +86,8 @@ class Combinator:
             return (self.make_all_combinations(metadata_bundle),)  # Correct
         elif test_method == tm.MISS_IT:
             return (self.miss_it(metadata_bundle),)
-        elif test_method == tm.DUPLICATE_IT:
-            return (self.duplicate_it(metadata_bundle),)
+        elif test_method == tm.GENERATE_IT:
+            return (self.generate_it(metadata_bundle),)
         elif test_method == tm.NOTHING_MORE_BUT_THIS:
             return (self.nothing_more_but_this(metadata_bundle),)
         elif test_method == tm.HYPOTHESIS:
