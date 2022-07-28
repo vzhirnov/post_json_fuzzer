@@ -1,6 +1,6 @@
 ## TODO plan
 ### Architectural tasks
-    1. SSDEEP responsese check
+    1. SSDEEP responsese check - DONE(with mean ans std, may be extend)
     2. Reply time check - session tracking(e.g. for python requests package)
     3. Mark both 1,2 as suspicious if stats has anomalies
     4. Add feature for starting fuzing process in parrallel:
@@ -9,9 +9,7 @@
         merge parameters from other hints and services, other variant /|\
     6. Additional tasks:
         types refactoring - make named tuple where required
-    7. Try to addd lazy generator (e.g. random_every_time) with all other params which could be e.g. pairwise
-        (id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc.)
-    8. Save data results during fuzzing
+    7. Save data results during fuzzing
 
 ### Business logic tasks
     1. Make single k_v_Fuzzy object(mix to basic json sometimes <-- this case) OR test_method mix_it_sometimes
@@ -27,10 +25,9 @@
     1. Recursively decrease delay between 500s for second check
     2. Add option for adding dir with custom generators/mutators
         First, post_json_fuzzer will try to find and registrate those generators in those folders
-    3. Add fuzzer.log file with deep log info
+    
     4. Add jupiter notebook description for project
     5. After merge tm params, make every tm to have its own susp request(e.g. pair_wise[200, 404] | miss_it[200, 204])
-    6. Add the possibility not to add data_set(in case when we just use MISS_IT test-method so there is no need to fuzz default value)
 
 ### Tasks for future
     1. From string import Template - try to replace str(dict)/smart_replace and others by substitute operation
@@ -63,6 +60,10 @@
     For every fuzzy(for deep info log puropses) we need the description(e.g. what protobuf/grpc data in the current fuzzy could be)
 
 ### DONE
+    Add the possibility not to add data_set(in case when we just use MISS_IT test-method so there is no need to fuzz default value) - DONE
+    add fuzzer.log file with deep log info - DONE
+    Try to addd lazy generator (e.g. random_every_time) with all other params which could be e.g. pairwise
+        (id will make different random numbers: "id": 1928399182, "test": 1, "id": 9898934982034, "test": 2, etc.)
     add turm_on flag(if it is false, the current fuzzy does not participate in fuzzing)
     add pm for use this parameter in every test neverless other parameters pms(take_curr_and_others_by_their_test_method)
     *get_pack_by_methods("client_id", [list_once, list_several_times])
