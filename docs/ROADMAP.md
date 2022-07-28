@@ -21,6 +21,7 @@
     3. Add structed mutations(testing with structly-correct random data input)
     4. Try to realize Lamport timestamp for services to get error information
     5. I'm lucky parameter
+    6. susp_replies={"status: [-404], "body": ["{"success": true}"]}
 
 ### Routine tasks
     1. Recursively decrease delay between 500s for second check

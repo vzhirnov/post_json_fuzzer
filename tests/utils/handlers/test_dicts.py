@@ -47,11 +47,28 @@ class TestDicts:
                 fuzzy,
                 ["1", "4", 0, "5", 0, 6],
             ),
+            (
+                {'1': [fuzzy, 'other_str']},
+                fuzzy,
+                ['1', 0]
+            ),
+            (
+                {'1': [[fuzzy, 'other_str']]},
+                fuzzy,
+                ['1', 0, 0]
+            ),
+            (
+                {'1': {2: [fuzzy, 'other_str']}},
+                fuzzy,
+                ['1', 2, 0]
+            ),
         ],
     )
     def test_find_path_for_value(self, base_dict, fuzzy, expected_result):
         find_path_for_value(base_dict, fuzzy)
         path_to_curr_deep_key = result.pop()
+        result.clear()
+        path.clear()
         assert path_to_curr_deep_key == expected_result
 
     @pytest.mark.parametrize(

@@ -26,21 +26,29 @@ def find_path_for_key(dict_obj: dict, key: Fuzzy, i=None):
             path.pop()
 
 
-def find_path_for_value(dict_obj: dict, value: Fuzzy, i=None):
-    for k, v in dict_obj.items():
-        path.append(k)
-        if isinstance(v, dict):
-            find_path_for_value(v, value, i)
-        if isinstance(v, list):
-            for i, item in enumerate(v):
-                path.append(i)
-                if isinstance(item, dict):
-                    find_path_for_value(item, value, i)
-                path.pop()
-        if v == value:
-            result.append(copy(path))
-        if path:
+def find_path_for_value(dict_obj: Union[Dict, List], value: Fuzzy, i=None):
+    if isinstance(dict_obj, list):
+        for i, item in enumerate(dict_obj):
+            path.append(i)
+            if item == value:
+                result.append(copy(path))
+                return
+            if isinstance(item, dict):
+                find_path_for_value(item, value, i)
+            if isinstance(item, list):
+                find_path_for_value(item, value, i)
             path.pop()
+    if isinstance(dict_obj, dict):
+        for k, v in dict_obj.items():
+            path.append(k)
+            if isinstance(v, dict):
+                find_path_for_value(v, value, i)
+            if isinstance(v, list):
+                find_path_for_value(v, value, i)
+            if v == value:
+                result.append(copy(path))
+            if path:
+                path.pop()
 
 
 def find_obj_in_dict_and_replace_it(c_obj, obj_to_replace, replacement_obj):

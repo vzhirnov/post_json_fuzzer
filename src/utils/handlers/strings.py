@@ -5,7 +5,7 @@ def smart_replace(base_str: str, substr_to_replace: str, on_what_to_replace):
     if substr_to_replace not in base_str:
         return base_str
     if isinstance(on_what_to_replace, str):
-        return base_str.replace(substr_to_replace, on_what_to_replace)
+        return base_str.replace(substr_to_replace, on_what_to_replace, 1)
     else:
         found_substr_start_index = base_str.find(substr_to_replace)
         found_substr_end_index = base_str.find(substr_to_replace) + len(
@@ -51,4 +51,6 @@ def smart_remove(base_str: str, substr_to_remove: str):
             )
             a = "del " + access_view_to_key + f"['{substr_to_remove}']"
             exec(a)
+    result.clear()
+    path.clear()
     return str(base_dict)
