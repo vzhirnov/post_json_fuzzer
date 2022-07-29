@@ -47,7 +47,7 @@ if __name__ == "__main__":  # TODO check right position for this check
     file = str()
     folder = str()
     use_async = bool()
-    method = 'POST'
+    method = "POST"
 
     parser = argparse.ArgumentParser(
         description="Make POST json fuzzing easy.",
@@ -142,7 +142,9 @@ if __name__ == "__main__":  # TODO check right position for this check
 
     actual_results = {}
     if use_async:
-        async_rg = create_request_handler(AsyncRequestHandlerFactory, method, url, headers)
+        async_rg = create_request_handler(
+            AsyncRequestHandlerFactory, method, url, headers
+        )
         for relative_file_path, jsons in result_jsons.items():
             actual_results[relative_file_path] = asyncio.run(
                 async_rg.start_fuzz(jsons=jsons)
@@ -158,7 +160,9 @@ if __name__ == "__main__":  # TODO check right position for this check
         )
         async_results_saver.save_artifacts_to_corr_files()
     else:
-        sync_rg = create_request_handler(SyncRequestHandlerFactory, method, url, headers)
+        sync_rg = create_request_handler(
+            SyncRequestHandlerFactory, method, url, headers
+        )
         for relative_file_path, jsons in result_jsons.items():
             actual_results[relative_file_path] = sync_rg.start_fuzz(jsons=jsons)
 

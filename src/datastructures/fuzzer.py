@@ -137,6 +137,7 @@ class Fuzzer:
         returns res dict with uuids instead of Fs, dict like {uuid1: F1, uuid2: F2, uuid3: uuid4}
         """
         d_res = deepcopy(json_like_obj)
+        dl_containner = DLContainer(d_res)
         stack = list(d_res.items())
         visited = set()
         fuzzies = dict()
@@ -145,28 +146,13 @@ class Fuzzer:
             unique_counter += 1
             k, v = stack.pop()
             if isinstance(k, Fuzzy):
-                uuid_key = k.obj_id
                 if k.enabled is False:
-                    find_path_for_key(d_res, k)
-                    path_to_curr_deep_key = result.pop()
-                    path_to_required_old_deep_key = path_to_curr_deep_key[:-1] + [
-                        uuid_key
-                    ]
-
-                    access_view_to_key = get_access_view_to_deep_key(
-                        "d_res", path_to_curr_deep_key
-                    )
-                    a = access_view_to_key + f"['{k.default_value}']" + " = " + "v"
-                    exec(a)
-
-                    access_view_to_old_deep_key = get_access_view_to_deep_key(
-                        "d_res", path_to_required_old_deep_key
-                    )
-
-                    b = "del " + access_view_to_old_deep_key + f"[k]"
-                    exec(b)
+                    path_to_item, key_or_value = dl_containner.get(k, None)
+                    if key_or_value is not None:
+                        dl_containner.update_item(
+                            path_to_item, k.default_value, key_or_value
+                        )
                 else:
-
                     uuid_key = k.obj_id
                     fuzzies[uuid_key] = k
 
@@ -174,43 +160,20 @@ class Fuzzer:
                         d_res[uuid_key] = d_res[k]
                         del d_res[k]
                     else:
-                        find_path_for_key(d_res, k)
-                        path_to_curr_deep_key = result.pop()
-                        path_to_required_old_deep_key = path_to_curr_deep_key[:-1] + [
-                            uuid_key
-                        ]
-
-                        access_view_to_key = get_access_view_to_deep_key(
-                            "d_res", path_to_curr_deep_key
-                        )
-                        a = access_view_to_key + f"['{uuid_key}']" + " = " + "v"
-                        exec(a)
-
-                        access_view_to_old_deep_key = get_access_view_to_deep_key(
-                            "d_res", path_to_required_old_deep_key
-                        )
-
-                        b = "del " + access_view_to_old_deep_key + f"[k]"
-                        exec(b)
+                        path_to_item, key_or_value = dl_containner.get(k, None)
+                        if key_or_value is not None:
+                            dl_containner.update_item(
+                                path_to_item, uuid_key, key_or_value
+                            )
 
             if isinstance(v, Fuzzy):
                 uuid_key = v.obj_id
                 if v.enabled is False:
-                    find_path_for_value(d_res, v)
-                    path_to_curr_deep_value = result.pop()
-                    access_view_to_value = get_access_view_to_deep_value(
-                        "d_res", path_to_curr_deep_value
-                    )
-                    a = (
-                        access_view_to_value
-                        + " = "
-                        + (
-                            f"{v.default_value}"
-                            if not isinstance(v.default_value, str)
-                            else f"'{v.default_value}'"
+                    path_to_item, key_or_value = dl_containner.get(v, None)
+                    if key_or_value is not None:
+                        dl_containner.update_item(
+                            path_to_item, v.default_value, key_or_value
                         )
-                    )
-                    exec(a)
                     continue
                 fuzzies[uuid_key] = v
 
@@ -224,13 +187,9 @@ class Fuzzer:
                     else:
                         d_res = find_obj_in_dict_and_replace_it(d_res, v, uuid_key)
                 else:
-                    find_path_for_value(d_res, v)
-                    path_to_curr_deep_value = result.pop()
-                    access_view_to_value = get_access_view_to_deep_value(
-                        "d_res", path_to_curr_deep_value
-                    )
-                    a = access_view_to_value + " = " + f"'{uuid_key}'"
-                    exec(a)
+                    path_to_item, key_or_value = dl_containner.get(v, None)
+                    if key_or_value is not None:
+                        dl_containner.update_item(path_to_item, uuid_key, key_or_value)
 
             # make all k:v items unique, even if they are identical
             # but are in different places in the dictionary

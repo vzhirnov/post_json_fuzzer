@@ -137,7 +137,10 @@ class AsyncResultsSaverFactory(ResultsSaverFactory):
                             + f" has length {str(item[1])}",
                             sep=" ",
                         )
-                        print("\t response trailer: ", result_for_separate_deck[item[0]][2][:100])
+                        print(
+                            "\t response trailer: ",
+                            result_for_separate_deck[item[0]][2][:100],
+                        )
                     print("\n\n")
 
                 deck_file_name = get_filename(deck_name)

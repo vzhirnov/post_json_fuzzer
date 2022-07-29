@@ -174,7 +174,9 @@ class DLContainer:
                 return res, 1
         return default_value, None
 
-    def find_path_for_key(self, dict_obj: dict, key: Any, i=None):  # TODO make method private
+    def find_path_for_key(
+        self, dict_obj: dict, key: Any, i=None
+    ):  # TODO make method private
         for k, v in dict_obj.items():
             self.path.append(k)
             if isinstance(v, dict):
@@ -190,7 +192,9 @@ class DLContainer:
             if self.path:
                 self.path.pop()
 
-    def find_path_for_value(self, dict_obj: Union[Dict, List], value: Fuzzy, i=None):  # TODO make method private
+    def find_path_for_value(
+        self, dict_obj: Union[Dict, List], value: Fuzzy, i=None
+    ):  # TODO make method private
         if isinstance(dict_obj, list):
             for i, item in enumerate(dict_obj):
                 self.path.append(i)
@@ -214,7 +218,7 @@ class DLContainer:
                 if self.path:
                     self.path.pop()
 
-    def new_get_access_view_to_deep_key(self, dic_name: str, path: dict):
+    def get_access_view_to_deep_key(self, dic_name: str, path: dict):
         d_name = self.retrieve_arg_real_name(path).pop()
         res = str(dic_name)
         max_dict_index = max(list(path.keys()))
@@ -223,7 +227,7 @@ class DLContainer:
             res += "[" + d_name + "[" + str(path_index) + "]" + "]"
         return res
 
-    def new_get_access_view_to_deep_value(self, dic_name: str, path: dict):
+    def get_access_view_to_deep_value(self, dic_name: str, path: dict):
         d_name = self.retrieve_arg_real_name(path).pop()
         res = str(dic_name)
         for path_index, path_value in path.items():
@@ -240,25 +244,28 @@ class DLContainer:
         for i, item in enumerate(new_path):
             path_vars[i] = item
 
-        access_view_to_curr_key = self.new_get_access_view_to_deep_value(
+        access_view_to_curr_key = self.get_access_view_to_deep_value(
             self.base_object_name, path_vars
         )
 
-        obj_to_replace = new_value if isinstance(new_value, str) else "'" + str(new_value) + "'"
+        obj_to_replace = (
+            new_value if isinstance(new_value, str) else "'" + str(new_value) + "'"
+        )
 
-        access_view_to_req_key = self.new_get_access_view_to_deep_key(
+        access_view_to_req_key = self.get_access_view_to_deep_key(
             self.base_object_name, path_vars
         ) + str([obj_to_replace])
 
         for i, item in enumerate(new_path):
             path_vars[i] = item
 
-        add_new_kv = "self." + access_view_to_req_key + " = " + "self." + access_view_to_curr_key
+        add_new_kv = (
+            "self." + access_view_to_req_key + " = " + "self." + access_view_to_curr_key
+        )
         exec(add_new_kv)
 
         del_old_kv = "del self." + access_view_to_curr_key
         exec(del_old_kv)
-        a = 1
 
     def update_value(self, path: list, new_value: Any):
         new_path = path
@@ -266,11 +273,13 @@ class DLContainer:
         for i, item in enumerate(new_path):
             path_vars[i] = item
 
-        access_view_to_key = self.new_get_access_view_to_deep_value(
+        access_view_to_key = self.get_access_view_to_deep_value(
             self.base_object_name, path_vars
         )
 
-        obj_to_replace = new_value if not isinstance(new_value, str) else "'" + str(new_value) + "'"
+        obj_to_replace = (
+            new_value if not isinstance(new_value, str) else "'" + str(new_value) + "'"
+        )
         base_object = self.base_object
         add_new_kv = "self." + access_view_to_key + " = " + f"{obj_to_replace}"
         exec(add_new_kv)

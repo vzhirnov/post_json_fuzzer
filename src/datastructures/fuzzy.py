@@ -38,7 +38,9 @@ class Fuzzy:
             self.suspicious_responses = suspicious_responses
 
             if any(isinstance(x, Callable) for x in data_set):
-                self.data_set = next((x for x in data_set if isinstance(x, Callable)), None)
+                self.data_set = next(
+                    (x for x in data_set if isinstance(x, Callable)), None
+                )
                 self.default_value = self.data_set()
                 self.tape = [self.data_set]
             else:

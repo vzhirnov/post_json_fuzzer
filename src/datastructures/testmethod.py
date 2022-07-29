@@ -17,9 +17,7 @@ class TestMethod:
     TAKE_CURR_AND_OTHERS_BY_DEF = 1 << 4  # 16 DONE
     NOTHING_MORE_BUT_THIS = 1 << 3  # 8  TODO add only this k_v to json and nothing else
     MISS_IT = 1 << 2  # 4 DONE
-    GENERATE_IT = (
-        1 << 1  # 2
-    )  # TODO: make generator work for every final json
+    GENERATE_IT = 1 << 1  # 2  # TODO: make generator work for every final json
     HYPOTHESIS = 1 << 0  # 1 TODO: for what??? it seems that it should be deleted
 
     # def __repr__(self):

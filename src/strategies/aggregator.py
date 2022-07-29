@@ -25,5 +25,5 @@ methods = {
 generators = {
     "int_nums_in_range": int_nums_in_range,
     "get_new_uuid": get_new_uuid,
-    "Repeater": Repeater
+    "Repeater": Repeater,
 }

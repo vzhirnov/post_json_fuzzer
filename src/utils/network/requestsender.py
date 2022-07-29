@@ -22,7 +22,12 @@ class SyncRequestHandlerFactory(RequestHandlerFactory):
             self.method = method
 
         def send(
-            self, method: str, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list
+            self,
+            method: str,
+            url_aim: str,
+            json_params: dict,
+            hdrs: dict,
+            suspicious_replies: list,
         ):
             response = requests.request(
                 method=method,
@@ -58,7 +63,12 @@ class AsyncRequestHandlerFactory(RequestHandlerFactory):
             self.method = method
 
         async def send(
-            self, method: str, url_aim: str, json_params: dict, hdrs: dict, suspicious_replies: list
+            self,
+            method: str,
+            url_aim: str,
+            json_params: dict,
+            hdrs: dict,
+            suspicious_replies: list,
         ):
             async with aiohttp.ClientSession(trust_env=True) as session:
                 for _ in range(120):
@@ -92,7 +102,9 @@ class AsyncRequestHandlerFactory(RequestHandlerFactory):
 
         async def start_fuzz(self, jsons: list):
             request_tasks = [
-                self.send(self.method, self.url_aim, json_params[0], self.hdrs, json_params[1])
+                self.send(
+                    self.method, self.url_aim, json_params[0], self.hdrs, json_params[1]
+                )
                 for json_params in jsons
             ]
             responses_bundle = []
